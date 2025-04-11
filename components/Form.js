@@ -12,9 +12,7 @@ export default function ContactForm() {
     country: "",
     profession: "",
     message: "",
-    style1: "",
-    style2: "",
-    style3: "",
+    style: "",
     team: "",
   });
 
@@ -39,15 +37,13 @@ export default function ContactForm() {
       form.email.length > 100 ||
       form.profession.length > 50 ||
       form.message.length > 300 ||
-      form.style1.length > 20 ||
-      form.style2.length > 20 ||
-      form.style3.length > 20
+      form.style.length > 20
     ) {
       setError("Uno o más campos exceden el límite de caracteres permitido.");
       return;
     }
 
-    const style = [form.style1, form.style2, form.style3];
+    const style = [form.style];
 
     const res = await fetch("/api/contact", {
       method: "POST",
@@ -147,29 +143,11 @@ export default function ContactForm() {
         className={styles.textarea}
       />
         <div className={styles.styleInputs}>
-            <label>Tu estilo en 3 palabras:</label>
+            <label>Tu estilo en 1 palabras:</label>
             <input
-                name="style1"
-                placeholder="Palabra 1"
-                value={form.style1}
-                onChange={handleChange}
-                maxLength={20}
-                required
-                className={styles.input}
-            />
-            <input
-                name="style2"
-                placeholder="Palabra 2"
-                value={form.style2}
-                onChange={handleChange}
-                maxLength={20}
-                required
-                className={styles.input}
-            />
-            <input
-                name="style3"
-                placeholder="Palabra 3"
-                value={form.style3}
+                name="style"
+                placeholder="Palabra"
+                value={form.style}
                 onChange={handleChange}
                 maxLength={20}
                 required

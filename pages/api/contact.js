@@ -57,7 +57,7 @@ export default async function handler(req, res) {
         <h1>Gracias por sumarte a nuestro universo visual.</h1>
         <p>Pronto vas a recibir contenido exclusivo.</p>
         <hr />
-        <p><strong>Tu estilo:</strong> ${style.join(", ")}</p>
+        <p><strong>Tu estilo:</strong> ${style}</p>
         ${team ? `<p><strong>Equipo:</strong> ${team}</p>` : ""}
       `,
     });
