@@ -1,6 +1,6 @@
 import { db } from "../../../../firebase/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
-import { generateToken } from "../../../../utils/tokenGenerator";
+import { generateToken } from "../../../utils/tokenGenerator";
 
 export async function POST(request) {
   try {
