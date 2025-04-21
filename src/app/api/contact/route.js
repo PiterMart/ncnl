@@ -47,11 +47,12 @@ export async function POST(request) {
     await transporter.sendMail({
       from: `"NCNL" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: "Thank you for contacting us",
+      subject: "NCNL",
       html: `
-        <h1>Thank you for contacting NCNL!</h1>
-        <p>We have received your message and will get back to you soon.</p>
-        <p>Best regards,<br>The NCNL Team</p>
+        <img src="https://firebasestorage.googleapis.com/v0/b/ncnl-9fd04.firebasestorage.app/o/logo%2FNCNL_LOGO%402x.png?alt=media&token=b88eebb6-6972-4818-a351-7684a2bffcf69" alt="NCNL" style="max-width: 100%; margin-bottom: 20px;" />
+        <h1>Gracias por asistir a nuestro debut!</h1>
+        <p>Pronto te enviaremos mas novedades sobre el proyecto.</p>
+        <p>Saludos,<br> NCNL ... </p>
       `
     });
 

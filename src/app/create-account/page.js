@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "../../../firebase/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import styles from "../../styles/CreateAccount.module.css";
 
-export default function CreateAccount() {
+function CreateAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -155,5 +155,17 @@ export default function CreateAccount() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function CreateAccount() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <h1 className={styles.title}>Cargando...</h1>
+      </div>
+    }>
+      <CreateAccountContent />
+    </Suspense>
   );
 } 

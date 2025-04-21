@@ -1,45 +1,123 @@
 /* components/AdminDashboard.module.css */
 
 .container {
-    padding: 2rem;
-    color: white;
-  }
-  
-  .title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .subtitle {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .input {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    color: black;
-    border: 1px solid #ccc;
-  }
-  
-  .button {
-    background-color: black;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-  }
-  
-  .successMessage {
-    margin-top: 1rem;
-    color: #4ade80; /* Tailwind green-400 */
-  }
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title {
+  font-family: 'Nacional-Extended', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  font-family: 'Nacional-Extended', sans-serif;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.tab.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.actionButton {
+  font-family: 'Nacional-Extended', sans-serif;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.actionButton:hover {
+  background-color: #45a049;
+}
+
+.newsletterButton {
+  font-family: 'Nacional-Extended', sans-serif;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.newsletterButton:hover {
+  background-color: #333;
+}
+
+.newsletterContainer {
+  margin-bottom: 2rem;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  font-family: 'Nacional-Extended', sans-serif;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  font-family: 'Nacional-Extended', sans-serif;
+  text-align: center;
+  padding: 2rem;
+  color: #ff4444;
+  font-size: 1.2rem;
+}
   
