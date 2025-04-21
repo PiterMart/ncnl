@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase/firebaseConfig"; 
+import { storage } from "../firebase/firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import styles from "../styles/NewsletterForm.module.css";
 
