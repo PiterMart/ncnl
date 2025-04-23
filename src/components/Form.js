@@ -137,6 +137,7 @@ export default function Form() {
         required
         className={styles.input}
       />
+      <p  style={{ color: "#fff", paddingLeft: "0rem" }}>Fecha de nacimiento:</p>
       <input
         name="birthdate"
         type="date"

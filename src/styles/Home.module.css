@@ -28,3 +28,12 @@
   align-items: center;
   background-color: rgba(0, 0, 0, 0.075);
 } 
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+  .backgroundVideo {
+    width: 120%;
+    height: 120%;
+    object-fit: cover;
+  }
+}
