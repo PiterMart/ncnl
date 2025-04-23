@@ -50,8 +50,8 @@ export async function POST(request) {
       subject: "NCNL",
       html: `
         <img src="https://firebasestorage.googleapis.com/v0/b/ncnl-9fd04.firebasestorage.app/o/logo%2FNCNL_LOGO%402x.png?alt=media&token=b88eebb6-6972-4818-a351-7684a2bffcf69" alt="NCNL" style="max-width: 100%; margin-bottom: 20px;" />
-        <h1>Gracias por asistir a nuestro debut!</h1>
-        <p>Pronto te enviaremos mas novedades sobre el proyecto.</p>
+        <h1>Gracias por sumarte!</h1>
+        <p>Pronto te enviaremos mas novedades.</p>
         <p>Saludos,<br> NCNL ... </p>
       `
     });
