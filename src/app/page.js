@@ -24,7 +24,7 @@ export default function Home() {
           playsInline
           className={styles.backgroundVideo}
         >
-          <source src="/NCNL_VID.mp4" type="video/mp4" />
+          <source src="https://firebasestorage.googleapis.com/v0/b/ncnl-9fd04.firebasestorage.app/o/video%2FNCNL_VID.mp4?alt=media&token=860598dc-8a60-4aa0-b979-7fe9e19d86cf" type="video/mp4" />
         </video>
       </div>
       <div className={styles.logoContainer}>
