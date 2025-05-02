@@ -1,0 +1,44 @@
+.display{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    justify-content: space-around;
+    background: aliceblue;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    color: black;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    will-change: transform;
+    text-align: left;
+  
+    transition: transform 0.3s ease; /* Smooth animation */
+    will-change: transform;         /* Optimizes performance */
+  }
+  
+  .card:hover {
+    transform: scale(1.05); /* Zooms in the card by 5% */
+  }  
+  
+
+  .card_text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: black;
+  
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Optional: prevents interaction when invisible */
+  }
+  
+  .card:hover .card_text {
+    opacity: 1;
+  }
