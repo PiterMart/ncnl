@@ -4,18 +4,19 @@
   justify-content: space-between;
   align-items: center;
   position: fixed;
-  font-weight: 00;
+  font-weight: 800;
+  letter-spacing: 0.5rem;
   width: 100%;
   z-index: 1000;
   margin: auto;
   background-color: #02638100;
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
   /* padding: 4vw; */
   font-family: 'Nacional-Extended', sans-serif;
   padding-RIGHT: 4vw;
   padding-top: 2rem;
   padding-bottom: 1rem;
-  mix-blend-mode: difference;
+  /* mix-blend-mode: difference; */
   transition: background  1.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -135,17 +136,18 @@
   }
 
   .nav_list ul {
+    background-color: rgb(16, 16, 16);
     width: 90%;
     max-width: 500px;
     list-style: none;
     text-align: center;
-    padding: 0;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     text-align: left;
   }
   .nav_list li {
-    font-size: 6rem;
+    font-size: 3rem;
     /* color: transparent; */
 
   }

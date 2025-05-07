@@ -55,11 +55,11 @@ export default function ProductPage() {
             </div>
             
             <div className={styles.productInfo}>
-                <h1 className={styles.productName}>Oversized Wool Coat</h1>
+                <h1 className={styles.productName}>OOVERSIZED WOOL COAT</h1>
                 <p className={styles.productPrice}>$450</p>
                 
                 <div className={styles.productDetails}>
-                    <h2>Details</h2>
+                    <h2>DETAILS</h2>
                     <ul>
                         {productDetails.map((detail, index) => (
                             <li key={index}>{detail}</li>
