@@ -6,6 +6,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     margin-top: 100px;
+    padding-top: 8rem;
+
 }
 
 .productGallery {
