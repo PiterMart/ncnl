@@ -23,14 +23,16 @@ function Modal({ isOpen, onClose, children }) {
 
 /**
  * ProductsTable component:
- * - se suscribe en tiempo real a Firestore
- * - muestra productos + imágenes
- * - abre modal para agregar nuevos productos con varias imágenes
+ * - suscribe en tiempo real a Firestore
+ * - muestra, agrega, edita y elimina productos
  */
 export default function ProductsTable() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formValues, setFormValues] = useState({
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+
+    const initialForm = {
         name: "",
         technicalDescription: "",
         price: "",
@@ -38,7 +40,8 @@ export default function ProductsTable() {
         collection: "",
         size: "",
         color: "",
-    });
+    };
+    const [formValues, setFormValues] = useState(initialForm);
     const [selectedImages, setSelectedImages] = useState([]); // File[]
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
@@ -46,60 +49,95 @@ export default function ProductsTable() {
     // Suscripción en tiempo real
     useEffect(() => {
         const unsubscribe = productService.subscribeToProducts(
-            (snapshotProducts) => {
-                setProducts(snapshotProducts);
-            },
+            setProducts,
             (err) => console.error("Error en suscripción:", err)
         );
         return () => unsubscribe();
     }, []);
 
-    const handleOpenModal = () => setIsModalOpen(true);
+    // Open add modal
+    const handleOpenAdd = () => {
+        setIsEditing(false);
+        setEditingId(null);
+        setFormValues(initialForm);
+        setSelectedImages([]);
+        setIsModalOpen(true);
+    };
+
+    // Open edit modal
+    const handleOpenEdit = (product) => {
+        setIsEditing(true);
+        setEditingId(product.id);
+        setFormValues({
+            name: product.name,
+            technicalDescription: product.technicalDescription,
+            price: product.price,
+            stock: product.stock,
+            collection: product.collection,
+            size: product.size,
+            color: product.color,
+        });
+        setSelectedImages([]); // no cambiar imágenes a menos que suban nuevas
+        setIsModalOpen(true);
+    };
+
+    // Close modal
     const handleCloseModal = () => {
         setError("");
         setIsModalOpen(false);
         setSelectedImages([]);
     };
 
+    // Input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
     };
 
+    // File input change
     const handleImageChange = (e) => {
         setSelectedImages(e.target.files);
     };
 
-    // Ya no modificamos products aquí; la suscripción lo hará por nosotros
+    // Delete product
+    const handleDelete = async (id) => {
+        if (!confirm("¿Eliminar este producto?")) return;
+        try {
+            await productService.deleteProduct(id);
+        } catch (err) {
+            console.error("Error eliminando producto:", err);
+            alert("No se pudo eliminar el producto.");
+        }
+    };
+
+    // Submit form (add or edit)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSaving(true);
         setError("");
 
         try {
-            // 1) Crear documento sin imágenes
-            const newId = await productService.addProduct(formValues);
-
-            // 2) Si hay imágenes, subirlas y actualizar Firestore
-            if (selectedImages.length > 0) {
-                const urls = await imageService.uploadImages(newId, selectedImages);
-                await productService.updateProductImages(newId, urls);
+            if (isEditing && editingId) {
+                // 1) Update fields
+                await productService.updateProduct(editingId, formValues);
+                // 2) If suben imágenes nuevas: subir y actualizar
+                if (selectedImages.length > 0) {
+                    const urls = await imageService.uploadImages(editingId, selectedImages);
+                    await productService.updateProductImages(editingId, urls);
+                }
+            } else {
+                // 1) Añadir nuevo
+                const newId = await productService.addProduct(formValues);
+                // 2) Si hay imágenes: subir y actualizar
+                if (selectedImages.length > 0) {
+                    const urls = await imageService.uploadImages(newId, selectedImages);
+                    await productService.updateProductImages(newId, urls);
+                }
             }
-
-            // 3) Reset form y cerrar modal
-            setFormValues({
-                name: "",
-                technicalDescription: "",
-                price: "",
-                stock: "",
-                collection: "",
-                size: "",
-                color: "",
-            });
             handleCloseModal();
         } catch (err) {
             console.error("Error guardando producto:", err);
-            setError("No se pudo guardar el producto con imágenes.");
+            setError("No se pudo guardar los cambios.");
         } finally {
             setIsSaving(false);
         }
@@ -107,16 +145,18 @@ export default function ProductsTable() {
 
     return (
         <div className={styles.tableContainer}>
-            <button
-                className={styles.openModalButton}
-                onClick={handleOpenModal}
-                disabled={isSaving}
-            >
-                {isSaving ? "Guardando…" : "Agregar producto"}
-            </button>
+            <div className={styles.topBar}>
+                <button
+                    className={styles.openModalButton}
+                    onClick={handleOpenAdd}
+                    disabled={isSaving}
+                >
+                    Agregar producto
+                </button>
+            </div>
 
             <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-                <h2>Agregar nuevo producto</h2>
+                <h2>{isEditing ? "Editar producto" : "Agregar nuevo producto"}</h2>
                 {error && <p className={styles.errorText}>{error}</p>}
                 <form onSubmit={handleSubmit} className={styles.form}>
                     {[
@@ -146,10 +186,11 @@ export default function ProductsTable() {
                     ))}
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="images">Imágenes</label>
+                        <label htmlFor="images">
+                            {isEditing ? "Nuevas imágenes (opcional)" : "Imágenes"}
+                        </label>
                         <input
                             id="images"
-                            name="images"
                             type="file"
                             multiple
                             accept="image/*"
@@ -160,7 +201,13 @@ export default function ProductsTable() {
 
                     <div className={styles.formActions}>
                         <button type="submit" disabled={isSaving}>
-                            Guardar
+                            {isSaving
+                                ? isEditing
+                                    ? "Guardando…"
+                                    : "Guardando…"
+                                : isEditing
+                                    ? "Actualizar"
+                                    : "Guardar"}
                         </button>
                         <button type="button" onClick={handleCloseModal} disabled={isSaving}>
                             Cancelar
@@ -180,6 +227,7 @@ export default function ProductsTable() {
                         <th>Talle</th>
                         <th>Color</th>
                         <th>Imágenes</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -201,6 +249,20 @@ export default function ProductsTable() {
                                         className={styles.thumbnail}
                                     />
                                 ))}
+                            </td>
+                            <td className={styles.actionCell}>
+                                <button
+                                    className={styles.editButton}
+                                    onClick={() => handleOpenEdit(p)}
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    className={styles.deleteButton}
+                                    onClick={() => handleDelete(p.id)}
+                                >
+                                    Eliminar
+                                </button>
                             </td>
                         </tr>
                     ))}

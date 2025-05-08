@@ -7,6 +7,7 @@ import {
     addDoc,
     serverTimestamp,
     updateDoc,
+    deleteDoc,
     doc,
     query,
     orderBy,
@@ -27,18 +28,27 @@ class ProductService {
         return docRef.id;
     }
 
+    /** Update product fields (excluding images) */
+    async updateProduct(productId, productData) {
+        const docRef = doc(this.db, "products", productId);
+        await updateDoc(docRef, { ...productData });
+    }
+
     /** Update the images field of a product */
     async updateProductImages(productId, imageUrls) {
         const docRef = doc(this.db, "products", productId);
         await updateDoc(docRef, { images: imageUrls });
     }
 
+    /** Delete a product document */
+    async deleteProduct(productId) {
+        const docRef = doc(this.db, "products", productId);
+        await deleteDoc(docRef);
+    }
+
     /**
      * Subscribe to real-time updates of products collection,
      * ordered by newest first.
-     * @param {Function} onUpdate
-     * @param {Function} onError
-     * @returns {Function} unsubscribe
      */
     subscribeToProducts(onUpdate, onError) {
         const q = query(this.productsRef, orderBy("createdAt", "desc"));

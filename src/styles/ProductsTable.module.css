@@ -19,6 +19,7 @@
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #eee;
+    vertical-align: middle;
 }
 
 /* Header text styles */
@@ -33,6 +34,10 @@
 /* Cell text color */
 .table td {
     color: #333;
+}
+
+.table tr {
+    min-height: 4rem;
 }
 
 /* Hover effect for rows */
@@ -55,10 +60,6 @@
     font-family: 'Nacional-Extended', sans-serif;
 }
 
-
-/* styles/ProductsTable.module.css */
-
-/* existing styles... */
 
 .openModalButton {
     margin-bottom: 1rem;
@@ -130,9 +131,6 @@
     border-radius: 4px;
 }
 
-/* styles/ProductsTable.module.css */
-
-/* existing styles... */
 
 .openModalButton {
     margin-bottom: 1rem;
@@ -222,4 +220,36 @@
     object-fit: cover;
     margin-right: 0.5rem;
     border-radius: 4px;
-  }
+}
+
+.topBar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.actionCell {
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.editButton,
+.deleteButton {
+    padding: 0.5rem 1rem;
+    line-height: 1.5;
+    height: auto;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.editButton {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.deleteButton {
+    background-color: #f44336;
+    color: #fff;
+}
