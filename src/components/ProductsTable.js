@@ -1,24 +1,18 @@
 // components/ProductsTable.js
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles/ProductsTable.module.css";
+import { productService } from "../services/productService";
 
-/**
- * Modal component: single responsibility for overlay and content
+/** 
+ * Modal component: overlay + inner content 
  */
 function Modal({ isOpen, onClose, children }) {
     if (!isOpen) return null;
-
     return (
-        <div
-            className={styles.modalOverlay}
-            onClick={onClose} // close when clicking outside
-        >
-            <div
-                className={styles.modalContent}
-                onClick={(e) => e.stopPropagation()} // prevent closing inside
-            >
+        <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <button className={styles.closeButton} onClick={onClose}>
                     &times;
                 </button>
@@ -29,11 +23,15 @@ function Modal({ isOpen, onClose, children }) {
 }
 
 /**
- * ProductsTable component: muestra productos y maneja modal
+ * ProductsTable component:
+ * - subscribes in real time a Firestore
+ * - muestra la tabla
+ * - abre modal para agregar nuevos productos
  */
-export default function ProductsTable({ products }) {
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
+export default function ProductsTable() {
+    // Local state for products list
+    const [products, setProducts] = useState([]);
+    // Modal & form states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formValues, setFormValues] = useState({
         name: "",
@@ -44,154 +42,128 @@ export default function ProductsTable({ products }) {
         size: "",
         color: "",
     });
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState("");
 
-    // toggle select all
-    const handleSelectAll = () => {
-        if (selectAll) {
-            setSelectedRows([]);
-        } else {
-            setSelectedRows(products.map((p) => p.id));
-        }
-        setSelectAll(!selectAll);
-    };
-
-    // toggle single row
-    const handleRowSelect = (id) => {
-        setSelectedRows((prev) =>
-            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    // Subscribe to Firestore on mount
+    useEffect(() => {
+        const unsubscribe = productService.subscribeToProducts(
+            (snapshotProducts) => {
+                // real-time update from server
+                setProducts(snapshotProducts);
+            },
+            (err) => {
+                console.error("Error en suscripción:", err);
+            }
         );
+        return () => unsubscribe();
+    }, []);
+
+    // Handlers for modal open/close
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => {
+        setError("");
+        setIsModalOpen(false);
     };
 
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
-
-    // update form state
+    // Update form fields
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
     };
 
-    // submit form
-    const handleSubmit = (e) => {
+    // Submit form: optimistic + real-time
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Valores nuevo producto:", formValues);
-        // TODO: enviar a API o actualizar estado
-        handleCloseModal();
+        setIsSaving(true);
+        setError("");
+        try {
+            // 1) Save to Firestore
+            const newId = await productService.addProduct(formValues);
+
+            // 2) Optimistic update: show nuevo producto al toque
+            setProducts((prev) => [
+                { id: newId, ...formValues },
+                ...prev,
+            ]);
+
+            // 3) Reset form & close
+            setFormValues({
+                name: "",
+                technicalDescription: "",
+                price: "",
+                stock: "",
+                collection: "",
+                size: "",
+                color: "",
+            });
+            handleCloseModal();
+        } catch (err) {
+            console.error("Error guardando producto:", err);
+            setError("No se pudo guardar el producto.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
         <div className={styles.tableContainer}>
-            <button className={styles.openModalButton} onClick={handleOpenModal}>
-                Agregar producto
+            {/* Botón para abrir el modal */}
+            <button
+                className={styles.openModalButton}
+                onClick={handleOpenModal}
+                disabled={isSaving}
+            >
+                {isSaving ? "Guardando…" : "Agregar producto"}
             </button>
 
+            {/* Modal con formulario */}
             <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
                 <h2>Agregar nuevo producto</h2>
+                {error && <p className={styles.errorText}>{error}</p>}
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="name">Nombre de la prenda</label>
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            value={formValues.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="technicalDescription">
-                            Descripción Técnica Textil
-                        </label>
-                        <input
-                            id="technicalDescription"
-                            name="technicalDescription"
-                            type="text"
-                            value={formValues.technicalDescription}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="price">Precio</label>
-                        <input
-                            id="price"
-                            name="price"
-                            type="number"
-                            step="0.01"
-                            value={formValues.price}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="stock">Stock</label>
-                        <input
-                            id="stock"
-                            name="stock"
-                            type="number"
-                            value={formValues.stock}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="collection">Colección</label>
-                        <input
-                            id="collection"
-                            name="collection"
-                            type="text"
-                            value={formValues.collection}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="size">Talle</label>
-                        <input
-                            id="size"
-                            name="size"
-                            type="text"
-                            value={formValues.size}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="color">Color</label>
-                        <input
-                            id="color"
-                            name="color"
-                            type="text"
-                            value={formValues.color}
-                            onChange={handleChange}
-                        />
-                    </div>
+                    {[
+                        { id: "name", label: "Nombre de la prenda", type: "text", required: true },
+                        {
+                            id: "technicalDescription",
+                            label: "Descripción Técnica Textil",
+                            type: "text",
+                        },
+                        { id: "price", label: "Precio", type: "number", step: "0.01", required: true },
+                        { id: "stock", label: "Stock", type: "number", required: true },
+                        { id: "collection", label: "Colección", type: "text" },
+                        { id: "size", label: "Talle", type: "text" },
+                        { id: "color", label: "Color", type: "text" },
+                    ].map(({ id, label, ...rest }) => (
+                        <div key={id} className={styles.formGroup}>
+                            <label htmlFor={id}>{label}</label>
+                            <input
+                                id={id}
+                                name={id}
+                                value={formValues[id]}
+                                onChange={handleChange}
+                                {...rest}
+                                className={styles.input}
+                            />
+                        </div>
+                    ))}
 
                     <div className={styles.formActions}>
-                        <button type="submit">Guardar</button>
-                        <button type="button" onClick={handleCloseModal}>
+                        <button type="submit" disabled={isSaving}>
+                            Guardar
+                        </button>
+                        <button type="button" onClick={handleCloseModal} disabled={isSaving}>
                             Cancelar
                         </button>
                     </div>
                 </form>
             </Modal>
 
+            {/* Tabla con datos en tiempo real */}
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <th>
-                            <input
-                                type="checkbox"
-                                checked={selectAll}
-                                onChange={handleSelectAll}
-                                className={styles.checkbox}
-                            />
-                        </th>
-                        <th>Nombre de la prenda</th>
+                        <th>Nombre</th>
                         <th>Descripción Técnica</th>
                         <th>Precio</th>
                         <th>Stock</th>
@@ -201,32 +173,22 @@ export default function ProductsTable({ products }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product) => (
-                        <tr key={product.id} className={styles.row}>
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedRows.includes(product.id)}
-                                    onChange={() => handleRowSelect(product.id)}
-                                    className={styles.checkbox}
-                                />
-                            </td>
-                            <td>{product.name}</td>
-                            <td>{product.technicalDescription}</td>
-                            <td>{product.price}</td>
-                            <td>{product.stock}</td>
-                            <td>{product.collection}</td>
-                            <td>{product.size}</td>
-                            <td>{product.color}</td>
+                    {products.map((p) => (
+                        <tr key={p.id}>
+                            <td>{p.name}</td>
+                            <td>{p.technicalDescription}</td>
+                            <td>{p.price}</td>
+                            <td>{p.stock}</td>
+                            <td>{p.collection}</td>
+                            <td>{p.size}</td>
+                            <td>{p.color}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
             {products.length === 0 && (
-                <div className={styles.emptyMessage}>
-                    No hay productos para mostrar
-                </div>
+                <div className={styles.emptyMessage}>No hay productos para mostrar</div>
             )}
         </div>
     );
