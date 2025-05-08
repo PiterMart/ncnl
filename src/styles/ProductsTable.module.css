@@ -215,3 +215,11 @@
     /* added padding */
     cursor: pointer;
 }
+
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+  }

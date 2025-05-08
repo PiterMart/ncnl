@@ -1,13 +1,12 @@
-// components/ProductsTable.js
+// src/components/ProductsTable.js
 "use client";
 
 import { useState, useEffect } from "react";
 import styles from "../styles/ProductsTable.module.css";
 import { productService } from "../services/productService";
+import { imageService } from "../services/imageService";
 
-/** 
- * Modal component: overlay + inner content 
- */
+/** Modal component: overlay + inner content */
 function Modal({ isOpen, onClose, children }) {
     if (!isOpen) return null;
     return (
@@ -24,14 +23,12 @@ function Modal({ isOpen, onClose, children }) {
 
 /**
  * ProductsTable component:
- * - subscribes in real time a Firestore
- * - muestra la tabla
- * - abre modal para agregar nuevos productos
+ * - se suscribe en tiempo real a Firestore
+ * - muestra productos + imágenes
+ * - abre modal para agregar nuevos productos con varias imágenes
  */
 export default function ProductsTable() {
-    // Local state for products list
     const [products, setProducts] = useState([]);
-    // Modal & form states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formValues, setFormValues] = useState({
         name: "",
@@ -42,52 +39,54 @@ export default function ProductsTable() {
         size: "",
         color: "",
     });
+    const [selectedImages, setSelectedImages] = useState([]); // File[]
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
 
-    // Subscribe to Firestore on mount
+    // Suscripción en tiempo real
     useEffect(() => {
         const unsubscribe = productService.subscribeToProducts(
             (snapshotProducts) => {
-                // real-time update from server
                 setProducts(snapshotProducts);
             },
-            (err) => {
-                console.error("Error en suscripción:", err);
-            }
+            (err) => console.error("Error en suscripción:", err)
         );
         return () => unsubscribe();
     }, []);
 
-    // Handlers for modal open/close
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => {
         setError("");
         setIsModalOpen(false);
+        setSelectedImages([]);
     };
 
-    // Update form fields
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Submit form: optimistic + real-time
+    const handleImageChange = (e) => {
+        setSelectedImages(e.target.files);
+    };
+
+    // Ya no modificamos products aquí; la suscripción lo hará por nosotros
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSaving(true);
         setError("");
+
         try {
-            // 1) Save to Firestore
+            // 1) Crear documento sin imágenes
             const newId = await productService.addProduct(formValues);
 
-            // 2) Optimistic update: show nuevo producto al toque
-            setProducts((prev) => [
-                { id: newId, ...formValues },
-                ...prev,
-            ]);
+            // 2) Si hay imágenes, subirlas y actualizar Firestore
+            if (selectedImages.length > 0) {
+                const urls = await imageService.uploadImages(newId, selectedImages);
+                await productService.updateProductImages(newId, urls);
+            }
 
-            // 3) Reset form & close
+            // 3) Reset form y cerrar modal
             setFormValues({
                 name: "",
                 technicalDescription: "",
@@ -100,7 +99,7 @@ export default function ProductsTable() {
             handleCloseModal();
         } catch (err) {
             console.error("Error guardando producto:", err);
-            setError("No se pudo guardar el producto.");
+            setError("No se pudo guardar el producto con imágenes.");
         } finally {
             setIsSaving(false);
         }
@@ -108,7 +107,6 @@ export default function ProductsTable() {
 
     return (
         <div className={styles.tableContainer}>
-            {/* Botón para abrir el modal */}
             <button
                 className={styles.openModalButton}
                 onClick={handleOpenModal}
@@ -117,7 +115,6 @@ export default function ProductsTable() {
                 {isSaving ? "Guardando…" : "Agregar producto"}
             </button>
 
-            {/* Modal con formulario */}
             <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
                 <h2>Agregar nuevo producto</h2>
                 {error && <p className={styles.errorText}>{error}</p>}
@@ -148,6 +145,19 @@ export default function ProductsTable() {
                         </div>
                     ))}
 
+                    <div className={styles.formGroup}>
+                        <label htmlFor="images">Imágenes</label>
+                        <input
+                            id="images"
+                            name="images"
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className={styles.input}
+                        />
+                    </div>
+
                     <div className={styles.formActions}>
                         <button type="submit" disabled={isSaving}>
                             Guardar
@@ -159,7 +169,6 @@ export default function ProductsTable() {
                 </form>
             </Modal>
 
-            {/* Tabla con datos en tiempo real */}
             <table className={styles.table}>
                 <thead>
                     <tr>
@@ -170,6 +179,7 @@ export default function ProductsTable() {
                         <th>Colección</th>
                         <th>Talle</th>
                         <th>Color</th>
+                        <th>Imágenes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,6 +192,16 @@ export default function ProductsTable() {
                             <td>{p.collection}</td>
                             <td>{p.size}</td>
                             <td>{p.color}</td>
+                            <td>
+                                {p.images?.map((url, i) => (
+                                    <img
+                                        key={i}
+                                        src={url}
+                                        alt={`Producto ${p.name} #${i + 1}`}
+                                        className={styles.thumbnail}
+                                    />
+                                ))}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
