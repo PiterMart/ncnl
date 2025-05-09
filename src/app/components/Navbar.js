@@ -14,10 +14,9 @@ export default function Nav() {
 
     const pages = [
         { name: 'SHOP', path: '/shop', delay: '0s' },
-        { name: 'HOME', path: '/', delay: '0.1s' },
-        { name: 'ABOUT', path: '/about', delay: '0.2s' },
+        { name: 'ABOUT', path: '/about', delay: '0.1s' },
+        { name: 'HELP', path: '/hope', delay: '0.2s' },
         { name: 'CONTACT', path: '/contact', delay: '0.3s' },
-        { name: 'HELP', path: '/hope', delay: '0.4s' },
     ];
 
     const toggleMenu = () => {
@@ -48,7 +47,7 @@ export default function Nav() {
                 src="/NCNL_LOGO.png" 
                 alt="NCNL Logo" 
                 className={styles.logo}
-                style={{ filter: 'brightness(0) invert(1)', width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
+                style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
                 />
             </Link>
             <button className={`${styles.navButton} ${isMenuOpen ? styles.open : ''}`} onClick={toggleMenu}>
