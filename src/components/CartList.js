@@ -1,45 +1,55 @@
+// src/components/CartList.js
 "use client";
 
+import React, { useState } from "react";
 import { useCart } from "../contexts/CartContext";
-import { useRouter } from "next/navigation"; // import router hook
+import { useRouter } from "next/navigation";
+import Checkout from "./Checkout";
 import styles from "../styles/CartList.module.css";
 
 export default function CartList() {
     const { items, removeItem, clearCart } = useCart();
-    const router = useRouter(); // initialize router
+    const [showCheckout, setShowCheckout] = useState(false);
+    const router = useRouter();
 
-    // Calculate total
-    const total = items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
+    // If user clicked “Finalizar Compras”, render Checkout instead
+    if (showCheckout) {
+        return <Checkout onBack={() => setShowCheckout(false)} />;
+    }
 
-    // If cart is empty, show message and a back-to-shop button
+    // If cart is empty, show message and back-to-shop button
     if (items.length === 0) {
         return (
             <div className={styles.container}>
-                <p>Your cart is empty.</p>
+                <p>Tu carrito está vacío.</p>
                 <button
                     className={styles.button}
                     onClick={() => router.push("/shop")}
                 >
-                    Back to Shop
+                    Volver al Shop
                 </button>
             </div>
         );
     }
 
+    // Calculate total amount
+    const total = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
+
     return (
         <div className={styles.container}>
-            <h2>Your Cart</h2>
+            <h2>Tu carrito</h2>
+
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
                         <th>Subtotal</th>
-                        <th>Actions</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,9 +86,18 @@ export default function CartList() {
             <button
                 className={styles.button}
                 onClick={() => router.push("/shop")}
-                style={{ marginTop: "12px" }} // small inline tweak for spacing
+                style={{ marginTop: "12px" }}
             >
                 Volver al Shop
+            </button>
+
+            {/* Finalize purchase button */}
+            <button
+                className={styles.button}
+                onClick={() => setShowCheckout(true)}
+                style={{ marginTop: "12px" }}
+            >
+                Finalizar Compra
             </button>
         </div>
     );
