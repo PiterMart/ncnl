@@ -97,7 +97,7 @@ export default function CartList() {
                 onClick={() => setShowCheckout(true)}
                 style={{ marginTop: "12px" }}
             >
-                Finalizar Compras
+                Finalizar Compra
             </button>
         </div>
     );
