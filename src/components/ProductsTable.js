@@ -34,12 +34,14 @@ export default function ProductsTable() {
 
     const initialForm = {
         name: "",
+        description: "",
         technicalDescription: "",
         price: "",
-        stock: "",
         collection: "",
-        size: "",
         color: "",
+        material: "",
+        // stock: "",
+        // size: "",
     };
     const [formValues, setFormValues] = useState(initialForm);
     const [selectedImages, setSelectedImages] = useState([]); // File[]
@@ -70,12 +72,14 @@ export default function ProductsTable() {
         setEditingId(product.id);
         setFormValues({
             name: product.name,
+            description: product.description,
             technicalDescription: product.technicalDescription,
             price: product.price,
-            stock: product.stock,
             collection: product.collection,
-            size: product.size,
             color: product.color,
+            material: product.material,
+            // size: product.size,
+            // stock: product.stock,
         });
         setSelectedImages([]); // no cambiar imágenes a menos que suban nuevas
         setIsModalOpen(true);
@@ -161,16 +165,19 @@ export default function ProductsTable() {
                 <form onSubmit={handleSubmit} className={styles.form}>
                     {[
                         { id: "name", label: "Nombre de la prenda", type: "text", required: true },
+                        { id: "description", label: "Descripción", type: "text", required: true },
                         {
                             id: "technicalDescription",
                             label: "Descripción Técnica Textil",
                             type: "text",
+                            required: true,
                         },
                         { id: "price", label: "Precio", type: "number", step: "0.01", required: true },
-                        { id: "stock", label: "Stock", type: "number", required: true },
-                        { id: "collection", label: "Colección", type: "text" },
-                        { id: "size", label: "Talle", type: "text" },
-                        { id: "color", label: "Color", type: "text" },
+                        { id: "collection", label: "Colección", type: "text",required: true  },
+                        { id: "color", label: "Color", type: "text", required: true  },
+                        { id: "material", label: "Material", type: "text", required: true  },
+                        // { id: "size", label: "Talle", type: "text" },
+                        // { id: "stock", label: "Stock", type: "number", required: true },
                     ].map(({ id, label, ...rest }) => (
                         <div key={id} className={styles.formGroup}>
                             <label htmlFor={id}>{label}</label>
@@ -222,24 +229,27 @@ export default function ProductsTable() {
                         <th>Nombre</th>
                         <th>Descripción Técnica</th>
                         <th>Precio</th>
-                        <th>Stock</th>
                         <th>Colección</th>
-                        <th>Talle</th>
                         <th>Color</th>
+                        <th>Material</th>
                         <th>Imágenes</th>
                         <th>Acciones</th>
+                        {/* <th>Stock</th> */}
+                        {/* <th>Talle</th> */}
                     </tr>
                 </thead>
                 <tbody>
                     {products.map((p) => (
                         <tr key={p.id}>
                             <td>{p.name}</td>
+                            <td>{p.description}</td>
                             <td>{p.technicalDescription}</td>
                             <td>{p.price}</td>
                             <td>{p.stock}</td>
                             <td>{p.collection}</td>
                             <td>{p.size}</td>
                             <td>{p.color}</td>
+                            <td>{p.material}</td>
                             <td>
                                 {p.images?.map((url, i) => (
                                     <img
