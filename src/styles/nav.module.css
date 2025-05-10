@@ -108,6 +108,34 @@
   /* background-color: white; */
 }
 
+.loginButton {
+  background-color: #3b83f600;
+  color: #110708;
+}
+
+.loginButton:hover {
+  color: #110708;
+}
+
+.logoutButton {
+  background-color: transparent;
+  color: #110708;
+  text-decoration: none;
+  border: none;
+}
+
+.rightSection{
+  display: flex;
+  justify-content: space-between;
+  align-items: right;
+  text-align: right;
+  gap: 2rem;
+  margin-left: 3rem;
+}
+/* .logoutButton:hover {
+  background-color: #dc2626;
+}  */
+
 
 /* Mobile-Specific Styles */
 @media (max-width: 1000px) {
@@ -174,6 +202,13 @@
   
   .nav_visible {
     transform: translateY(0);
+  }
+
+  .logoutButton {
+    color: #ffffff;
+  }
+  .loginButton {
+    color: #ffffff;
   }
   
 

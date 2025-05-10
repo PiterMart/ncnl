@@ -1,25 +1,22 @@
 'use client';
 
 export default function LeadsTable({ leads, selectedLeads, setSelectedLeads }) {
-  const handleSelectLead = (lead) => {
-    setSelectedLeads(prev => {
-      const isSelected = prev.some(l => l.id === lead.id);
-      if (isSelected) {
-        return prev.filter(l => l.id !== lead.id);
-      } else {
-        return [...prev, lead];
-      }
-    });
-  };
+  // const handleSelectLead = (lead) => {
+  //   setSelectedLeads(prev => {
+  //     const isSelected = prev.some(l => l.id === lead.id);
+  //     if (isSelected) {
+  //       return prev.filter(l => l.id !== lead.id);
+  //     } else {
+  //       return [...prev, lead];
+  //     }
+  //   });
+  // };
 
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-              Select
-            </th>
             <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
               Name
             </th>
@@ -46,14 +43,14 @@ export default function LeadsTable({ leads, selectedLeads, setSelectedLeads }) {
         <tbody>
           {leads.map((lead) => (
             <tr key={lead.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 border-b border-gray-200">
+              {/* <td className="px-6 py-4 border-b border-gray-200">
                 <input
                   type="checkbox"
                   checked={selectedLeads.some(l => l.id === lead.id)}
                   onChange={() => handleSelectLead(lead)}
                   className="form-checkbox h-4 w-4 text-blue-600"
                 />
-              </td>
+              </td> */}
               <td className="px-6 py-4 border-b border-gray-200">
                 {lead.name}
               </td>
