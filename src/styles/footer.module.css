@@ -1,0 +1,52 @@
+.footer {
+    background-color: #110708;
+    color: #fff;
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.footerLogo {
+    width: 200px;
+}
+
+.footerLogo .logo {
+    width: 100%;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+.footerNav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: right;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footerNav a {
+    color: aliceblue;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.footerNav a:hover {
+    opacity: 0.7;
+}
+
+.page_current {
+    font-weight: bold;
+    text-decoration: underline;
+} 

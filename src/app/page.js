@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Form from '../components/Form';
 import LoadingScreen from '../components/LoadingScreen';
 import styles from '../styles/Home.module.css';
+import Display from './components/Display';
+import Image from 'next/image';
+import Video from './components/Video';
 
 export default function Home() {
+
   const [isLoading, setIsLoading] = useState(true);
 
   const handleLoadingComplete = () => {
@@ -14,30 +18,57 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
-      
-      <div className={styles.videoContainer}>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className={styles.backgroundVideo}
-        >
-          <source src="https://firebasestorage.googleapis.com/v0/b/ncnl-9fd04.firebasestorage.app/o/video%2FNCNL_VID.mp4?alt=media&token=860598dc-8a60-4aa0-b979-7fe9e19d86cf" type="video/mp4" />
-        </video>
-      </div>
-      <div className={styles.logoContainer}>
+      {/* {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />} */}
+    
+      {/* <div className={styles.logoContainer}>
         <img 
-          src="/NCNL_LOGO.png" 
+          src="/textura-fotocopia.jpg" 
           alt="NCNL Logo" 
           className={styles.logo}
-          style={{ filter: 'brightness(0) invert(1)', width: '100%', position: 'fixed', maxWidth: '500px' }}
+          style={{ filter: 'brightness(0) invert(1)', width: '100%', position: 'fixed', mixBlendMode: 'screen'}}
         />
-      </div>
+      </div> */}
 
-      <div className={styles.content}>
-        <Form />
+      <div >
+        {/* <Form /> */}
+        {/* <Display /> */}
+        <div style={{ height: '100vh', display: 'flex', flexDirection: 'row', backgroundColor: 'aliceblue', paddingTop: '10rem' }}>
+        <button
+            style={{
+              position: 'absolute',
+              top: '25%',
+              left: '25%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: '#110708',
+              color: 'white',
+              padding: '1rem 2rem',
+              border: 'none',
+              fontSize: '1.25rem',
+              cursor: 'pointer',
+              zIndex: 10,
+            }}
+          >
+            CAPSULE - 01
+          </button>
+          <div style={{ position: 'relative', width: '100%', height: '100%',aspectRatio: '3 / 4'  }}>
+            <Image
+              src="/picture-left.png"
+              alt="placeholder"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          {/* <div style={{ position: 'relative', width: '50%', height: '100%' }}>
+            <Image
+              src="/picture-right.png"
+              alt="placeholder"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div> */}
+        </div>
+        {/* <div style={{height: "100vh"}}></div> */}
+        <Video />
       </div>
     </main>
   );
