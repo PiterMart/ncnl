@@ -42,7 +42,7 @@ export default function Nav() {
 
     return (
         <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent}`}>
-            <Link href="/">
+            <Link href="/" onClick={() => setIsMenuOpen(false)}>
             <img 
                 src="/NCNL_LOGO.png" 
                 alt="NCNL Logo" 

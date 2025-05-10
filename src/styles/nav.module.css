@@ -7,7 +7,7 @@
   font-weight: 500;
   letter-spacing: 0.5rem;
   width: 100%;
-  z-index: 1000;
+  z-index: 50;
   margin: auto;
   background-color: #4a4a4a00;
   color: #110708;
@@ -70,7 +70,7 @@
   height: 3rem;
   width: auto;
   position: relative;
-  z-index: 100;
+  z-index: 50;
 }
 
 /* Mobile Menu Button */
@@ -138,16 +138,16 @@
   }
 
   .nav_list ul {
-    width: 90%;
+    width: 100%;
     max-width: 500px;
     list-style: none;
     text-align: right;
-    padding: 0.5rem;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
   }
   .nav_list li {
-    font-size: 3rem;
+    font-size: 1.5rem;
     /* color: transparent; */
 
   }
@@ -156,7 +156,7 @@
     opacity: 0;
     transform: translateX(-100%);
     animation: slideIn 0.5s forwards;
-    color: white; /* Adjust color for mobile view */
+    color: aliceblue; /* Adjust color for mobile view */
   }
 
   .nav_list.active {

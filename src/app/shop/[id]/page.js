@@ -51,7 +51,7 @@ export default function ProductPage() {
                         sizes="(max-width: 508px) 100vw, 50vw"
                         priority
                         quality={100}
-                        style={{ objectFit: 'cover' }}
+                        style={{ objectFit: 'contain' }}
                     />
                 </div>
                 <div className={styles.thumbnailContainer}>
@@ -67,7 +67,7 @@ export default function ProductPage() {
                                 fill
                                 sizes="100px"
                                 quality={100}
-                                style={{ objectFit: 'cover' }}
+                                style={{ objectFit: 'contain' }}
                             />
                         </div>
                     ))}
@@ -80,20 +80,18 @@ export default function ProductPage() {
                 <p className={styles.productPrice}>{product.price}</p>
                 {/* Collection & Category */}
                 <div className={styles.productMeta}>
-                    <span><strong>Collection:</strong> {product.collection}</span> | <span><strong>Category:</strong> {product.category}</span>
+                    <span> {product.collection}</span> | <span> {product.category}</span>
                 </div>
                 {/* Full Name */}
-                <div className={styles.productFullName}><strong>Full Name:</strong> {product.fullName}</div>
+                <div className={styles.productFullName}>{product.fullName}</div>
                 {/* Short Description */}
                 <div className={styles.productShortDescription}>{product.shortDescription}</div>
                 {/* Full Description */}
                 <div className={styles.productFullDescription}>{product.fullDescription}</div>
                 {/* Color, Material, Model Info */}
                 <div className={styles.productSpecs}>
-                    <div><strong>Color:</strong> {product.color}</div>
-                    <div><strong>Material:</strong> {product.material}</div>
-                    <div><strong>Model Height:</strong> {product.modelHeight}</div>
-                    <div><strong>Model Size:</strong> {product.modelSize}</div>
+                    <div>Color: {product.color}</div>
+                    <div>Material: {product.material}</div>
                 </div>
                 {/* Size Selector */}
                 <div className={styles.sizeSelector}>
@@ -123,15 +121,6 @@ export default function ProductPage() {
                         </div>
                     </div>
                 )}
-                {/* Details List */}
-                {/* <div className={styles.productDetails}>
-                    <h2>DETAILS</h2>
-                    <ul>
-                        {productDetails.map((detail, index) => (
-                            <li key={index}>{detail}</li>
-                        ))}
-                    </ul>
-                </div> */}
                 {/* Add to Cart and Wishlist Buttons */}
                 <div className={styles.actionButtons}>
                     <button className={styles.buyButton} disabled={!selectedSize}>
