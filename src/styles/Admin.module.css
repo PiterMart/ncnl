@@ -21,7 +21,7 @@
 }
 
 .sendEmailsButton {
-  composes: button;
+  /* composes: button; */
   background-color: #3b82f6;
   color: white;
 }

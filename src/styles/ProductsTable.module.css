@@ -1,0 +1,256 @@
+/* ProductsTable.module.css */
+
+/* Container for responsive table with horizontal scrolling */
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Base table styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Nacional-Extended', sans-serif;
+}
+
+/* Header and cell padding, alignment and border */
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* Header text styles */
+.table th {
+    font-weight: normal;
+    color: #666;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Cell text color */
+.table td {
+    color: #333;
+}
+
+.table tr {
+    min-height: 4rem;
+}
+
+/* Hover effect for rows */
+.row:hover {
+    background-color: #f9f9f9;
+}
+
+/* Checkbox styling */
+.checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Message when no products */
+.emptyMessage {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-family: 'Nacional-Extended', sans-serif;
+}
+
+
+.openModalButton {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Modal overlay covers the whole screen */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content box */
+.modalContent {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 4px;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Close button in top-right corner */
+.closeButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Form layout inside modal */
+.form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+/* Individual form field group */
+.formGroup {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Action buttons container */
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Reuse existing input styles for modal form */
+.formGroup input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.openModalButton {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1.5rem;
+    /* added padding */
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Modal overlay */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content with black background */
+.modalContent {
+    background-color: #000;
+    /* fondo negro */
+    color: #fff;
+    /* texto blanco */
+    padding: 2rem;
+    border-radius: 4px;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Close button */
+.closeButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    /* added padding */
+}
+
+/* Form layout */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form groups */
+.formGroup {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form inputs */
+.formGroup input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Action buttons with padding */
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.formActions button {
+    padding: 0.75rem 1.5rem;
+    /* added padding */
+    cursor: pointer;
+}
+
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.topBar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.actionCell {
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.editButton,
+.deleteButton {
+    padding: 0.5rem 1rem;
+    line-height: 1.5;
+    height: auto;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.editButton {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.deleteButton {
+    background-color: #f44336;
+    color: #fff;
+}
