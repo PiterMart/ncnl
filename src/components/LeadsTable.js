@@ -41,14 +41,14 @@ export default function LeadsTable({ leads, isUsers = false }) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>
+            {/* <th>
               <input
                 type="checkbox"
                 checked={selectAll}
                 onChange={handleSelectAll}
                 className={styles.checkbox}
               />
-            </th>
+            </th> */}
             <th>Nombre</th>
             <th>Email</th>
             {!isUsers && <th>Estado</th>}
@@ -59,14 +59,14 @@ export default function LeadsTable({ leads, isUsers = false }) {
         <tbody>
           {leads.map((lead) => (
             <tr key={lead.id} className={styles.row}>
-              <td>
+              {/* <td>
                 <input
                   type="checkbox"
                   checked={selectedRows.includes(lead.id)}
                   onChange={() => handleRowSelect(lead.id)}
                   className={styles.checkbox}
                 />
-              </td>
+              </td> */}
               <td>{lead.firstName} {lead.lastName}</td>
               <td>{lead.email}</td>
               {!isUsers && <td>{lead.status || '-'}</td>}

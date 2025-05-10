@@ -1,83 +1,96 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '../../../styles/product.module.css';
+import { db } from '../../../firebase/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+import { useParams } from 'next/navigation';
 
 export default function ProductPage() {
-    const [mainImage, setMainImage] = useState('/placeholders/2.WEBP');
     const [selectedSize, setSelectedSize] = useState(null);
-    const productDetails = [
-        '100% wool',
-        'darted sleeve',
-        'bout neck',
-        'oversized',
-        'fully lined'
-    ];
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const params = useParams();
 
-    // Placeholder product data
-    const product = {
-        title: 'OOVERSIZED WOOL COAT',
-        price: '$450',
-        collection: 'FW24 RUNWAY',
-        category: 'COATS',
-        fullName: 'OOVERSIZED WOOL COAT FW24 RUNWAY COAT',
-        shortDescription: 'A luxurious oversized wool coat from the FW24 Runway collection.',
-        fullDescription: `This oversized wool coat features a darted sleeve, bout neck, and is fully lined for comfort. The 100% wool fabric ensures warmth and durability. Perfect for layering during colder months.`,
-        color: 'Charcoal Grey',
-        material: '100% Wool',
-        modelHeight: '189cm',
-        modelSize: 'M',
-        sizes: ['S', 'M', 'L', 'XL'],
-        sizeGuideImage: '/placeholders/size-guide.webp',
-    };
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const productId = params.id;
+                const productRef = doc(db, 'products', productId);
+                const productSnap = await getDoc(productRef);
 
-    const galleryImages = [
-        '/placeholders/2.WEBP',
-        '/placeholders/2_2.WEBP',
-        '/placeholders/2_3.WEBP',
-        '/placeholders/2_4.WEBP'
-    ];
+                if (productSnap.exists()) {
+                    const productData = productSnap.data();
+                    if (productData.images && Array.isArray(productData.images) && productData.images.length > 0) {
+                        setGalleryImages(productData.images);
+                    }
+                    
+                    setProduct({
+                        title: productData.name,
+                        price: productData.price,
+                        collection: productData.collection,
+                        category: 'COATS',
+                        fullName: `${productData.name} ${productData.collection}`,
+                        shortDescription: productData.description,
+                        fullDescription: productData.technicalDescription,
+                        color: productData.color,
+                        material: productData.material,
+                        modelHeight: '189cm',
+                        modelSize: 'M',
+                        sizes: ['S', 'M', 'L', 'XL'],
+                        sizeGuideImage: '/placeholders/size-guide.webp',
+                    });
+                } else {
+                    setError('Product not found');
+                }
+            } catch (err) {
+                setError('Error fetching product: ' + err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [params.id]);
 
     const [showSizeGuide, setShowSizeGuide] = useState(false);
+
+    if (loading) {
+        return <div className={styles.productContainer}>Loading...</div>;
+    }
+
+    if (error) {
+        return <div className={styles.productContainer}>Error: {error}</div>;
+    }
+
+    if (!product) {
+        return <div className={styles.productContainer}>Product not found</div>;
+    }
 
     return (
         <div className={styles.productContainer}>
             <div className={styles.productGallery}>
-                <div className={styles.mainImage}>
-                    <Image
-                        src={mainImage}
-                        alt="Product main image"
-                        fill
-                        sizes="(max-width: 508px) 100vw, 50vw"
-                        priority
-                        quality={100}
-                        style={{ objectFit: 'contain' }}
-                    />
-                </div>
-                <div className={styles.thumbnailContainer}>
-                    {galleryImages.map((image, index) => (
-                        <div 
-                            key={index} 
-                            className={styles.thumbnail}
-                            onClick={() => setMainImage(image)}
-                        >
-                            <Image
-                                src={image}
-                                alt={`Product thumbnail ${index + 1}`}
-                                fill
-                                sizes="100px"
-                                quality={100}
-                                style={{ objectFit: 'contain' }}
-                            />
-                        </div>
-                    ))}
-                </div>
+                {galleryImages.map((image, index) => (
+                    <div key={index} className={styles.productImage}>
+                        <Image
+                            src={image}
+                            alt={`Product image ${index + 1}`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            priority={index === 0}
+                            quality={100}
+                            style={{ objectFit: 'contain' }}
+                        />
+                    </div>
+                ))}
             </div>
             <div className={styles.productInfo}>
                 {/* Title */}
                 <h1 className={styles.productName}>{product.title}</h1>
                 {/* Price */}
-                <p className={styles.productPrice}>{product.price}</p>
+                <p className={styles.productPrice}>${product.price}</p>
                 {/* Collection & Category */}
                 <div className={styles.productMeta}>
                     <span> {product.collection}</span> | <span> {product.category}</span>
@@ -121,14 +134,11 @@ export default function ProductPage() {
                         </div>
                     </div>
                 )}
-                {/* Add to Cart and Wishlist Buttons */}
+                {/* Add to Cart Button */}
                 <div className={styles.actionButtons}>
                     <button className={styles.buyButton} disabled={!selectedSize}>
                         ADD TO CART
                     </button>
-                    {/* <button className={styles.wishlistButton}>
-                        ADD TO WISHLIST
-                    </button> */}
                 </div>
             </div>
         </div>

@@ -1,7 +1,11 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { auth } from '../../firebase/firebaseConfig';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { usePathname } from 'next/navigation';
 import styles from '../../styles/nav.module.css';
 
@@ -11,6 +15,28 @@ export default function Nav() {
     const [hasScrolled, setHasScrolled] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
     const currentPath = usePathname();
+
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+  
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setUser(user);
+        setLoading(false);
+      });
+  
+      return () => unsubscribe();
+    }, []);
+  
+    const handleLogout = async () => {
+      try {
+        await signOut(auth);
+        router.push('/');
+      } catch (error) {
+        console.error('Error signing out:', error);
+      }
+    };
 
     const pages = [
         { name: 'SHOP', path: '/shop', delay: '0s' },
@@ -39,6 +65,10 @@ export default function Nav() {
             return () => window.removeEventListener('scroll', controlNavbar);
         }
     }, [lastScrollY]);
+
+    if (loading) {
+        return null;
+    }
 
     return (
         <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent}`}>
@@ -69,6 +99,28 @@ export default function Nav() {
                         </li>
                     ))}
                 </ul>
+                <div className={styles.rightSection}>
+                    {user ? (
+                    <div className={styles.userInfo}>
+                        <span className={styles.userEmail}>
+                        {user.email}
+                        </span>
+                        <button
+                        onClick={handleLogout}
+                        className={styles.logoutButton}
+                        >
+                        LOGOUT
+                        </button>
+                    </div>
+                    ) : (
+                    <Link
+                        href="/login"
+                        className={styles.loginButton}
+                    >
+                        LOGIN
+                    </Link>
+                    )}
+                </div>
             </div>
         </div>
     );
