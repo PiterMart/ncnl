@@ -6,25 +6,26 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    background-color: aliceblue;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 2rem;
     margin-top: 15rem;
     height: 100vh;
 }
 
 .card {
-    /* border: 1px solid #eee; */
+    border: 5px solid #454242;
     border-radius: 8px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 450px;
-    background-color: #414141;
+    /* background-color: #414141; */
 }
 
 .image {
@@ -36,11 +37,14 @@
 .name {
     font-size: 1.2rem;
     margin: 0.5rem 0;
+    color: #666;
+
 }
 
 .price {
     font-weight: bold;
     margin: 0.5rem 0;
+    color: #666;
 }
 
 .description {

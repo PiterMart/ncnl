@@ -62,7 +62,7 @@ export default function ProductsGrid() {
                             className={styles.button}
                             onClick={() => handleAddToCart(p)} // call handler
                         >
-                            Agregar al carritoss
+                            Agregar al carro de compras
                         </button>
                     </div>
                 ))}
