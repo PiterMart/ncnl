@@ -119,7 +119,7 @@ export default function Checkout({ onBack }) {
     return (
         <div className={styles.container}>
             {/* Toast container */}
-            <Toaster position="top-right" />
+            <Toaster/>
 
             <h2>Finalizar Compra</h2>
 
