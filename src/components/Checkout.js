@@ -51,31 +51,37 @@ export default function Checkout({ onBack }) {
         }
 
         try {
-            // Calculate total amount
+            // 1) Calculate total amount
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
             );
 
-            // Prepare order payload
-            const orderPayload = {
-                customer: formData,
-                items,
-                total,
-            };
-
-            // Save order to Firestore
+            // 2) Save order to Firestore
+            const orderPayload = { customer: formData, items, total };
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
-            // Clear cart and notify user
-            clearCart();
-            alert(`Pedido enviado con éxito. ID: ${orderId}`);
+            // 3) Send emails via new API route
+            const emailResp = await fetch("/api/send-order-mail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, ...orderPayload }),
+            });
+            if (!emailResp.ok) {
+                console.error("Failed to send order emails:", await emailResp.text());
+                alert(
+                    `Pedido ${orderId} guardado, pero ocurrió un error al enviar los correos.`
+                );
+            } else {
+                alert(`Pedido enviado con éxito. ID: ${orderId}`);
+            }
 
-            // Back to shop
+            // 4) Clear cart and return to cart view
+            clearCart();
             onBack();
         } catch (error) {
-            console.error("Error creating order:", error);
+            console.error("Error processing order:", error);
             alert("Ocurrió un error al procesar el pedido.");
         }
     };
@@ -101,9 +107,7 @@ export default function Checkout({ onBack }) {
                         value={formData.name}
                         onChange={handleChange}
                     />
-                    {errors.name && (
-                        <span className={styles.error}>{errors.name}</span>
-                    )}
+                    {errors.name && <span className={styles.error}>{errors.name}</span>}
                 </label>
 
                 {/* Correo electrónico */}
@@ -116,9 +120,7 @@ export default function Checkout({ onBack }) {
                         value={formData.email}
                         onChange={handleChange}
                     />
-                    {errors.email && (
-                        <span className={styles.error}>{errors.email}</span>
-                    )}
+                    {errors.email && <span className={styles.error}>{errors.email}</span>}
                 </label>
 
                 {/* Número de celular */}
@@ -131,9 +133,7 @@ export default function Checkout({ onBack }) {
                         value={formData.phone}
                         onChange={handleChange}
                     />
-                    {errors.phone && (
-                        <span className={styles.error}>{errors.phone}</span>
-                    )}
+                    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
                 </label>
 
                 {/* DNI */}
@@ -235,11 +235,7 @@ export default function Checkout({ onBack }) {
 
                 <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
                     {/* Volver al carrito */}
-                    <button
-                        type="button"
-                        className={styles.button}
-                        onClick={onBack}
-                    >
+                    <button type="button" className={styles.button} onClick={onBack}>
                         Volver al carrito
                     </button>
                     {/* Enviar Pedido */}
