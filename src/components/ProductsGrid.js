@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // import router hook
 import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
+import Link from "next/link";
 import { useCart } from "../contexts/CartContext"; // adjust path if needed
 
-export default function ProductsGrid() {
+export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
     const { addItem } = useCart(); // extract addItem from context
@@ -14,14 +15,18 @@ export default function ProductsGrid() {
 
     useEffect(() => {
         const unsubscribe = productService.subscribeToProducts(
-            (snapshot) => setProducts(snapshot),
+            (snapshot) => {
+                setProducts(snapshot);
+                onProductsLoaded?.();
+            },
             (err) => {
                 console.error("Error loading products:", err);
                 setError("No se pudieron cargar los productos.");
+                onProductsLoaded?.();
             }
         );
         return () => unsubscribe();
-    }, []);
+    }, [onProductsLoaded]);
 
     // handle error state
     if (error) {
@@ -51,20 +56,19 @@ export default function ProductsGrid() {
         <div className={styles.container}>
             <div className={styles.grid}>
                 {products.map((p) => (
-                    <div key={p.id} className={styles.card}>
+                    <Link href={`/shop/${p.id}`} key={p.id} className={styles.card}>
                         {p.images?.[0] && (
                             <img src={p.images[0]} alt={p.name} className={styles.image} />
                         )}
                         <h2 className={styles.name}>{p.name}</h2>
                         <p className={styles.price}>${p.price}</p>
-                        <p className={styles.description}>{p.technicalDescription}</p>
-                        <button
+                        {/* <button
                             className={styles.button}
                             onClick={() => handleAddToCart(p)} // call handler
                         >
                             Agregar al carro de compras
-                        </button>
-                    </div>
+                        </button> */}
+                    </Link>
                 ))}
             </div>
         </div>

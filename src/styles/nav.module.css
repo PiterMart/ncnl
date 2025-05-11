@@ -131,6 +131,7 @@
   text-align: right;
   gap: 2rem;
   margin-left: 3rem;
+  margin-right: 3rem;
 }
 /* .logoutButton:hover {
   background-color: #dc2626;

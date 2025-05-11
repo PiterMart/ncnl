@@ -1,0 +1,71 @@
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    background-color: aliceblue;
+    padding-top: 10rem;
+    position: relative;
+}
+
+.imageContainer {
+    position: relative;
+    width: auto;
+    height: 100%;
+    margin: auto;
+}
+
+.textContainer {
+    position: absolute;
+    left: 1rem;
+    top: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    z-index: 500;
+}
+
+.typingText {
+    color: #110708;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 800;
+    background-color: transparent;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.shopLink {
+    text-decoration: none;
+    color: #110708;
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    letter-spacing: 0.2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.8s ease;
+    pointer-events: none;
+}
+
+.shopLink.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.shopText {
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+
+
+    .textContainer {
+        left: 5%;
+        top: 10%;
+    }
+}
+  

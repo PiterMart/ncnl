@@ -39,12 +39,13 @@ export default function Video() {
           playsInline
           className={styles.backgroundVideo}
         >
-          <source src="/NCNL_RUNWA_ALTA.mp4" type="video/mp4" />
+          <source src="/NCNL_RUNWA_ALTA_1.mp4" type="video/mp4" />
         </video>
 
         {/* "SEE RUNWAY" Button */}
         <button className={styles.runwayButton} onClick={handleSeeRunway}>
-          SEE RUNWAY
+          LA PIEDAD
+          {/* <img src="/la-piedad-logo.png" alt="LA PIEDAD" /> */}
         </button>
 
         {/* Scrolling Text */}
