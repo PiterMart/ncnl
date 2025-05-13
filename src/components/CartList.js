@@ -48,7 +48,13 @@ export default function CartList() {
     if (items.length === 0) {
         return (
             <div className={styles.container}>
-                <p>Tu carrito está vacío.</p>
+                <p
+                    style={{
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                        marginBottom: "50px",
+                    }}
+                >Tu carrito está vacío.</p>
                 <button className={styles.button} onClick={() => router.push("/shop")}>
                     Volver al Shop
                 </button>
