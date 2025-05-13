@@ -1,47 +1,76 @@
 // src/components/CartList.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { useRouter } from "next/navigation";
 import Checkout from "./Checkout";
 import styles from "../styles/CartList.module.css";
 
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { createPreference } from "../utils/mercadopagoService";
+
+// Initialize Mercado Pago with your public key
+initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
+
 export default function CartList() {
     const { items, removeItem, clearCart } = useCart();
     const [showCheckout, setShowCheckout] = useState(false);
+    const [preferenceId, setPreferenceId] = useState(null);
+    const [loadingMp, setLoadingMp] = useState(false);
+    const [mpError, setMpError] = useState(null);
     const router = useRouter();
 
-    // If user clicked "Finalizar Compras", render Checkout instead
+    // Fetch preferenceId each time cambian los items
+    useEffect(() => {
+        async function fetchPreference() {
+            setLoadingMp(true);
+            setMpError(null);
+            try {
+                // Map cart items to MercadoPago format
+                const mpItems = items.map(item => ({
+                    title: item.name,
+                    quantity: item.quantity,
+                    unit_price: item.price,
+                }));
+                const id = await createPreference(mpItems);
+                setPreferenceId(id);
+            } catch (error) {
+                console.error(error);
+                setMpError(error.message);
+            } finally {
+                setLoadingMp(false);
+            }
+        }
+
+        if (items.length > 0) {
+            fetchPreference();
+        }
+    }, [items]);
+
+    // Si el usuario clickeó "Finalizar Compras"
     if (showCheckout) {
         return <Checkout onBack={() => setShowCheckout(false)} />;
     }
 
-    // If cart is empty, show message and back-to-shop button
+    // Carrito vacío
     if (items.length === 0) {
         return (
             <div className={styles.container}>
                 <p>Tu carrito está vacío.</p>
-                <button
-                    className={styles.button}
-                    onClick={() => router.push("/shop")}
-                >
+                <button className={styles.button} onClick={() => router.push("/shop")}>
                     Volver al Shop
                 </button>
             </div>
         );
     }
 
-    // Calculate total amount
-    const total = items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
+    // Total
+    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <div className={styles.container}>
             <h2>Tu carrito</h2>
-
             <table className={styles.table}>
                 <thead>
                     <tr>
@@ -54,7 +83,7 @@ export default function CartList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => (
+                    {items.map(item => (
                         <tr key={item.id}>
                             <td>{item.name}</td>
                             <td>{item.size}</td>
@@ -73,18 +102,10 @@ export default function CartList() {
                     ))}
                 </tbody>
             </table>
-
             <p className={styles.total}>Total: ${total.toFixed(2)}</p>
-
-            {/* Clear cart button */}
-            <button
-                className={styles.button}
-                onClick={clearCart}
-            >
+            <button className={styles.button} onClick={clearCart}>
                 Vaciar carrito
             </button>
-
-            {/* Back to shop button */}
             <button
                 className={styles.button}
                 onClick={() => router.push("/shop")}
@@ -93,7 +114,26 @@ export default function CartList() {
                 Volver al Shop
             </button>
 
-            {/* Finalize purchase button */}
+            {/* Botón de pago */}
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    marginTop: "50px",
+                }}
+            >
+                <h1>Botón de Pago</h1>
+                <p>Haz clic en el botón para realizar el pago.</p>
+                {loadingMp && <p>Cargando pago...</p>}
+                {mpError && <p>Error al generar el pago: {mpError}</p>}
+                {!loadingMp && preferenceId && (
+                    <div style={{ width: "300px" }}>
+                        <Wallet initialization={{ preferenceId }} />
+                    </div>
+                )}
+            </div>
+
             <button
                 className={styles.button}
                 onClick={() => setShowCheckout(true)}
