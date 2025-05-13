@@ -142,6 +142,30 @@
   background-color: #dc2626;
 }  */
 
+.cartSection {
+    margin-right: 20px;
+}
+
+.cartButton {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+}
+
+.cartButton:hover {
+    opacity: 0.7;
+}
+
+.cartCounter {
+    font-weight: bold;
+}
 
 /* Mobile-Specific Styles */
 @media (max-width: 1000px) {

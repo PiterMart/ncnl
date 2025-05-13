@@ -12,7 +12,7 @@ export default function CartList() {
     const [showCheckout, setShowCheckout] = useState(false);
     const router = useRouter();
 
-    // If user clicked “Finalizar Compras”, render Checkout instead
+    // If user clicked "Finalizar Compras", render Checkout instead
     if (showCheckout) {
         return <Checkout onBack={() => setShowCheckout(false)} />;
     }
@@ -46,6 +46,7 @@ export default function CartList() {
                 <thead>
                     <tr>
                         <th>Producto</th>
+                        <th>Talle</th>
                         <th>Cantidad</th>
                         <th>Precio unitario</th>
                         <th>Subtotal</th>
@@ -56,6 +57,7 @@ export default function CartList() {
                     {items.map((item) => (
                         <tr key={item.id}>
                             <td>{item.name}</td>
+                            <td>{item.size}</td>
                             <td>{item.quantity}</td>
                             <td>${item.price}</td>
                             <td>${(item.price * item.quantity).toFixed(2)}</td>

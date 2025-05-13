@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import styles from '../../../styles/product.module.css';
 import { db } from '../../../firebase/firebaseConfig';
@@ -8,6 +9,7 @@ import { useParams } from 'next/navigation';
 import ExpandableSection from '../../../components/ExpandableSection';
 import Display from '@/app/components/Display';
 import LoadingScreen from '../../../components/LoadingScreen';
+import { useCart } from '../../../contexts/CartContext';
 
 export default function ProductPage() {
     const [selectedSize, setSelectedSize] = useState(null);
@@ -17,6 +19,8 @@ export default function ProductPage() {
     const [error, setError] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const params = useParams();
+    const router = useRouter();    // initialize router
+    const { addItem } = useCart(); // extract addItem from context
 
     const handleLoadingComplete = () => {
         setIsLoading(false);
@@ -38,15 +42,10 @@ export default function ProductPage() {
                     setProduct({
                         title: productData.name,
                         price: productData.price,
-                        collection: productData.collection,
-                        category: 'COATS',
-                        fullName: `${productData.name} ${productData.collection}`,
                         shortDescription: productData.description,
                         fullDescription: productData.technicalDescription,
                         color: productData.color,
                         material: productData.material,
-                        modelHeight: '189cm',
-                        modelSize: 'M',
                         sizes: ['S', 'M', 'L', 'XL'],
                         sizeGuideImage: '/placeholders/size-guide.webp',
                     });
@@ -65,6 +64,27 @@ export default function ProductPage() {
     }, [params.id]);
 
     const [showSizeGuide, setShowSizeGuide] = useState(false);
+
+    /**
+     * Handle adding product to cart and navigate to /cart
+     * @param {object} product
+     */
+    const handleAddToCart = (product) => {
+        try {
+            // add item to cart with the correct data structure
+            addItem({ 
+                id: params.id,  // use the product ID from URL params
+                name: product.title,  // use title instead of name
+                price: product.price,
+                quantity: 1,  // add default quantity
+                size: selectedSize  // include the selected size
+            });
+            // navigate to cart page
+            router.push("/cart");
+        } catch (err) {
+            console.error("Error adding product to cart:", err);
+        }
+    };
 
     return (
         <main className={styles.productContainer}>
@@ -100,10 +120,8 @@ export default function ProductPage() {
                         <p className={styles.productPrice}>${product.price}</p>
                         {/* Collection & Category */}
                         <div className={styles.productMeta}>
-                            <span> {product.collection}</span> | <span> {product.category}</span>
+                            <span> {product.collection}</span>
                         </div>
-                        {/* Full Name */}
-                        {/* <div className={styles.productFullName}>{product.fullName}</div> */}
                         
                         {/* Full Description in Expandable Section */}
                         <ExpandableSection title="DESCRIPCIÓN" style={{ Display: 'flex', flexDirection: 'column', gap: '10em' }}>
@@ -117,8 +135,6 @@ export default function ProductPage() {
                             <div className={styles.productSpecs}>
                                 <div>Color: {product.color}</div>
                                 <div>Material: {product.material}</div>
-                                <div>Model Height: {product.modelHeight}</div>
-                                <div>Model Size: {product.modelSize}</div>
                             </div>
                         </ExpandableSection>
                         {/* Size Selector */}
@@ -151,7 +167,9 @@ export default function ProductPage() {
                         )}
                         {/* Add to Cart Button */}
                         <div className={styles.actionButtons}>
-                            <button className={styles.buyButton} disabled={!selectedSize}>
+                            <button 
+                            onClick={() => handleAddToCart(product)} 
+                            className={styles.buyButton} disabled={!selectedSize}>
                                 ADD TO CART
                             </button>
                         </div>
