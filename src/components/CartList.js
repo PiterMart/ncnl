@@ -7,18 +7,9 @@ import { useRouter } from "next/navigation";
 import Checkout from "./Checkout";
 import styles from "../styles/CartList.module.css";
 
-import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
-import { createPreference } from "../utils/mercadopagoService";
-
-// Initialize Mercado Pago with your public key
-initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
-
 export default function CartList() {
     const { items, removeItem, clearCart } = useCart();
     const [showCheckout, setShowCheckout] = useState(false);
-    const [preferenceId, setPreferenceId] = useState(null);
-    const [loadingMp, setLoadingMp] = useState(false);
-    const [mpError, setMpError] = useState(null);
     const router = useRouter();
 
     // Fetch preferenceId each time cambian los items
@@ -113,26 +104,6 @@ export default function CartList() {
             >
                 Volver al Shop
             </button>
-
-            {/* Botón de pago */}
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    marginTop: "50px",
-                }}
-            >
-                <h1>Botón de Pago</h1>
-                <p>Haz clic en el botón para realizar el pago.</p>
-                {loadingMp && <p>Cargando pago...</p>}
-                {mpError && <p>Error al generar el pago: {mpError}</p>}
-                {!loadingMp && preferenceId && (
-                    <div style={{ width: "300px" }}>
-                        <Wallet initialization={{ preferenceId }} />
-                    </div>
-                )}
-            </div>
 
             <button
                 className={styles.button}

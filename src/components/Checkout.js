@@ -1,16 +1,17 @@
 // src/components/Checkout.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { orderService } from "../services/orderService";
 import toast, { Toaster } from "react-hot-toast"; // Toast library
 import styles from "../styles/Checkout.module.css";
 
-/**
- * Checkout component
- * @param {{ onBack: () => void }} props
- */
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { createPreference } from "../utils/mercadopagoService";
+
+initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
+
 export default function Checkout({ onBack }) {
     const { items, clearCart } = useCart();
 
@@ -29,6 +30,36 @@ export default function Checkout({ onBack }) {
     });
     const [errors, setErrors] = useState({});
     const [isSending, setIsSending] = useState(false); // Disable submit button flag
+
+    const [loadingMp, setLoadingMp] = useState(false);
+    const [mpError, setMpError] = useState(null);
+    const [preferenceId, setPreferenceId] = useState(null);
+
+    useEffect(() => {
+        async function fetchPreference() {
+            setLoadingMp(true);
+            setMpError(null);
+            try {
+                // Map cart items to MercadoPago format
+                const mpItems = items.map(item => ({
+                    title: item.name,
+                    quantity: item.quantity,
+                    unit_price: item.price,
+                }));
+                const id = await createPreference(mpItems);
+                setPreferenceId(id);
+            } catch (error) {
+                console.error(error);
+                setMpError(error.message);
+            } finally {
+                setLoadingMp(false);
+            }
+        }
+
+        if (items.length > 0) {
+            fetchPreference();
+        }
+    }, [items]);
 
     // Handle input change
     const handleChange = (e) => {
@@ -119,7 +150,7 @@ export default function Checkout({ onBack }) {
     return (
         <div className={styles.container}>
             {/* Toast container */}
-            <Toaster/>
+            <Toaster />
 
             <h2>Finalizar Compra</h2>
 
@@ -260,51 +291,62 @@ export default function Checkout({ onBack }) {
                     />
                 </label>
 
-                <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                    {/* Volver al carrito */}
-                    <button
-                        type="button"
-                        className={styles.button}
-                        onClick={onBack}
-                        disabled={isSending} // also disable back while sending
-                    >
-                        Volver al carrito
-                    </button>
+                <div className={styles.summary}>
+                    <h3>Resumen del pedido</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item) => (
+                                <tr key={item.id}>
+                                    <td>{item.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>${item.price}</td>
+                                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <p>Total: ${total.toFixed(2)}</p>
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "12px", flexDirection: "column", alignItems: "center" }}>
+                    {/* Botón de pago */}
+                    <div>
+                        {loadingMp && <p>Cargando pago...</p>}
+                        {mpError && <p>Error al generar el pago: {mpError}</p>}
+                        {!loadingMp && preferenceId && (
+                            <div style={{ width: "300px" }}>
+                                <Wallet initialization={{ preferenceId }} />
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            className={styles.button}
+                            onClick={onBack}
+                            disabled={isSending} // also disable back while sending
+                        >
+                            Volver al carrito
+                        </button>
+                    </div>
                     {/* Enviar Pedido */}
-                    <button
+                    {/* <button
                         type="submit"
                         className={styles.button}
                         disabled={isSending} // Disable while sending
                     >
                         {isSending ? "Enviando..." : "Enviar Pedido"}
-                    </button>
+                    </button> */}
                 </div>
             </form>
-
-            <div className={styles.summary}>
-                <h3>Resumen del pedido</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.quantity}</td>
-                                <td>${item.price}</td>
-                                <td>${(item.price * item.quantity).toFixed(2)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <p>Total: ${total.toFixed(2)}</p>
-            </div>
         </div>
     );
 }
