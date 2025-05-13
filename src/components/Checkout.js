@@ -29,11 +29,16 @@ export default function Checkout({ onBack }) {
         observations: "",
     });
     const [errors, setErrors] = useState({});
-    const [isSending, setIsSending] = useState(false); // Disable submit button flag
+    const [isSending, setIsSending] = useState(false);
 
     const [loadingMp, setLoadingMp] = useState(false);
     const [mpError, setMpError] = useState(null);
     const [preferenceId, setPreferenceId] = useState(null);
+
+    // Check if all required fields (except observations) are filled
+    const isFormValid = Object.keys(formData)
+        .filter((key) => key !== "observations")
+        .every((key) => formData[key].trim() !== "");
 
     useEffect(() => {
         async function fetchPreference() {
@@ -41,7 +46,7 @@ export default function Checkout({ onBack }) {
             setMpError(null);
             try {
                 // Map cart items to MercadoPago format
-                const mpItems = items.map(item => ({
+                const mpItems = items.map((item) => ({
                     title: item.name,
                     quantity: item.quantity,
                     unit_price: item.price,
@@ -84,7 +89,7 @@ export default function Checkout({ onBack }) {
         }
 
         setIsSending(true);
-        const toastId = toast.loading("Enviando pedido..."); // Show loading toast
+        const toastId = toast.loading("Enviando pedido...");
 
         try {
             // 1) Calculate total amount
@@ -107,7 +112,6 @@ export default function Checkout({ onBack }) {
                     body: JSON.stringify({ orderId, ...orderPayload }),
                 });
             } catch (networkErr) {
-                // Network error (no response)
                 console.error("Network error sending order emails:", networkErr);
                 toast.error(
                     "No se pudo conectar con el servidor. Por favor, revisá tu conexión y volvé a intentar.",
@@ -118,7 +122,6 @@ export default function Checkout({ onBack }) {
             }
 
             if (!emailResp.ok) {
-                // Server responded with error status
                 const errorText = await emailResp.text();
                 console.error("Failed to send order emails:", errorText);
                 toast.error(
@@ -131,10 +134,9 @@ export default function Checkout({ onBack }) {
 
             // Success
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
-            clearCart();   // Clear cart on success
-            onBack();      // Go back to cart view
+            clearCart();
+            onBack();
         } catch (err) {
-            // Unexpected error in processing order
             console.error("Error processing order:", err);
             toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
             setIsSending(false);
@@ -316,15 +318,36 @@ export default function Checkout({ onBack }) {
                     <p>Total: ${total.toFixed(2)}</p>
                 </div>
 
-                <div style={{ display: "flex", gap: "12px", marginTop: "12px", flexDirection: "column", alignItems: "center" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "12px",
+                        marginTop: "12px",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
                     {/* Botón de pago */}
                     <div>
                         {loadingMp && <p>Cargando pago...</p>}
                         {mpError && <p>Error al generar el pago: {mpError}</p>}
                         {!loadingMp && preferenceId && (
-                            <div style={{ width: "300px" }}>
-                                <Wallet initialization={{ preferenceId }} />
-                            </div>
+                            <>
+                                {isFormValid ? (
+                                    <div style={{ width: "300px" }}>
+                                        <Wallet initialization={{ preferenceId }} />
+                                    </div>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className={styles.button}
+                                        disabled
+                                        style={{ cursor: "not-allowed", color: "black" }}
+                                    >
+                                        Complete todos los campos para pagar
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                     <div>
@@ -332,19 +355,11 @@ export default function Checkout({ onBack }) {
                             type="button"
                             className={styles.button}
                             onClick={onBack}
-                            disabled={isSending} // also disable back while sending
+                            disabled={isSending}
                         >
                             Volver al carrito
                         </button>
                     </div>
-                    {/* Enviar Pedido */}
-                    {/* <button
-                        type="submit"
-                        className={styles.button}
-                        disabled={isSending} // Disable while sending
-                    >
-                        {isSending ? "Enviando..." : "Enviar Pedido"}
-                    </button> */}
                 </div>
             </form>
         </div>

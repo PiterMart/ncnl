@@ -94,7 +94,14 @@ export default function CartList() {
                 </tbody>
             </table>
             <p className={styles.total}>Total: ${total.toFixed(2)}</p>
-            <button className={styles.button} onClick={clearCart}>
+            <button
+                className={styles.button}
+                onClick={() => setShowCheckout(true)}
+                style={{ marginTop: "12px" }}
+            >
+                Finalizar Compra
+            </button>
+            <button style={{ marginTop: "12px" }} className={styles.button} onClick={clearCart}>
                 Vaciar carrito
             </button>
             <button
@@ -105,13 +112,6 @@ export default function CartList() {
                 Volver al Shop
             </button>
 
-            <button
-                className={styles.button}
-                onClick={() => setShowCheckout(true)}
-                style={{ marginTop: "12px" }}
-            >
-                Finalizar Compra
-            </button>
         </div>
     );
 }

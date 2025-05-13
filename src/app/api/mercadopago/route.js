@@ -1,11 +1,9 @@
-// src/app/api/mercadopago/route.js
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { NextResponse } from 'next/server';
 
 // Initialize MercadoPago client with access token
 const client = new MercadoPagoConfig({
     accessToken: "APP_USR-3457585408128452-051019-8b5c6dab85c5f31cfe67af3841ddad8e-201404516",
-    // Optional: request timeout in ms
     options: { timeout: 10000 },
 });
 
@@ -14,10 +12,8 @@ const preferenceClient = new Preference(client);
 
 export async function POST(request) {
     try {
-        // Parse request body
+        // Parse request body and validate
         const { items } = await request.json();
-
-        // Validate items array
         if (!items || !Array.isArray(items) || items.length === 0) {
             return NextResponse.json(
                 { error: 'No items provided or empty array' },
@@ -25,13 +21,23 @@ export async function POST(request) {
             );
         }
 
-        // Prepare preference payload
-        const body = {
+        // Calculate total amount from cart items
+        const total = items.reduce((sum, item) => {
+            // Ensure price and quantity are numbers
+            const price = Number(item.unit_price);
+            const qty = Number(item.quantity);
+            return sum + price * qty;
+        }, 0);
+
+        console.debug('Calculated cart total:', total);
+
+        // Prepare preference payload with a single item for the whole cart
+        const preferencePayload = {
             items: [
                 {
-                    title: 'Mi producto',
+                    title: 'Total de la compra',
                     quantity: 1,
-                    unit_price: 2000
+                    unit_price: total,
                 }
             ],
             back_urls: {
@@ -42,13 +48,13 @@ export async function POST(request) {
             auto_return: 'approved',
         };
 
-        // Create preference
-        const preferenceResponse = await preferenceClient.create({ body });
+        // Create preference on MercadoPago
+        const preferenceResponse = await preferenceClient.create({ body: preferencePayload });
 
-        // Return preference ID
+        // Return preference ID to the client
         return NextResponse.json({ preferenceId: preferenceResponse.id });
     } catch (error) {
-        // Log error and return message
+        // Log and return error
         console.error('MercadoPago Error:', error);
         const message = error.message || JSON.stringify(error);
         return NextResponse.json(
