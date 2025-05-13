@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { auth } from '../../firebase/firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { usePathname } from 'next/navigation';
+import { useCart } from '../../contexts/CartContext';
+import CartModal from '../../components/CartModal';
 import styles from '../../styles/nav.module.css';
 
 export default function Nav() {
@@ -14,7 +16,9 @@ export default function Nav() {
     const [isVisible, setIsVisible] = useState(true);
     const [hasScrolled, setHasScrolled] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isCartOpen, setIsCartOpen] = useState(false);
     const currentPath = usePathname();
+    const { items } = useCart();
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -72,11 +76,11 @@ export default function Nav() {
     return (
         <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible ? styles.nav_hidden : ''}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
-            <img 
-                src="/NCNL_LOGO.png" 
-                alt="NCNL Logo" 
-                className={styles.logo}
-                style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
+                <img 
+                    src="/NCNL_LOGO.png" 
+                    alt="NCNL Logo" 
+                    className={styles.logo}
+                    style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
                 />
             </Link>
             <button className={`${styles.navButton} ${isMenuOpen ? styles.open : ''}`} onClick={toggleMenu}>
@@ -99,28 +103,40 @@ export default function Nav() {
                     ))}
                 </ul>
                 <div className={styles.rightSection}>
-                    {user ? (
-                    <div className={styles.userInfo}>
-                        {/* <span className={styles.userEmail}>
-                        {user.email}
-                        </span> */}
-                        <button
-                        onClick={handleLogout}
-                        className={styles.logoutButton}
+                    <div className={styles.cartSection}>
+                        <button 
+                            className={styles.cartButton}
+                            onClick={() => setIsCartOpen(true)}
                         >
-                        LOGOUT
+                            <span className={styles.cartCounter}>
+                                [{items.length}]
+                            </span>
+                            CART
                         </button>
                     </div>
+                    {user ? (
+                        <div className={styles.userInfo}>
+                            <button
+                                onClick={handleLogout}
+                                className={styles.logoutButton}
+                            >
+                                LOGOUT
+                            </button>
+                        </div>
                     ) : (
-                    <Link
-                        href="/login"
-                        className={styles.loginButton}
-                    >
-                        LOGIN
-                    </Link>
+                        <Link
+                            href="/login"
+                            className={styles.loginButton}
+                        >
+                            LOGIN
+                        </Link>
                     )}
                 </div>
             </div>
+            <CartModal 
+                isOpen={isCartOpen} 
+                onClose={() => setIsCartOpen(false)} 
+            />
         </div>
     );
 }

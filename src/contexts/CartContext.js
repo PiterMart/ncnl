@@ -46,6 +46,7 @@ const CartContext = createContext();
 
 // Proveedor de carrito
 export function CartProvider({ children }) {
+    console.log('CartProvider rendering'); // Debug log
     const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
     // Cargar carrito desde localStorage al inicio
@@ -94,10 +95,17 @@ export function CartProvider({ children }) {
         }
     };
 
+    const value = {
+        items: state.items,
+        addItem,
+        removeItem,
+        clearCart
+    };
+
+    console.log('CartProvider value:', value); // Debug log
+
     return (
-        <CartContext.Provider
-            value={{ items: state.items, addItem, removeItem, clearCart }}
-        >
+        <CartContext.Provider value={value}>
             {children}
         </CartContext.Provider>
     );
@@ -107,6 +115,7 @@ export function CartProvider({ children }) {
 export function useCart() {
     const context = useContext(CartContext);
     if (!context) {     
+        console.error('useCart was called outside of CartProvider'); // Debug log
         throw new Error("useCart must be used within a CartProvider");
     }
     return context;
