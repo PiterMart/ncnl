@@ -16,7 +16,7 @@ export default function Display() {
                             <p>NCNL</p>
                         </div>
                         <img 
-                            src="/placeholders/2.webp" 
+                            src="/main transparente.png" 
                             alt="placeholder" 
                             className={styles.logo}
                             style={{ width: '100%', maxWidth: '300px', top: "1rem" }}
@@ -27,7 +27,7 @@ export default function Display() {
                             <p>NCNL</p>
                         </div>
                         <img 
-                            src="/placeholders/1.webp" 
+                            src="/main transparente.png" 
                             alt="placeholder" 
                             className={styles.logo}
                             style={{ width: '100%', maxWidth: '300px', top: "1rem" }}
@@ -38,7 +38,7 @@ export default function Display() {
                             <p>NCNL</p>
                         </div>
                         <img 
-                            src="/placeholders/2.webp" 
+                            src="/main transparente.png" 
                             alt="placeholder" 
                             className={styles.logo}
                             style={{ width: '100%', maxWidth: '300px', top: "1rem" }}
@@ -49,7 +49,7 @@ export default function Display() {
                             <p>NCNL</p>
                         </div>
                         <img 
-                            src="/placeholders/1.webp" 
+                            src="/main transparente.png" 
                             alt="placeholder" 
                             className={styles.logo}
                             style={{ width: '100%', maxWidth: '300px', top: "1rem" }}

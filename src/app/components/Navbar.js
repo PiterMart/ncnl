@@ -40,9 +40,8 @@ export default function Nav() {
 
     const pages = [
         { name: 'SHOP', path: '/shop', delay: '0s' },
-        { name: 'ABOUT', path: '/about', delay: '0.1s' },
-        { name: 'HELP', path: '/hope', delay: '0.2s' },
-        { name: 'CONTACT', path: '/contact', delay: '0.3s' },
+        { name: 'HELP', path: '/hope', delay: '0.1s' },
+        { name: 'CONTACT', path: '/contact', delay: '0.2s' },
     ];
 
     const toggleMenu = () => {
@@ -71,7 +70,7 @@ export default function Nav() {
     }
 
     return (
-        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent}`}>
+        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible ? styles.nav_hidden : ''}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
             <img 
                 src="/NCNL_LOGO.png" 
@@ -102,9 +101,9 @@ export default function Nav() {
                 <div className={styles.rightSection}>
                     {user ? (
                     <div className={styles.userInfo}>
-                        <span className={styles.userEmail}>
+                        {/* <span className={styles.userEmail}>
                         {user.email}
-                        </span>
+                        </span> */}
                         <button
                         onClick={handleLogout}
                         className={styles.logoutButton}

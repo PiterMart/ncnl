@@ -29,6 +29,20 @@
   background-color: rgba(0, 0, 0, 0.075);
 } 
 
+.ticket {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  margin: auto;
+  background-color: aliceblue;
+}
+.ticketImage {
+  max-width: 550px;
+}
+
 /* Mobile breakpoint */
 @media (max-width: 768px) {
   .backgroundVideo {
@@ -36,4 +50,11 @@
     height: 120%;
     object-fit: cover;
   }
+  .ticket {
+    max-width: 100vh;
+  }
+  .ticketImage {
+    max-width: 100vw;
+  }
+
 }

@@ -12,15 +12,13 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    gap: 2rem;
+    gap: 1rem;
     margin-top: 15rem;
-    height: 100vh;
+    margin-bottom: 15rem;
 }
 
 .card {
-    border: 5px solid #454242;
-    border-radius: 8px;
-    padding: 1rem;
+    border: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -31,7 +29,6 @@
 .image {
     width: 100%;
     object-fit: cover;
-    border-radius: 4px;
 }
 
 .name {
