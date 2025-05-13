@@ -7,7 +7,7 @@ export default function Video() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 2.0;
+      videoRef.current.playbackRate = 1.0;
     }
   }, []);
 
@@ -39,18 +39,17 @@ export default function Video() {
           playsInline
           className={styles.backgroundVideo}
         >
-          <source src="/NCNL_RUNWA_ALTA_1.mp4" type="video/mp4" />
+          <source src="/NCNL_RUNWAY_FINAL_2.mp4" type="video/mp4" />
         </video>
 
         {/* "SEE RUNWAY" Button */}
         <button className={styles.runwayButton} onClick={handleSeeRunway}>
-          LA PIEDAD
-          {/* <img src="/la-piedad-logo.png" alt="LA PIEDAD" /> */}
+          <img style={{ width: '250px', height: 'auto' }} src="/la-piedad-logo.png" alt="LA PIEDAD" />
         </button>
 
         {/* Scrolling Text */}
         <div className={styles.scrollTextContainer}>
-          <div className={styles.scrollText}>
+          {/* <div className={styles.scrollText}>
             Director Creativo: @paulnicolino<br />
             Director de Marca: @xul.vf<br /><br />
             Director de Arte: @buendiaignacio<br />
@@ -101,7 +100,7 @@ export default function Video() {
             Apoya: @bacreativa - Ministerio de Desarrollo Económico<br />
             Acompañan: @segurosantartida @sparklingarg @eamoda<br />
             Locación: @ccomplejoartmedia<br />
-          </div>
+          </div> */}
         </div>
       </div>
 
