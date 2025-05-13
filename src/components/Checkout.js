@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { useCart } from "../contexts/CartContext";
 import { orderService } from "../services/orderService";
+import toast, { Toaster } from "react-hot-toast"; // Toast library
 import styles from "../styles/Checkout.module.css";
 
 /**
@@ -27,6 +28,7 @@ export default function Checkout({ onBack }) {
         observations: "",
     });
     const [errors, setErrors] = useState({});
+    const [isSending, setIsSending] = useState(false); // Disable submit button flag
 
     // Handle input change
     const handleChange = (e) => {
@@ -50,33 +52,61 @@ export default function Checkout({ onBack }) {
             return;
         }
 
+        setIsSending(true);
+        const toastId = toast.loading("Enviando pedido..."); // Show loading toast
+
         try {
-            // Calculate total amount
+            // 1) Calculate total amount
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
             );
 
-            // Prepare order payload
-            const orderPayload = {
-                customer: formData,
-                items,
-                total,
-            };
-
-            // Save order to Firestore
+            // 2) Save order to Firestore
+            const orderPayload = { customer: formData, items, total };
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
-            // Clear cart and notify user
-            clearCart();
-            alert(`Pedido enviado con éxito. ID: ${orderId}`);
+            let emailResp;
+            try {
+                // 3) Send emails via API route
+                emailResp = await fetch("/api/send-order-mail", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId, ...orderPayload }),
+                });
+            } catch (networkErr) {
+                // Network error (no response)
+                console.error("Network error sending order emails:", networkErr);
+                toast.error(
+                    "No se pudo conectar con el servidor. Por favor, revisá tu conexión y volvé a intentar.",
+                    { id: toastId }
+                );
+                setIsSending(false);
+                return;
+            }
 
-            // Back to shop
-            onBack();
-        } catch (error) {
-            console.error("Error creating order:", error);
-            alert("Ocurrió un error al procesar el pedido.");
+            if (!emailResp.ok) {
+                // Server responded with error status
+                const errorText = await emailResp.text();
+                console.error("Failed to send order emails:", errorText);
+                toast.error(
+                    `Hubo un problema al enviar los correos (${emailResp.status}).`,
+                    { id: toastId }
+                );
+                setIsSending(false);
+                return;
+            }
+
+            // Success
+            toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
+            clearCart();   // Clear cart on success
+            onBack();      // Go back to cart view
+        } catch (err) {
+            // Unexpected error in processing order
+            console.error("Error processing order:", err);
+            toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
+            setIsSending(false);
         }
     };
 
@@ -88,6 +118,9 @@ export default function Checkout({ onBack }) {
 
     return (
         <div className={styles.container}>
+            {/* Toast container */}
+            <Toaster/>
+
             <h2>Finalizar Compra</h2>
 
             <form className={styles.form} onSubmit={handleSubmit}>
@@ -101,9 +134,7 @@ export default function Checkout({ onBack }) {
                         value={formData.name}
                         onChange={handleChange}
                     />
-                    {errors.name && (
-                        <span className={styles.error}>{errors.name}</span>
-                    )}
+                    {errors.name && <span className={styles.error}>{errors.name}</span>}
                 </label>
 
                 {/* Correo electrónico */}
@@ -116,9 +147,7 @@ export default function Checkout({ onBack }) {
                         value={formData.email}
                         onChange={handleChange}
                     />
-                    {errors.email && (
-                        <span className={styles.error}>{errors.email}</span>
-                    )}
+                    {errors.email && <span className={styles.error}>{errors.email}</span>}
                 </label>
 
                 {/* Número de celular */}
@@ -131,9 +160,7 @@ export default function Checkout({ onBack }) {
                         value={formData.phone}
                         onChange={handleChange}
                     />
-                    {errors.phone && (
-                        <span className={styles.error}>{errors.phone}</span>
-                    )}
+                    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
                 </label>
 
                 {/* DNI */}
@@ -239,12 +266,17 @@ export default function Checkout({ onBack }) {
                         type="button"
                         className={styles.button}
                         onClick={onBack}
+                        disabled={isSending} // also disable back while sending
                     >
                         Volver al carrito
                     </button>
                     {/* Enviar Pedido */}
-                    <button type="submit" className={styles.button}>
-                        Enviar Pedido
+                    <button
+                        type="submit"
+                        className={styles.button}
+                        disabled={isSending} // Disable while sending
+                    >
+                        {isSending ? "Enviando..." : "Enviar Pedido"}
                     </button>
                 </div>
             </form>
