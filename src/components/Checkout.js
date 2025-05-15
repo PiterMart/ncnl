@@ -14,9 +14,10 @@ import { createPreference } from "../utils/mercadopagoService";
 initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
 
 export default function Checkout({ onBack }) {
-    const { items, clearCart } = useCart(); // Get cart items and clearCart method
+    // Retrieve cart items and clearCart method
+    const { items, clearCart } = useCart();
 
-    // Form state
+    // Form data state
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -29,15 +30,18 @@ export default function Checkout({ onBack }) {
         postalCode: "",
         observations: "",
     });
+    // Form validation errors
     const [errors, setErrors] = useState({});
+    // Submission loading state
     const [isSending, setIsSending] = useState(false);
 
-    // MercadoPago state
+    // MercadoPago preference loading/error state
     const [loadingMp, setLoadingMp] = useState(false);
     const [mpError, setMpError] = useState(null);
+    // MercadoPago preference ID
     const [preferenceId, setPreferenceId] = useState(null);
 
-    // Check if all required fields are filled (observations optional)
+    // Check if all required fields (except observations) are filled
     const isFormValid = Object.keys(formData)
         .filter((key) => key !== "observations")
         .every((key) => formData[key].trim() !== "");
@@ -48,14 +52,16 @@ export default function Checkout({ onBack }) {
             setLoadingMp(true);
             setMpError(null);
             try {
-                // Map cart items to MercadoPago format
+                // Map cart items to MercadoPago item format
                 const mpItems = items.map((item) => ({
                     title: item.name,
                     quantity: item.quantity,
                     unit_price: item.price,
                 }));
+                // Create preference via backend util
                 const id = await createPreference(mpItems);
                 setPreferenceId(id);
+                console.debug("MP preference created:", id);
             } catch (error) {
                 console.error("MP preference error:", error);
                 setMpError(error.message);
@@ -69,20 +75,22 @@ export default function Checkout({ onBack }) {
         }
     }, [items]);
 
-    // Handle input change for all form fields
+    // Generic input change handler
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle manual form submission (to save order and send emails)
+    // Save order, send emails and clear cart
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
 
+        // Reset errors
+        setErrors({});
         // Validate required fields
         const newErrors = {};
         Object.entries(formData).forEach(([key, value]) => {
-            if (!value && key !== "observations") {
+            if (key !== "observations" && !value.trim()) {
                 newErrors[key] = "Este campo es obligatorio";
             }
         });
@@ -101,12 +109,14 @@ export default function Checkout({ onBack }) {
                 0
             );
 
-            // Save order to Firestore
+            // Build order payload
             const orderPayload = { customer: formData, items, total };
+
+            // Save order to backend
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
-            // Send confirmation emails via API
+            // Send confirmation emails
             let emailResp;
             try {
                 emailResp = await fetch("/api/send-order-mail", {
@@ -135,10 +145,10 @@ export default function Checkout({ onBack }) {
                 return;
             }
 
-            // Success
+            // Success: notify user and clear cart
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
-            clearCart(); // Clear cart after successful order
-            onBack();    // Go back to cart view
+            clearCart();
+            onBack();
         } catch (err) {
             console.error("Error processing order:", err);
             toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
@@ -146,7 +156,7 @@ export default function Checkout({ onBack }) {
         }
     };
 
-    // Calculate total for display
+    // Compute order total for display
     const total = items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
@@ -221,9 +231,7 @@ export default function Checkout({ onBack }) {
                         value={formData.address}
                         onChange={handleChange}
                     />
-                    {errors.address && (
-                        <span className={styles.error}>{errors.address}</span>
-                    )}
+                    {errors.address && <span className={styles.error}>{errors.address}</span>}
                 </label>
 
                 {/* Provincia */}
@@ -236,9 +244,7 @@ export default function Checkout({ onBack }) {
                         value={formData.province}
                         onChange={handleChange}
                     />
-                    {errors.province && (
-                        <span className={styles.error}>{errors.province}</span>
-                    )}
+                    {errors.province && <span className={styles.error}>{errors.province}</span>}
                 </label>
 
                 {/* Ciudad */}
@@ -264,9 +270,7 @@ export default function Checkout({ onBack }) {
                         value={formData.country}
                         onChange={handleChange}
                     />
-                    {errors.country && (
-                        <span className={styles.error}>{errors.country}</span>
-                    )}
+                    {errors.country && <span className={styles.error}>{errors.country}</span>}
                 </label>
 
                 {/* Código Postal */}
@@ -279,9 +283,7 @@ export default function Checkout({ onBack }) {
                         value={formData.postalCode}
                         onChange={handleChange}
                     />
-                    {errors.postalCode && (
-                        <span className={styles.error}>{errors.postalCode}</span>
-                    )}
+                    {errors.postalCode && <span className={styles.error}>{errors.postalCode}</span>}
                 </label>
 
                 {/* Observaciones */}
@@ -321,7 +323,7 @@ export default function Checkout({ onBack }) {
                     <p>Total: ${total.toFixed(2)}</p>
                 </div>
 
-                {/* Botones */}
+                {/* Botones de acción */}
                 <div
                     style={{
                         display: "flex",
@@ -338,14 +340,11 @@ export default function Checkout({ onBack }) {
                         {!loadingMp && preferenceId && (
                             <>
                                 {isFormValid ? (
-                                    // Wrap Wallet in a div to clear cart on click
-                                    <div
-                                        style={{ width: "300px" }}
-                                        onClick={() => {
-                                            clearCart(); // Clear cart when user clicks to pay
-                                        }}
-                                    >
-                                        <Wallet initialization={{ preferenceId }} />
+                                    // On click, call handleSubmit to send mail before payment
+                                    <div style={{ width: "300px" }} onClick={handleSubmit}>
+                                        <Wallet
+                                            initialization={{ preferenceId }}
+                                        />
                                     </div>
                                 ) : (
                                     <button
@@ -362,17 +361,14 @@ export default function Checkout({ onBack }) {
                     </div>
 
                     {/* Botón Volver */}
-                    <div>
-                        <button
-                            type="button"
-                            className={styles.button}
-                            onClick={onBack}
-                            disabled={isSending}
-
-                        >
-                            Volver al carrito
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className={styles.button}
+                        onClick={onBack}
+                        disabled={isSending}
+                    >
+                        Volver al carrito
+                    </button>
                 </div>
             </form>
         </div>
