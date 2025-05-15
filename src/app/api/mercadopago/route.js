@@ -1,62 +1,81 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { NextResponse } from 'next/server';
 
-// Initialize MercadoPago client with access token
+// Initialize MercadoPago client with access token from env
 const client = new MercadoPagoConfig({
-    accessToken: "APP_USR-3457585408128452-051019-8b5c6dab85c5f31cfe67af3841ddad8e-201404516",
+    accessToken: process.env.MP_ACCESS_TOKEN, // Use environment variable
     options: { timeout: 10000 },
 });
-
-// Instantiate Preference API
 const preferenceClient = new Preference(client);
+
+/**
+ * Calculate total amount from cart items.
+ * @param {Array} items - List of items with unit_price and quantity.
+ * @returns {number} - Total amount.
+ * @throws {Error} - If items are invalid or prices/quantities are not numbers.
+ */
+function calculateTotal(items) {
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        throw new Error('No items provided or empty array');
+    }
+    return items.reduce((sum, item) => {
+        const price = Number(item.unit_price);
+        const qty = Number(item.quantity);
+        if (isNaN(price) || isNaN(qty)) {
+            throw new Error('Invalid item price or quantity');
+        }
+        return sum + price * qty;
+    }, 0);
+}
+
+/**
+ * Build the preference payload including dynamic back_urls.
+ * @param {number} total - Total amount.
+ * @param {string} origin - Request origin (scheme + host).
+ * @returns {Object} - Preference payload ready for MercadoPago.
+ */
+function buildPreferencePayload(total, origin) {
+    // Dynamically set back URLs to the root of this same origin
+    const backUrls = {
+        success: `${origin}/`,
+        failure: `${origin}/checkout`,
+        pending: `${origin}/`,
+    };
+
+    return {
+        items: [
+            {
+                title: 'Total de la compra',
+                quantity: 1,
+                unit_price: total,
+            },
+        ],
+        back_urls: backUrls,
+        auto_return: 'approved',
+    };
+}
 
 export async function POST(request) {
     try {
-        // Parse request body and validate
+        // 1. Parse and validate items from body
         const { items } = await request.json();
-        if (!items || !Array.isArray(items) || items.length === 0) {
-            return NextResponse.json(
-                { error: 'No items provided or empty array' },
-                { status: 400 }
-            );
-        }
-
-        // Calculate total amount from cart items
-        const total = items.reduce((sum, item) => {
-            // Ensure price and quantity are numbers
-            const price = Number(item.unit_price);
-            const qty = Number(item.quantity);
-            return sum + price * qty;
-        }, 0);
-
+        const total = calculateTotal(items);
         console.debug('Calculated cart total:', total);
 
-        // Prepare preference payload with a single item for the whole cart
-        const preferencePayload = {
-            items: [
-                {
-                    title: 'Total de la compra',
-                    quantity: 1,
-                    unit_price: total,
-                }
-            ],
-            back_urls: {
-                success: 'https://www.tu-sitio/success',
-                failure: 'https://www.tu-sitio/failure',
-                pending: 'https://www.tu-sitio/pending',
-            },
-            auto_return: 'approved',
-        };
+        // 2. Extract origin from the incoming request URL
+        const { origin } = new URL(request.url);
+        console.debug('Detected request origin:', origin);
 
-        // Create preference on MercadoPago
-        const preferenceResponse = await preferenceClient.create({ body: preferencePayload });
+        // 3. Build payload and create preference
+        const payload = buildPreferencePayload(total, origin);
+        const preferenceResponse = await preferenceClient.create({ body: payload });
 
-        // Return preference ID to the client
+        // 4. Return preference ID
         return NextResponse.json({ preferenceId: preferenceResponse.id });
     } catch (error) {
-        // Log and return error
+        // Log and return error with debug info
         console.error('MercadoPago Error:', error);
-        const message = error.message || JSON.stringify(error);
+        const message = error instanceof Error ? error.message : String(error);
         return NextResponse.json(
             { error: `Error creating preference: ${message}` },
             { status: 500 }
