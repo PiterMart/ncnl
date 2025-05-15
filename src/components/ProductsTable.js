@@ -227,9 +227,12 @@ export default function ProductsTable() {
                 <thead>
                     <tr>
                         <th>Nombre</th>
+                        <th>Descripción</th>
                         <th>Descripción Técnica</th>
                         <th>Precio</th>
+                        <th>Stock</th>
                         <th>Colección</th>
+                        <th>Talle</th>
                         <th>Color</th>
                         <th>Material</th>
                         <th>Imágenes</th>

@@ -1,16 +1,17 @@
 // src/components/Checkout.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { orderService } from "../services/orderService";
 import toast, { Toaster } from "react-hot-toast"; // Toast library
 import styles from "../styles/Checkout.module.css";
 
-/**
- * Checkout component
- * @param {{ onBack: () => void }} props
- */
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
+import { createPreference } from "../utils/mercadopagoService";
+
+initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
+
 export default function Checkout({ onBack }) {
     const { items, clearCart } = useCart();
 
@@ -28,7 +29,42 @@ export default function Checkout({ onBack }) {
         observations: "",
     });
     const [errors, setErrors] = useState({});
-    const [isSending, setIsSending] = useState(false); // Disable submit button flag
+    const [isSending, setIsSending] = useState(false);
+
+    const [loadingMp, setLoadingMp] = useState(false);
+    const [mpError, setMpError] = useState(null);
+    const [preferenceId, setPreferenceId] = useState(null);
+
+    // Check if all required fields (except observations) are filled
+    const isFormValid = Object.keys(formData)
+        .filter((key) => key !== "observations")
+        .every((key) => formData[key].trim() !== "");
+
+    useEffect(() => {
+        async function fetchPreference() {
+            setLoadingMp(true);
+            setMpError(null);
+            try {
+                // Map cart items to MercadoPago format
+                const mpItems = items.map((item) => ({
+                    title: item.name,
+                    quantity: item.quantity,
+                    unit_price: item.price,
+                }));
+                const id = await createPreference(mpItems);
+                setPreferenceId(id);
+            } catch (error) {
+                console.error(error);
+                setMpError(error.message);
+            } finally {
+                setLoadingMp(false);
+            }
+        }
+
+        if (items.length > 0) {
+            fetchPreference();
+        }
+    }, [items]);
 
     // Handle input change
     const handleChange = (e) => {
@@ -53,7 +89,7 @@ export default function Checkout({ onBack }) {
         }
 
         setIsSending(true);
-        const toastId = toast.loading("Enviando pedido..."); // Show loading toast
+        const toastId = toast.loading("Enviando pedido...");
 
         try {
             // 1) Calculate total amount
@@ -76,7 +112,6 @@ export default function Checkout({ onBack }) {
                     body: JSON.stringify({ orderId, ...orderPayload }),
                 });
             } catch (networkErr) {
-                // Network error (no response)
                 console.error("Network error sending order emails:", networkErr);
                 toast.error(
                     "No se pudo conectar con el servidor. Por favor, revisá tu conexión y volvé a intentar.",
@@ -87,7 +122,6 @@ export default function Checkout({ onBack }) {
             }
 
             if (!emailResp.ok) {
-                // Server responded with error status
                 const errorText = await emailResp.text();
                 console.error("Failed to send order emails:", errorText);
                 toast.error(
@@ -100,10 +134,9 @@ export default function Checkout({ onBack }) {
 
             // Success
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
-            clearCart();   // Clear cart on success
-            onBack();      // Go back to cart view
+            clearCart();
+            onBack();
         } catch (err) {
-            // Unexpected error in processing order
             console.error("Error processing order:", err);
             toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
             setIsSending(false);
@@ -119,7 +152,7 @@ export default function Checkout({ onBack }) {
     return (
         <div className={styles.container}>
             {/* Toast container */}
-            <Toaster/>
+            <Toaster />
 
             <h2>Finalizar Compra</h2>
 
@@ -260,51 +293,75 @@ export default function Checkout({ onBack }) {
                     />
                 </label>
 
-                <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                    {/* Volver al carrito */}
-                    <button
-                        type="button"
-                        className={styles.button}
-                        onClick={onBack}
-                        disabled={isSending} // also disable back while sending
-                    >
-                        Volver al carrito
-                    </button>
-                    {/* Enviar Pedido */}
-                    <button
-                        type="submit"
-                        className={styles.button}
-                        disabled={isSending} // Disable while sending
-                    >
-                        {isSending ? "Enviando..." : "Enviar Pedido"}
-                    </button>
+                <div className={styles.summary}>
+                    <h3>Resumen del pedido</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item) => (
+                                <tr key={item.id}>
+                                    <td>{item.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>${item.price}</td>
+                                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <p>Total: ${total.toFixed(2)}</p>
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "12px",
+                        marginTop: "12px",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
+                    {/* Botón de pago */}
+                    <div>
+                        {loadingMp && <p>Cargando pago...</p>}
+                        {mpError && <p>Error al generar el pago: {mpError}</p>}
+                        {!loadingMp && preferenceId && (
+                            <>
+                                {isFormValid ? (
+                                    <div style={{ width: "300px" }}>
+                                        <Wallet initialization={{ preferenceId }} />
+                                    </div>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className={styles.button}
+                                        disabled
+                                        style={{ cursor: "not-allowed", color: "black" }}
+                                    >
+                                        Complete todos los campos para pagar
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            className={styles.button}
+                            onClick={onBack}
+                            disabled={isSending}
+                        >
+                            Volver al carrito
+                        </button>
+                    </div>
                 </div>
             </form>
-
-            <div className={styles.summary}>
-                <h3>Resumen del pedido</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.quantity}</td>
-                                <td>${item.price}</td>
-                                <td>${(item.price * item.quantity).toFixed(2)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <p>Total: ${total.toFixed(2)}</p>
-            </div>
         </div>
     );
 }

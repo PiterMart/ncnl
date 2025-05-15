@@ -1,7 +1,7 @@
 // src/components/CartList.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { useRouter } from "next/navigation";
 import Checkout from "./Checkout";
@@ -12,36 +12,62 @@ export default function CartList() {
     const [showCheckout, setShowCheckout] = useState(false);
     const router = useRouter();
 
-    // If user clicked "Finalizar Compras", render Checkout instead
+    // Fetch preferenceId each time cambian los items
+    useEffect(() => {
+        async function fetchPreference() {
+            setLoadingMp(true);
+            setMpError(null);
+            try {
+                // Map cart items to MercadoPago format
+                const mpItems = items.map(item => ({
+                    title: item.name,
+                    quantity: item.quantity,
+                    unit_price: item.price,
+                }));
+                const id = await createPreference(mpItems);
+                setPreferenceId(id);
+            } catch (error) {
+                console.error(error);
+                setMpError(error.message);
+            } finally {
+                setLoadingMp(false);
+            }
+        }
+
+        if (items.length > 0) {
+            fetchPreference();
+        }
+    }, [items]);
+
+    // Si el usuario clickeó "Finalizar Compras"
     if (showCheckout) {
         return <Checkout onBack={() => setShowCheckout(false)} />;
     }
 
-    // If cart is empty, show message and back-to-shop button
+    // Carrito vacío
     if (items.length === 0) {
         return (
             <div className={styles.container}>
-                <p>Tu carrito está vacío.</p>
-                <button
-                    className={styles.button}
-                    onClick={() => router.push("/shop")}
-                >
+                <p
+                    style={{
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                        marginBottom: "50px",
+                    }}
+                >Tu carrito está vacío.</p>
+                <button className={styles.button} onClick={() => router.push("/shop")}>
                     Volver al Shop
                 </button>
             </div>
         );
     }
 
-    // Calculate total amount
-    const total = items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
+    // Total
+    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <div className={styles.container}>
             <h2>Tu carrito</h2>
-
             <table className={styles.table}>
                 <thead>
                     <tr>
@@ -54,7 +80,7 @@ export default function CartList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => (
+                    {items.map(item => (
                         <tr key={item.id}>
                             <td>{item.name}</td>
                             <td>{item.size}</td>
@@ -73,18 +99,17 @@ export default function CartList() {
                     ))}
                 </tbody>
             </table>
-
             <p className={styles.total}>Total: ${total.toFixed(2)}</p>
-
-            {/* Clear cart button */}
             <button
                 className={styles.button}
-                onClick={clearCart}
+                onClick={() => setShowCheckout(true)}
+                style={{ marginTop: "12px" }}
             >
+                Finalizar Compra
+            </button>
+            <button style={{ marginTop: "12px" }} className={styles.button} onClick={clearCart}>
                 Vaciar carrito
             </button>
-
-            {/* Back to shop button */}
             <button
                 className={styles.button}
                 onClick={() => router.push("/shop")}
@@ -93,14 +118,6 @@ export default function CartList() {
                 Volver al Shop
             </button>
 
-            {/* Finalize purchase button */}
-            <button
-                className={styles.button}
-                onClick={() => setShowCheckout(true)}
-                style={{ marginTop: "12px" }}
-            >
-                Finalizar Compra
-            </button>
         </div>
     );
 }
