@@ -41,9 +41,9 @@ export async function POST(request) {
                 }
             ],
             back_urls: {
-                success: 'https://www.tu-sitio/success',
-                failure: 'https://www.tu-sitio/failure',
-                pending: 'https://www.tu-sitio/pending',
+                success: 'https://www.ncnl.co/',
+                failure: 'https://www.ncnl.co/',
+                pending: 'https://www.ncnl.co/',
             },
             auto_return: 'approved',
         };
