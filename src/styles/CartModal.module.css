@@ -1,6 +1,6 @@
 .modalOverlay {
     position: fixed;
-    top: 0;
+    top: 10rem;
     left: 0;
     right: 0;
     bottom: 0;
@@ -11,13 +11,13 @@
 }
 
 .modalContent {
-    background-color: white;
+    background-color: #f0f8ff;
     width: 400px;
-    height: 100vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    height: 50vh;
 }
 
 .modalHeader {
@@ -41,6 +41,8 @@
     cursor: pointer;
     padding: 0;
     color: #666;
+    font-weight: bold;
+    font-size: 2rem;
 }
 
 .closeButton:hover {
@@ -57,6 +59,10 @@
     text-align: center;
     color: #666;
     margin-top: 40px;
+    font-weight: 100;
+    font-size: 2rem;
+    transform: scaleY(2);
+    letter-spacing: -0.1em;
 }
 
 .cartItem {
@@ -92,13 +98,15 @@
 .removeButton {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
     cursor: pointer;
     padding: 5px;
     color: #666;
     position: absolute;
+    padding-right: 15px;
     right: 0;
-    top: 50%;
+    top: 10;
     transform: translateY(-50%);
 }
 
@@ -132,3 +140,10 @@
 .viewCartButton:hover {
     background-color: #333;
 } 
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modalContent {
+        height: 100vh;
+    }
+}

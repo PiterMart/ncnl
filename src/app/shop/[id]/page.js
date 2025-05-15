@@ -48,6 +48,7 @@ export default function ProductPage() {
                         material: productData.material,
                         sizes: ['S', 'M', 'L', 'XL'],
                         sizeGuideImage: '/placeholders/size-guide.webp',
+                        mainImage: productData.images[0],
                     });
                     setContentLoaded(true);
                 } else {
@@ -77,7 +78,8 @@ export default function ProductPage() {
                 name: product.title,  // use title instead of name
                 price: product.price,
                 quantity: 1,  // add default quantity
-                size: selectedSize  // include the selected size
+                size: selectedSize,  // include the selected size
+                mainImage: product.mainImage  // include the main image
             });
             // navigate to cart page
             router.push("/cart");

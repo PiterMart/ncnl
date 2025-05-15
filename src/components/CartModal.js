@@ -22,37 +22,35 @@ export default function CartModal({ isOpen, onClose }) {
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
-                    <h2>Carrito de Compras</h2>
+                    {/* <p>Guardado</p> */}
                     <button className={styles.closeButton} onClick={onClose}>×</button>
                 </div>
 
                 <div className={styles.cartItems}>
                     {items.length === 0 ? (
-                        <p className={styles.emptyCart}>Tu carrito está vacío</p>
+                        <p className={styles.emptyCart}>VACÍO</p>
                     ) : (
                         items.map((item) => (
                             <div key={item.id} className={styles.cartItem}>
-                                <div className={styles.itemImage}>
+                                <div className={styles.itemDetails}>
                                     <Image
-                                        src={item.image || '/placeholders/product-placeholder.jpg'}
+                                        src={item.mainImage || '/placeholders/product-placeholder.jpg'}
                                         alt={item.name}
-                                        width={80}
-                                        height={80}
+                                        width={300}
+                                        height={300}
                                         style={{ objectFit: 'cover' }}
                                     />
-                                </div>
-                                <div className={styles.itemDetails}>
                                     <h3>{item.name}</h3>
                                     <p>Talle: {item.size}</p>
                                     <p>Cantidad: {item.quantity}</p>
                                     <p>${item.price}</p>
+                                    <button 
+                                        className={styles.removeButton}
+                                        onClick={() => removeItem(item.id)}
+                                    >
+                                        ×
+                                    </button>
                                 </div>
-                                <button 
-                                    className={styles.removeButton}
-                                    onClick={() => removeItem(item.id)}
-                                >
-                                    ×
-                                </button>
                             </div>
                         ))
                     )}
@@ -68,7 +66,7 @@ export default function CartModal({ isOpen, onClose }) {
                                 onClose();
                             }}
                         >
-                            Ver Carrito Completo
+                            BOLSA
                         </button>
                     </div>
                 )}

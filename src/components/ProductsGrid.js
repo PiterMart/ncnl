@@ -62,12 +62,6 @@ export default function ProductsGrid({ onProductsLoaded }) {
                         )}
                         <h2 className={styles.name}>{p.name}</h2>
                         <p className={styles.price}>${p.price}</p>
-                        {/* <button
-                            className={styles.button}
-                            onClick={() => handleAddToCart(p)} // call handler
-                        >
-                            Agregar al carro de compras
-                        </button> */}
                     </Link>
                 ))}
             </div>

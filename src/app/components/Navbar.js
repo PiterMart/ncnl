@@ -101,6 +101,10 @@ export default function Nav() {
                             </Link>
                         </li>
                     ))}
+                        <CartModal 
+                            isOpen={isCartOpen} 
+                            onClose={() => setIsCartOpen(false)} 
+                        />
                 </ul>
                 <div className={styles.rightSection}>
                     <div className={styles.cartSection}>
@@ -133,10 +137,6 @@ export default function Nav() {
                     )}
                 </div>
             </div>
-            <CartModal 
-                isOpen={isCartOpen} 
-                onClose={() => setIsCartOpen(false)} 
-            />
         </div>
     );
 }
