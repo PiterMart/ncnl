@@ -79,6 +79,7 @@
 /* Hover state for clear cart button */
 .container>button:hover {
     background-color: #f0f0f0;
+    color: #1f1d1d;
 }
 
 /* Focus outline for clear cart button */
