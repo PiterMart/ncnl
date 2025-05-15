@@ -1,3 +1,5 @@
+// src/contexts/CartContext.js
+
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect } from "react";

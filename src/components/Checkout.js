@@ -10,10 +10,11 @@ import styles from "../styles/Checkout.module.css";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { createPreference } from "../utils/mercadopagoService";
 
+// Initialize MercadoPago SDK with your public key
 initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
 
 export default function Checkout({ onBack }) {
-    const { items, clearCart } = useCart();
+    const { items, clearCart } = useCart(); // Get cart items and clearCart method
 
     // Form state
     const [formData, setFormData] = useState({
@@ -31,15 +32,17 @@ export default function Checkout({ onBack }) {
     const [errors, setErrors] = useState({});
     const [isSending, setIsSending] = useState(false);
 
+    // MercadoPago state
     const [loadingMp, setLoadingMp] = useState(false);
     const [mpError, setMpError] = useState(null);
     const [preferenceId, setPreferenceId] = useState(null);
 
-    // Check if all required fields (except observations) are filled
+    // Check if all required fields are filled (observations optional)
     const isFormValid = Object.keys(formData)
         .filter((key) => key !== "observations")
         .every((key) => formData[key].trim() !== "");
 
+    // Fetch MercadoPago preference whenever cart items change
     useEffect(() => {
         async function fetchPreference() {
             setLoadingMp(true);
@@ -54,7 +57,7 @@ export default function Checkout({ onBack }) {
                 const id = await createPreference(mpItems);
                 setPreferenceId(id);
             } catch (error) {
-                console.error(error);
+                console.error("MP preference error:", error);
                 setMpError(error.message);
             } finally {
                 setLoadingMp(false);
@@ -66,17 +69,17 @@ export default function Checkout({ onBack }) {
         }
     }, [items]);
 
-    // Handle input change
+    // Handle input change for all form fields
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle form submission
+    // Handle manual form submission (to save order and send emails)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate required fields (except observations)
+        // Validate required fields
         const newErrors = {};
         Object.entries(formData).forEach(([key, value]) => {
             if (!value && key !== "observations") {
@@ -92,20 +95,20 @@ export default function Checkout({ onBack }) {
         const toastId = toast.loading("Enviando pedido...");
 
         try {
-            // 1) Calculate total amount
+            // Calculate total amount
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
             );
 
-            // 2) Save order to Firestore
+            // Save order to Firestore
             const orderPayload = { customer: formData, items, total };
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
+            // Send confirmation emails via API
             let emailResp;
             try {
-                // 3) Send emails via API route
                 emailResp = await fetch("/api/send-order-mail", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -134,8 +137,8 @@ export default function Checkout({ onBack }) {
 
             // Success
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
-            clearCart();
-            onBack();
+            clearCart(); // Clear cart after successful order
+            onBack();    // Go back to cart view
         } catch (err) {
             console.error("Error processing order:", err);
             toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
@@ -151,8 +154,7 @@ export default function Checkout({ onBack }) {
 
     return (
         <div className={styles.container}>
-            {/* Toast container */}
-            <Toaster />
+            <Toaster /> {/* Toast notifications */}
 
             <h2>Finalizar Compra</h2>
 
@@ -183,7 +185,7 @@ export default function Checkout({ onBack }) {
                     {errors.email && <span className={styles.error}>{errors.email}</span>}
                 </label>
 
-                {/* Número de celular */}
+                {/* Teléfono */}
                 <label className={styles.label}>
                     Número de celular:
                     <input
@@ -293,6 +295,7 @@ export default function Checkout({ onBack }) {
                     />
                 </label>
 
+                {/* Resumen del pedido */}
                 <div className={styles.summary}>
                     <h3>Resumen del pedido</h3>
                     <table>
@@ -318,6 +321,7 @@ export default function Checkout({ onBack }) {
                     <p>Total: ${total.toFixed(2)}</p>
                 </div>
 
+                {/* Botones */}
                 <div
                     style={{
                         display: "flex",
@@ -327,14 +331,20 @@ export default function Checkout({ onBack }) {
                         alignItems: "center",
                     }}
                 >
-                    {/* Botón de pago */}
+                    {/* MercadoPago Wallet */}
                     <div>
                         {loadingMp && <p>Cargando pago...</p>}
                         {mpError && <p>Error al generar el pago: {mpError}</p>}
                         {!loadingMp && preferenceId && (
                             <>
                                 {isFormValid ? (
-                                    <div style={{ width: "300px" }}>
+                                    // Wrap Wallet in a div to clear cart on click
+                                    <div
+                                        style={{ width: "300px" }}
+                                        onClick={() => {
+                                            clearCart(); // Clear cart when user clicks to pay
+                                        }}
+                                    >
                                         <Wallet initialization={{ preferenceId }} />
                                     </div>
                                 ) : (
@@ -350,12 +360,15 @@ export default function Checkout({ onBack }) {
                             </>
                         )}
                     </div>
+
+                    {/* Botón Volver */}
                     <div>
                         <button
                             type="button"
                             className={styles.button}
                             onClick={onBack}
                             disabled={isSending}
+
                         >
                             Volver al carrito
                         </button>
