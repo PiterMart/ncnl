@@ -1,86 +1,177 @@
-/* src/styles/Checkout.module.css */
+/* src/styles/Checkout.module.css - REVISED */
+
+/* Base styles for the checkout container, inspired by the example's .container */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
-    margin-top: 10vh;
+    /* Using example's vertical padding, original horizontal padding */
+    padding: 30vh 16px 20vh 16px;
+    background-color: aliceblue; /* Match example's background */
+    color: #110708; /* Match example's text color */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
 }
 
+/* Styles for the form area */
 .form {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 600px;
-    margin-bottom: 24px;
+    max-width: 600px; /* Keeping original max-width, adjust if a wider form is desired */
+    margin-bottom: 2rem; /* Increased spacing (32px) */
+    gap: 1rem; /* Adds space between direct children of the form (e.g., label groups) */
 }
 
+/* Styles for labels within the form */
 .label {
     display: flex;
     flex-direction: column;
-    margin-bottom: 12px;
-    font-weight: 500;
+    margin-bottom: 0.5rem; /* Space below each label group */
+    font-weight: 600; /* Bolder font weight, similar to example's emphasis */
+    color: #110708; /* Consistent text color */
+    font-size: 0.9rem; /* Slightly smaller, clear font size for labels */
 }
 
+/* Styles for input and textarea fields */
 .input,
 .textarea {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 4px;
+    padding: 0.75rem; /* Increased padding (12px) for a modern feel */
+    border: 1px solid #b0b0b0; /* Softer border color */
+    border-radius: 4px; /* Consistent with example's rounded corners */
+    margin-top: 0.35rem; /* Space between label text and the input field (approx 5-6px) */
+    font-size: 1rem; /* Standard readable font size */
+    background-color: #fff; /* White background for input fields */
+    color: #110708; /* Text color for input content */
+    box-sizing: border-box; /* Ensures padding doesn't add to the width */
+    width: 100%; /* Inputs take full width of their parent container */
 }
 
 .textarea {
-    resize: vertical;
-    min-height: 80px;
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 100px; /* Slightly increased minimum height */
 }
 
+/* Styles for error messages */
 .error {
-    color: red;
-    font-size: 0.8rem;
-    margin-top: 4px;
+    color: red; /* Standard error color */
+    font-size: 0.9rem; /* Matched from example */
+    margin-top: 0.5rem; /* Space above error message (8px) */
 }
 
+/* Button styling, based on the example's general .button */
 .button {
-    padding: 8px 14px;
-    border: 1px solid #ccc;
-    background: transparent;
-    cursor: pointer;
+    background-color: #110708; /* Example's primary button background */
+    color: aliceblue; /* Example's primary button text color */
+    border: none; /* No border, common for this button style */
+    padding: 0.75rem 1.5rem; /* Generous padding (e.g., 12px vertical, 24px horizontal) */
     font-size: 1rem;
-    border-radius: 4px;
-    transition: background 0.2s;
-    align-self: flex-start;
-    margin-top: 12px;
+    font-weight: 500; /* Medium font weight */
+    cursor: pointer;
+    border-radius: 4px; /* Consistent rounded corners */
+    transition: opacity 0.3s ease; /* Smooth transition for hover/disabled states */
+    align-self: flex-start; /* Kept from original, for buttons not needing full width */
+    margin-top: 1.5rem; /* Space above the button (24px) */
+    text-align: center; /* Center text within the button */
 }
 
 .button:hover {
-    background-color: #f0f0f0;
-    color: #1f1d1d;
+    opacity: 0.8; /* Example's hover effect */
 }
 
 .button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    opacity: 0.5; /* Example's disabled style */
+    cursor: not-allowed; /* Indicate non-interactive state */
 }
 
+/* Styles for the order summary section */
 .summary {
     width: 100%;
-    max-width: 600px;
+    max-width: 600px; /* Keeping original max-width */
+    margin-top: 2rem; /* Space above the summary section */
+    background-color: #ffffff; /* White background to make it a distinct "card" */
+    padding: 1.5rem; /* Padding within the summary card (24px) */
+    border-radius: 8px; /* Rounded corners for the card */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07); /* Subtle shadow for depth */
+    color: #110708; /* Default text color for summary content */
 }
 
+.summary h3 {
+    font-size: 1.5rem; /* Prominent heading for the summary */
+    font-weight: 700; /* Bold heading */
+    color: #110708;
+    margin-bottom: 1rem; /* Space below the heading */
+    padding-bottom: 0.75rem; /* Space before the border */
+    border-bottom: 1px solid #e0e0e0; /* Subtle separator line below heading */
+}
+
+/* Styles for the table within the summary */
 .summary table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 12px;
+    border-collapse: collapse; /* Clean table lines */
+    margin-bottom: 1rem; /* Space below the table */
 }
 
 .summary th,
 .summary td {
-    border-bottom: 1px solid #e0e0e0;
-    text-align: left;
-    padding: 8px;
+    border-bottom: 1px solid #e0e0e0; /* Separator for table rows */
+    text-align: left; /* Align text to the left */
+    padding: 0.8rem 0.5rem; /* Padding within cells (approx 13px vertical, 8px horizontal) */
+    font-size: 0.95rem; /* Readable font size for table content */
 }
 
-.summary h3 {
-    margin-bottom: 12px;
+.summary th {
+    color: #110708; /* Darker color for table headers */
+    font-weight: 600; /* Bolder font for headers */
+}
+
+.summary td {
+    color: #333; /* Slightly muted color for table data, similar to example's details */
+}
+
+/* Optional: Style for a 'total' row, assuming it's the last row in the table */
+.summary tr:last-child td {
+    font-weight: bold; /* Make total row text bold */
+    color: #110708; /* Primary text color for total */
+    font-size: 1.05rem; /* Slightly larger font for emphasis */
+    /* Add a top border to visually separate the total */
+    border-top: 2px solid #cccccc;
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 20vh; /* Reduced top padding */
+        padding-left: 1rem; /* Add some horizontal padding for content safety */
+        padding-right: 1rem;
+    }
+
+    .form,
+    .summary {
+        max-width: 100%; /* Allow form and summary to use full width */
+        padding: 1rem; /* Adjust padding for these blocks on smaller screens */
+    }
+
+    .input,
+    .textarea {
+        padding: 0.65rem; /* Adjust input padding for smaller screens */
+        font-size: 0.95rem;
+    }
+
+    .button {
+        width: 100%; /* Make button full-width for easier tapping */
+        align-self: center; /* Center the full-width button */
+        padding: 0.9rem 1rem; /* Adjust padding for full-width button */
+    }
+
+    .summary h3 {
+        font-size: 1.3rem; /* Slightly smaller heading */
+        margin-bottom: 0.75rem;
+    }
+
+    .summary th,
+    .summary td {
+        padding: 0.6rem 0.25rem; /* Tighter padding in table cells */
+        font-size: 0.9rem; /* Adjust font size in table */
+    }
 }

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Checkout from "./Checkout";
 import LoadingScreen from "./LoadingScreen";
 import styles from "../styles/CartList.module.css";
+import Link from "next/link";
 
 // Placeholder for MercadoPago related state and function if not from context
 const createPreference = async (items) => {
@@ -24,6 +25,8 @@ export default function CartList() {
     const [mpError, setMpError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [contentLoaded, setContentLoaded] = useState(false);
+    const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+    const [acceptTerms, setAcceptTerms] = useState(false);
 
     const router = useRouter();
 
@@ -129,11 +132,38 @@ export default function CartList() {
 
                              {mpError && <div className={styles.error}>{mpError}</div>}
 
+                            <div className={styles.checkboxContainer}>
+                                <div className={styles.checkboxItem}>
+                                    <input
+                                        type="checkbox"
+                                        id="privacy"
+                                        checked={acceptPrivacy}
+                                        onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                                        className={styles.checkbox}
+                                    />
+                                    <label htmlFor="privacy" className={styles.checkboxLabel}>
+                                        Acepto la <Link href="/politica-de-privacidad" className={styles.link}>política de privacidad</Link>
+                                    </label>
+                                </div>
+                                <div className={styles.checkboxItem}>
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        checked={acceptTerms}
+                                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                                        className={styles.checkbox}
+                                    />
+                                    <label htmlFor="terms" className={styles.checkboxLabel}>
+                                        Acepto los <Link href="/terminos-y-condiciones" className={styles.link}>términos y condiciones</Link>
+                                    </label>
+                                </div>
+                            </div>
+
                             <button
                                 style={{fontSize: '1.5rem'}}
                                 className={styles.button}
                                 onClick={() => setShowCheckout(true)}
-                                disabled={!preferenceId || loadingMp || items.length === 0}
+                                disabled={!preferenceId || loadingMp || items.length === 0 || !acceptPrivacy || !acceptTerms}
                             >
                                 {loadingMp ? 'CARGANDO...' : 'FINALIZAR COMPRA'}
                             </button>

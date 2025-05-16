@@ -43,9 +43,11 @@ export default function Nav() {
     };
 
     const pages = [
-        { name: 'SHOP', path: '/shop', delay: '0s' },
-        { name: 'HELP', path: '/hope', delay: '0.1s' },
+        { name: 'TIENDA', path: '/shop', delay: '0s' },
+        { name: 'AYUDA', path: '/ayuda', delay: '0.1s' },
         { name: 'CONTACT', path: '/contact', delay: '0.2s' },
+        { name: 'PRIVACY POLICY', path: '/politica-de-privacidad', delay: '0.3s' },
+        { name: 'TERMS AND CONDITIONS', path: '/terminos-y-condiciones', delay: '0.4s' },
     ];
 
     const toggleMenu = () => {
