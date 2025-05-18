@@ -4,64 +4,129 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background-color: aliceblue;
+    /* Reference site uses a dark background */
+    background-color: aliceblue; /* Dark grey/black background */
+    padding: 20vh 1rem; /* Add some vertical padding, keep horizontal minimal */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
 }
 
+/* Reverting to a CSS Grid layout */
 .grid {
-    display: flex;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    gap: 1rem;
-    margin-top: 15rem;
-    margin-bottom: 15rem;
-    width: 100%;
+    display: grid;
+    /* Responsive columns: auto-fill ensures it wraps, minmax sets min/max item width */
+    /* Adjust minmax(300px, 1fr) based on desired item size on large screens */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    /* Gap between grid items - adjust as needed */
+    gap: 1.5rem; /* Example gap, adjust to match reference */
+    width: 100%; /* Take full width of container */
+    max-width: 1200px; /* Optional: Limit grid max width like the reference site */
+    margin-top: 0; /* Adjust or remove margin top based on page header */
+    margin-bottom: 0; /* Adjust or remove margin bottom */
+    padding: 0; /* Remove internal padding */
 }
 
 .card {
     border: none;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
+    text-decoration: none; /* Remove underline from Link */
+    color: inherit; /* Inherit text color */
+    /* Adjust padding if needed */
+    padding: 0; /* Remove default card padding */
+    /* background-color: #fff; /* Optional: Add background if items need separation */
 }
 
 .image {
-    width: 500px;
+    width: 100%; /* Image fills the width of the grid item */
+    /* Use height: auto to maintain aspect ratio */
+    height: auto;
+    /* object-fit: cover might crop, contain might leave space. Cover often looks better in grids. */
     object-fit: cover;
+     /* Set a minimum height or aspect ratio if needed */
+    min-height: 350px; /* Example min height */
+    display: block; /* Remove extra space below image */
+}
+
+.textContainer {
+    padding: 0.5rem 0; /* Add padding around text */
+    color: #000000; /* White text color */
 }
 
 .name {
-    font-size: 1.2rem;
-    margin: 0.5rem 0;
-    color: #666;
-
+    font-size: 1.1rem; /* Slightly smaller font size */
+    margin: 0 0 0.25rem 0; /* Adjust margins */
+    color: inherit; /* Inherit color from textContainer */
+    text-align: left; /* Align text to the left */
+    /* font-weight: normal; /* Optional: Use normal weight like reference */
 }
 
 .price {
-    font-weight: bold;
-    margin: 0.5rem 0;
-    color: #666;
+    font-size: 1.1rem; /* Match name font size */
+    font-weight: normal; /* Use normal weight */
+    margin: 0; /* Remove margins */
+    color: inherit; /* Inherit color from textContainer */
+    text-align: left; /* Align text to the left */
 }
 
+/* Description style (optional, based on previous code) */
 .description {
-    font-size: 0.9rem;
-    color: #666;
-    flex-grow: 1;
+    font-size: 0.8rem;
+    color: #ccc; /* Lighter color for description */
+    margin-top: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit description lines */
+    -webkit-box-orient: vertical;
 }
 
-.button {
-    background-color: #000;
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 1rem;
-}
 
 .errorText {
     color: #f44336;
     text-align: center;
     margin-top: 1rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .grid {
+        /* On smaller screens, maybe 2 columns or adjust minmax */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem; /* Smaller gap on mobile */
+        padding: 0 0.5rem; /* Add slight horizontal padding to the grid */
+    }
+
+     .container {
+         padding: 10rem 0.5rem; /* Adjust container padding on mobile */
+     }
+
+     .image {
+         min-height: 250px; /* Smaller min height on mobile */
+     }
+
+     .name,
+     .price {
+         font-size: 1rem; /* Smaller text on mobile */
+     }
+
+     .textContainer {
+         padding-top: '1rem';/* Reduced padding around text on mobile */
+     }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        /* On very small screens, maybe 1 column or larger minmax for 2 */
+         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+         gap: 0.5rem; /* Even smaller gap */
+    }
+
+     .image {
+         min-height: 180px; /* Smaller min height on very small screens */
+     }
+
+     .name,
+     .price {
+         font-size: 0.9rem; /* Even smaller text */
+     }
 }

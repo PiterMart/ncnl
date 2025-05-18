@@ -8,11 +8,11 @@ export default function Footer() {
     const currentPath = usePathname();
 
     const pages = [
-        { name: 'SHOP', path: '/shop' },
-        { name: 'HOME', path: '/' },
-        { name: 'ABOUT', path: '/about' },
+        { name: 'TIENDA', path: '/shop' },
+        { name: 'AYUDA', path: '/ayuda' },
         { name: 'CONTACT', path: '/contact' },
-        { name: 'HELP', path: '/hope' },
+        { name: 'PRIVACY POLICY', path: '/politica-de-privacidad' },
+        { name: 'TERMS AND CONDITIONS', path: '/terminos-y-condiciones' },
     ];
 
     const isCurrent = (path) => currentPath === path;
@@ -37,7 +37,7 @@ export default function Footer() {
                                     href={page.path}
                                     className={isCurrent(page.path) ? styles.page_current : ''}
                                 >
-                                    {page.name}
+                                    |  {page.name} |
                                 </Link>
                             </li>
                         ))}

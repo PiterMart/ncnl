@@ -11,6 +11,7 @@
   "dependencies": {
     "@mercadopago/sdk-react": "^0.0.24",
     "dotenv": "^16.4.7",
+    "embla-carousel-react": "^8.6.0",
     "firebase": "^11.6.0",
     "firebase-admin": "^13.2.0",
     "firebase-auth": "^0.1.2",
@@ -22,7 +23,8 @@
     "react-hot-toast": "^2.5.2",
     "typeit": "^8.8.7",
     "uuid": "^11.1.0",
-    "validator": "^13.15.0"
+    "validator": "^13.15.0",
+    "yet-another-react-lightbox": "^3.23.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

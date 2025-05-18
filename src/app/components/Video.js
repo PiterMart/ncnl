@@ -43,9 +43,9 @@ export default function Video() {
         </video>
 
         {/* "SEE RUNWAY" Button */}
-        <button className={styles.runwayButton} onClick={handleSeeRunway}>
+        {/* <button className={styles.runwayButton} onClick={handleSeeRunway}>
           <img style={{ width: '250px', height: 'auto' }} src="/la-piedad-logo.png" alt="LA PIEDAD" />
-        </button>
+        </button> */}
 
         {/* Scrolling Text */}
         <div className={styles.scrollTextContainer}>

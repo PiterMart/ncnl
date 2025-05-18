@@ -1,32 +1,31 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // import router hook
 import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
 import Link from "next/link";
-import { useCart } from "../contexts/CartContext"; // adjust path if needed
+// Removed: import useEmblaCarousel
 
 export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
-    const { addItem } = useCart(); // extract addItem from context
-    const router = useRouter();    // initialize router
+    // Removed: const [emblaRef] = useEmblaCarousel...
 
+    // Effect to subscribe to product data
     useEffect(() => {
         const unsubscribe = productService.subscribeToProducts(
             (snapshot) => {
                 setProducts(snapshot);
-                onProductsLoaded?.();
+                onProductsLoaded?.(); // Call onProductsLoaded when data arrives
             },
             (err) => {
                 console.error("Error loading products:", err);
                 setError("No se pudieron cargar los productos.");
-                onProductsLoaded?.();
+                onProductsLoaded?.(); // Call onProductsLoaded even on error
             }
         );
         return () => unsubscribe();
-    }, [onProductsLoaded]);
+    }, [onProductsLoaded]); // Dependency on onProductsLoaded
 
     // handle error state
     if (error) {
@@ -37,31 +36,23 @@ export default function ProductsGrid({ onProductsLoaded }) {
         return <p>No hay productos disponibles.</p>;
     }
 
-    /**
-     * Handle adding product to cart and navigate to /cart
-     * @param {object} product
-     */
-    const handleAddToCart = (product) => {
-        try {
-            // add item to cart
-            addItem({ id: product.id, name: product.name, price: product.price });
-            // navigate to cart page
-            router.push("/cart");
-        } catch (err) {
-            console.error("Error adding product to cart:", err);
-        }
-    };
-
     return (
         <div className={styles.container}>
+            {/* Reverting to a grid layout container */}
             <div className={styles.grid}>
                 {products.map((p) => (
+                    // Each Link is now a grid item
                     <Link href={`/shop/${p.id}`} key={p.id} className={styles.card}>
+                         {/* Keeping the structure within the card */}
                         {p.images?.[0] && (
-                            <img src={p.images[0]} alt={p.name} className={styles.image} />
+                             // Image takes full width of its grid cell
+                             <img src={p.images[0]} alt={p.name} className={styles.image} />
                         )}
-                        <h2 className={styles.name}>{p.name}</h2>
-                        <p className={styles.price}>${p.price}</p>
+                         {/* Text container if needed, or style text directly */}
+                         <div className={styles.textContainer}>
+                             <h2 className={styles.name}>{p.name}</h2>
+                             <p className={styles.price}>${p.price}</p>
+                         </div>
                     </Link>
                 ))}
             </div>

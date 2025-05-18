@@ -1,123 +1,179 @@
-// src/components/CartList.js
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { useRouter } from "next/navigation";
 import Checkout from "./Checkout";
+import LoadingScreen from "./LoadingScreen";
 import styles from "../styles/CartList.module.css";
+import Link from "next/link";
+
+// Placeholder for MercadoPago related state and function if not from context
+const createPreference = async (items) => {
+    console.log("Creating preference for items:", items);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log("MercadoPago preference creation simulated.");
+    return "mock-preference-id-123";
+};
+
 
 export default function CartList() {
     const { items, removeItem, clearCart } = useCart();
     const [showCheckout, setShowCheckout] = useState(false);
+    const [preferenceId, setPreferenceId] = useState(null);
+    const [loadingMp, setLoadingMp] = useState(false);
+    const [mpError, setMpError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [contentLoaded, setContentLoaded] = useState(false);
+    const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+    const [acceptTerms, setAcceptTerms] = useState(false);
+
     const router = useRouter();
 
-    // Fetch preferenceId each time cambian los items
+    const handleLoadingComplete = () => {
+        setIsLoading(false);
+    };
+
     useEffect(() => {
         async function fetchPreference() {
             setLoadingMp(true);
             setMpError(null);
             try {
-                // Map cart items to MercadoPago format
                 const mpItems = items.map(item => ({
                     title: item.name,
                     quantity: item.quantity,
-                    unit_price: item.price,
-                }));
-                const id = await createPreference(mpItems);
-                setPreferenceId(id);
+                    unit_price: parseFloat(item.price) || 0,
+                })).filter(item => item.quantity > 0 && item.unit_price >= 0);
+
+                if (mpItems.length > 0) {
+                     const id = await createPreference(mpItems);
+                     setPreferenceId(id);
+                } else {
+                    setPreferenceId(null);
+                }
+                setContentLoaded(true);
             } catch (error) {
-                console.error(error);
+                console.error("Error fetching MercadoPago preference:", error);
                 setMpError(error.message);
+                setContentLoaded(true);
             } finally {
                 setLoadingMp(false);
             }
         }
 
-        if (items.length > 0) {
-            fetchPreference();
-        }
+        fetchPreference();
     }, [items]);
 
-    // Si el usuario clickeó "Finalizar Compras"
     if (showCheckout) {
-        return <Checkout onBack={() => setShowCheckout(false)} />;
+        return <Checkout preferenceId={preferenceId} onBack={() => setShowCheckout(false)} />;
     }
-
-    // Carrito vacío
-    if (items.length === 0) {
-        return (
-            <div className={styles.container}>
-                <p
-                    style={{
-                        fontSize: "24px",
-                        fontWeight: "bold",
-                        marginBottom: "50px",
-                    }}
-                >Tu carrito está vacío.</p>
-                <button className={styles.button} onClick={() => router.push("/shop")}>
-                    Volver al Shop
-                </button>
-            </div>
-        );
-    }
-
-    // Total
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
         <div className={styles.container}>
-            <h2>Tu carrito</h2>
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Talle</th>
-                        <th>Cantidad</th>
-                        <th>Precio unitario</th>
-                        <th>Subtotal</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {items.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.size}</td>
-                            <td>{item.quantity}</td>
-                            <td>${item.price}</td>
-                            <td>${(item.price * item.quantity).toFixed(2)}</td>
-                            <td>
-                                <button
-                                    className={styles.button}
-                                    onClick={() => removeItem(item.id)}
-                                >
-                                    Quitar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <p className={styles.total}>Total: ${total.toFixed(2)}</p>
-            <button
-                className={styles.button}
-                onClick={() => setShowCheckout(true)}
-                style={{ marginTop: "12px" }}
-            >
-                Finalizar Compra
-            </button>
-            <button style={{ marginTop: "12px" }} className={styles.button} onClick={clearCart}>
-                Vaciar carrito
-            </button>
-            <button
-                className={styles.button}
-                onClick={() => router.push("/shop")}
-                style={{ marginTop: "12px" }}
-            >
-                Volver al Shop
-            </button>
+            {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} isLoading={!contentLoaded} />}
+            
+            <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease', width: '100%', height: '100%', margin: '0', padding: ' 1rem' }}>
+                {items.length === 0 ? (
+                    <div className={styles.emptyCartContainer}>
+                        <p className={styles.emptyCart}>Tu carrito está vacío.</p>
+                        <button className={styles.button} onClick={() => router.push("/shop")}>
+                            SEGUIR COMPRANDO
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        <h1 className={styles.cartTitle}>BOLSA</h1>
+                        <div className={styles.cartItemsContainer}>
+                            {items.map(item => {
+                                const itemPrice = parseFloat(item.price) || 0;
+                                const itemQuantity = item.quantity || 0;
+                                const itemSubtotal = itemPrice * itemQuantity;
 
+                                if (itemPrice < 0 || itemQuantity < 0) {
+                                     console.warn("Skipping rendering of invalid cart item:", item);
+                                     return null;
+                                }
+
+                                return (
+                                    <div key={item.id} className={styles.cartItem}>
+                                        {/* Add image if available */}
+                                        {item.mainImage && (
+                                            <div className={styles.itemImage}>
+                                                {/* Using a standard <img> tag */}
+                                                <img src={item.mainImage} alt={item.name} className={styles.itemImageTag} />
+                                            </div>
+                                        )}
+                                        <div className={styles.itemDetails}>
+                                            <div className={styles.itemName}>{item.name}</div>
+                                            {item.size && <div className={styles.itemSize}>Talle: {item.size}</div>}
+                                            <div className={styles.itemQuantity}>Cantidad: {itemQuantity}</div>
+                                            <div className={styles.itemPrice}>Precio unitario: ${itemPrice.toFixed(2)}</div>
+                                            <div className={styles.itemSubtotal}>SUBTOTAL ${itemSubtotal.toFixed(2)}</div>
+                                        </div>
+                                        <div className={styles.itemActions}>
+                                             <button
+                                                className={styles.removeButton}
+                                                onClick={() => removeItem(item.id)}
+                                            >
+                                                X
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className={styles.cartSummary}>
+                             <div className={styles.total}>Total: ${items.reduce((sum, item) => {
+                                const price = parseFloat(item.price) || 0;
+                                const quantity = item.quantity || 0;
+                                return sum + price * quantity;
+                            }, 0).toFixed(2)}</div>
+
+                             {mpError && <div className={styles.error}>{mpError}</div>}
+
+                            <div className={styles.checkboxContainer}>
+                                <div className={styles.checkboxItem}>
+                                    <input
+                                        type="checkbox"
+                                        id="privacy"
+                                        checked={acceptPrivacy}
+                                        onChange={(e) => setAcceptPrivacy(e.target.checked)}
+                                        className={styles.checkbox}
+                                    />
+                                    <label htmlFor="privacy" className={styles.checkboxLabel}>
+                                        Acepto la <Link href="/politica-de-privacidad" className={styles.link}>política de privacidad</Link>
+                                    </label>
+                                </div>
+                                <div className={styles.checkboxItem}>
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        checked={acceptTerms}
+                                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                                        className={styles.checkbox}
+                                    />
+                                    <label htmlFor="terms" className={styles.checkboxLabel}>
+                                        Acepto los <Link href="/terminos-y-condiciones" className={styles.link}>términos y condiciones</Link>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button
+                                style={{fontSize: '1.5rem'}}
+                                className={styles.button}
+                                onClick={() => setShowCheckout(true)}
+                                disabled={!preferenceId || loadingMp || items.length === 0 || !acceptPrivacy || !acceptTerms}
+                            >
+                                {loadingMp ? 'CARGANDO...' : 'FINALIZAR COMPRA'}
+                            </button>
+                            <button className={`${styles.button} ${styles.clearButton}`} onClick={() => router.push("/shop")}>
+                                SEGUIR COMPRANDO
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }

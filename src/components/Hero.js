@@ -45,6 +45,7 @@ export default function Hero() {
                     ref={typeRef}
                     className={styles.typingText}
                 />
+                          {/* <img style={{ width: '200px', height: 'auto' }} src="/la-piedad-logo.png" alt="LA PIEDAD" /> */}
                 <Link 
                     href="/shop"
                     className={`${styles.shopLink} ${showShop ? styles.visible : ''}`}
