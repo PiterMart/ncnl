@@ -28,7 +28,9 @@ export default function TermsPage() {
                     Todos los pagos se procesan de forma segura a través de <strong>Mercado Pago</strong>. El sitio no almacena datos financieros del usuario.
                     <br /><br />
 
-                    <strong>4. Entrega</strong><br />
+                    <strong>4. Producción y entrega</strong><br />
+                    Todas nuestras prendas se hacen a pedido. Trabajamos con procesos artesanales, textiles recuperados y desarrollos específicos para cada pieza.  
+                    Una vez realizada la compra, el tiempo estimado de entrega es de <strong>15 días hábiles</strong>.  
                     Las entregas se realizan de forma personalizada y directa entre el vendedor y el comprador. Al confirmar la compra, el usuario acepta este método de entrega y se compromete a coordinarla.
                     <br /><br />
 
@@ -56,6 +58,7 @@ export default function TermsPage() {
                     Para consultas relacionadas con estos Términos y Condiciones, podés escribirnos a:<br />
                     📧 <strong>[tu email]</strong>
                 </p>
+                <p>Gracias por bancar una forma de producir con sentido y sin apuro.</p>
             </div>
         </main>
     );

@@ -130,20 +130,31 @@
 }
 
 .rightSection{
-  display: flex;
-  justify-content: space-between;
-  align-items: right;
+  display: flex
+;
+  justify-content: left;
+  align-items: end;
   text-align: right;
-  gap: 2rem;
-  margin-left: 3rem;
-  margin-right: 3rem;
+  right: 0;
+  width: 100%;
+  position: relative;
+  /* gap: 2rem; */
+  right: 0;
+  /* margin-right: 3rem; */
+  width: 100%;
+  max-width: 500px;
+  list-style: none;
+  text-align: right;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
 }
 /* .logoutButton:hover {
   background-color: #dc2626;
 }  */
 
 .cartSection {
-    margin-right: 20px;
+    margin-right: 0px;
 }
 
 .cartButton {
@@ -151,9 +162,12 @@
     border: none;
     color: inherit;
     font-size: 1rem;
+    margin: 0;
+    right: 0;
     cursor: pointer;
-    padding: 5px 10px;
-    display: flex;
+    /* padding: 5px 10px; */
+    display: flex
+  ;
     align-items: center;
     gap: 5px;
     transition: opacity 0.2s;
@@ -240,6 +254,9 @@
   .loginButton {
     color: #ffffff;
   }
+  .cartButton {
+    color: #ffffff; /* Or any other light color like aliceblue */
+}
   
 
   @keyframes slideIn {

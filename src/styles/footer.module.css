@@ -3,6 +3,8 @@
     color: #fff;
     padding: 2rem 0;
     margin-top: auto;
+    position: relative;
+    z-index: 10;
 }
 
 .footerContent {

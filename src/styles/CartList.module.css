@@ -33,6 +33,7 @@
     letter-spacing: 0.1rem;
     margin-bottom: 2rem; /* Space below title */
     text-align: center;
+    margin: auto;
     width: 100%; /* Ensure title centers properly */
 }
 
@@ -41,6 +42,7 @@
     max-width: 800px; /* Max width for the items list */
     margin-bottom: 2rem; /* Space below items list */
     display: flex;
+    margin: auto;
     flex-direction: column;
     gap: 1rem; /* Space between cart items */
 }
@@ -132,6 +134,7 @@
     max-width: 800px;
     display: flex;
     flex-direction: column;
+    margin: auto;
     align-items: flex-end; /* Align summary items to the right */
     gap: 1rem; /* Space between summary elements */
 }
@@ -222,6 +225,7 @@
         flex-direction: column; /* Stack item details and actions vertically */
         align-items: flex-start; /* Align content to the left */
         gap: 1rem; /* Space between stacked sections */
+        margin: auto;
     }
 
      /* Optional: Adjust image size on small screens */

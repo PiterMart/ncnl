@@ -228,7 +228,7 @@ export default function ProductsTable() {
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th>Descripción Técnica</th>
+                        {/* <th>Descripción Técnica</th> */}
                         <th>Precio</th>
                         <th>Stock</th>
                         <th>Colección</th>
@@ -246,7 +246,7 @@ export default function ProductsTable() {
                         <tr key={p.id}>
                             <td>{p.name}</td>
                             <td>{p.description}</td>
-                            <td>{p.technicalDescription}</td>
+                            {/* <td>{p.technicalDescription}</td> */}
                             <td>{p.price}</td>
                             <td>{p.stock}</td>
                             <td>{p.collection}</td>
