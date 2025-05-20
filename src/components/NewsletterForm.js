@@ -1,139 +1,176 @@
+// NewsletterForm.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase/firebaseConfig";
+import { signInAnonymously } from "firebase/auth";
+import { storage, auth } from "../firebase/firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import styles from "../styles/NewsletterForm.module.css";
 
 export default function NewsletterForm({ onSend }) {
-  const [formData, setFormData] = useState({
-    subject: "",
-    headline: "",
-    body: "",
-    imageUrl: "",
-    buttonText: "",
-    buttonLink: "",
-  });
-
-  const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    let uploadedImageUrl = formData.imageUrl;
-
-    if (imageFile) {
-      const imageRef = ref(storage, `newsletter-images/${uuidv4()}`);
-      await uploadBytes(imageRef, imageFile);
-      uploadedImageUrl = await getDownloadURL(imageRef);
-    }
-
-    await onSend({
-      ...formData,
-      imageUrl: uploadedImageUrl,
+    // form state
+    const [formData, setFormData] = useState({
+        subject: "",
+        headline: "",
+        body: "",
+        imageUrl: "",
+        buttonText: "",
+        buttonLink: "",
     });
 
-    setFormData({
-      subject: "",
-      headline: "",
-      body: "",
-      imageUrl: "",
-      buttonText: "",
-      buttonLink: "",
-    });
-    setImageFile(null);
-    setPreviewUrl("");
-  };
+    // image file & preview
+    const [imageFile, setImageFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState("");
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImageFile(file);
-    if (file) {
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  };
+    // authenticate user anonymously on mount
+    useEffect(() => {
+        signInAnonymously(auth)
+            .then((userCredential) => {
+                console.debug("Signed in anonymously:", userCredential.user.uid);
+            })
+            .catch((error) => {
+                console.error("Anonymous sign-in failed:", error);
+                alert("Firebase auth error: " + error.message);
+            });
+    }, []);
 
-  return (
-    <div className={styles.container}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          name="subject"
-          placeholder="Email Subject"
-          value={formData.subject}
-          onChange={handleChange}
-          className={styles.input}
-          required
-        />
-        <input
-          name="headline"
-          placeholder="Headline"
-          value={formData.headline}
-          onChange={handleChange}
-          className={styles.input}
-          required
-        />
-        <textarea
-          name="body"
-          placeholder="Body Text"
-          value={formData.body}
-          onChange={handleChange}
-          className={styles.textarea}
-          required
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className={styles.fileInput}
-        />
-        <input
-          name="buttonText"
-          placeholder="Button Text"
-          value={formData.buttonText}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <input
-          name="buttonLink"
-          placeholder="Button Link"
-          value={formData.buttonLink}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <button type="submit" className={styles.button}>
-          Send Newsletter
-        </button>
-      </form>
+    // handle input changes
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-      <hr className="my-6" />
+    // handle file selection and preview
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageFile(file);
+        if (file) {
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
 
-      <div className={styles.preview}>
-        <h2 className="text-2xl font-bold mb-2">{formData.headline || "Your Headline Here"}</h2>
-        <p className="mb-4">{formData.body || "This is your newsletter body text."}</p>
-        {(previewUrl || formData.imageUrl) && (
-          <img
-            src={previewUrl || formData.imageUrl}
-            alt="Preview"
-            className={styles.previewImage}
-          />
-        )}
-        {formData.buttonText && formData.buttonLink && (
-          <a
-            href={formData.buttonLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.previewButton}
-          >
-            {formData.buttonText}
-          </a>
-        )}
-      </div>
-    </div>
-  );
-} 
+    // single-responsibility: upload image and return its URL
+    const uploadImageAndGetUrl = async () => {
+        if (!imageFile) return formData.imageUrl;
+        // generate a unique path
+        const imageRef = ref(storage, `newsletter-images/${uuidv4()}`);
+        // upload bytes
+        await uploadBytes(imageRef, imageFile);
+        // get public URL
+        return await getDownloadURL(imageRef);
+    };
+
+    // handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            // 1) upload image if any
+            const uploadedImageUrl = await uploadImageAndGetUrl();
+
+            // 2) send data upstream
+            await onSend({
+                ...formData,
+                imageUrl: uploadedImageUrl,
+            });
+
+            // 3) reset form
+            setFormData({
+                subject: "",
+                headline: "",
+                body: "",
+                imageUrl: "",
+                buttonText: "",
+                buttonLink: "",
+            });
+            setImageFile(null);
+            setPreviewUrl("");
+        } catch (error) {
+            // debug and user feedback
+            console.error("Error sending newsletter:", error);
+            alert("Error sending newsletter: " + error.message);
+        }
+    };
+
+    return (
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <input
+                    name="subject"
+                    placeholder="Email Subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <input
+                    name="headline"
+                    placeholder="Headline"
+                    value={formData.headline}
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                />
+                <textarea
+                    name="body"
+                    placeholder="Body Text"
+                    value={formData.body}
+                    onChange={handleChange}
+                    className={styles.textarea}
+                    required
+                />
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={styles.fileInput}
+                />
+                <input
+                    name="buttonText"
+                    placeholder="Button Text"
+                    value={formData.buttonText}
+                    onChange={handleChange}
+                    className={styles.input}
+                />
+                <input
+                    name="buttonLink"
+                    placeholder="Button Link"
+                    value={formData.buttonLink}
+                    onChange={handleChange}
+                    className={styles.input}
+                />
+                <button type="submit" className={styles.button}>
+                    Send Newsletter
+                </button>
+            </form>
+
+            <hr className="my-6" />
+
+            <div className={styles.preview}>
+                <h2 className="text-2xl font-bold mb-2">
+                    {formData.headline || "Your Headline Here"}
+                </h2>
+                <p className="mb-4">
+                    {formData.body || "This is your newsletter body text."}
+                </p>
+                {(previewUrl || formData.imageUrl) && (
+                    <img
+                        src={previewUrl || formData.imageUrl}
+                        alt="Preview"
+                        className={styles.previewImage}
+                    />
+                )}
+                {formData.buttonText && formData.buttonLink && (
+                    <a
+                        href={formData.buttonLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.previewButton}
+                    >
+                        {formData.buttonText}
+                    </a>
+                )}
+            </div>
+        </div>
+    );
+}
