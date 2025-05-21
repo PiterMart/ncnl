@@ -1,23 +1,22 @@
-// app/admin/page.js or pages/admin.js
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from "../../firebase/firebaseConfig";
+import { auth, db } from "../../firebase/firebaseConfig"; // Make sure this path is correct
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
-import LeadsTable from '../../components/LeadsTable';
-import ProductsTable from '../../components/ProductsTable';
-import OrdersTable from '../../components/OrdersTable'; // Import OrdersTable
-import NewsletterForm from '../../components/NewsletterForm';
-import styles from '../../styles/AdminDashboard.module.css';
+import LeadsTable from '../../components/LeadsTable'; // Make sure this path is correct
+import ProductsTable from '../../components/ProductsTable'; // Make sure this path is correct
+import OrdersTable from '../../components/OrdersTable'; // Make sure this path is correct
+import NewsletterForm from '../../components/NewsletterForm'; // Make sure this path is correct
+import styles from '../../styles/AdminDashboard.module.css'; // Make sure this path is correct
 
 export default function AdminDashboard() {
     // Data states
     const [leads, setLeads] = useState([]);
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
-    const [orders, setOrders] = useState([]); // State for orders
+    const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -27,26 +26,23 @@ export default function AdminDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        // Subscribe to Firebase Auth state
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 router.push('/login');
                 return;
             }
             try {
-                // Fetch all collections in parallel
                 const [leadsSnap, usersSnap, productsSnap, ordersSnap] = await Promise.all([
                     getDocs(query(collection(db, "leads"))),
                     getDocs(query(collection(db, "users"))),
                     getDocs(query(collection(db, "products"))),
-                    getDocs(query(collection(db, "orders"))), // Fetch orders
+                    getDocs(query(collection(db, "orders"))),
                 ]);
 
-                // Map docs to data arrays
                 setLeads(leadsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 setUsers(usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 setProducts(productsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-                setOrders(ordersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }))); // Set orders
+                setOrders(ordersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
                 setLoading(false);
             } catch (err) {
@@ -55,17 +51,15 @@ export default function AdminDashboard() {
                 setLoading(false);
             }
         });
-
         return () => unsubscribe();
     }, [router]);
 
-    // Send account creation emails for leads
     const handleSendAccountEmails = async () => {
         try {
             const leadsNoAccount = leads.filter(lead => !lead.hasAccount);
             const leadIds = leadsNoAccount.map(lead => lead.id);
 
-            const response = await fetch('/api/send-account-emails', {
+            const response = await fetch('/api/send-account-emails', { // Ensure this API route exists and works
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leadIds }),
@@ -74,13 +68,11 @@ export default function AdminDashboard() {
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Error al enviar los emails');
 
-            // Update local state for leads
             setLeads(leads.map(lead =>
                 leadIds.includes(lead.id)
                     ? { ...lead, accountEmailSent: true, status: 'pending' }
                     : lead
             ));
-
             alert('Emails de creación de cuenta enviados exitosamente');
         } catch (err) {
             console.error('Error sending account emails:', err);
@@ -88,41 +80,37 @@ export default function AdminDashboard() {
         }
     };
 
-    // Send newsletter based on selected tab
+    // Send newsletter ALWAYS to leads
     const handleNewsletterSend = async (newsletterData) => {
         try {
-            // Determine recipients array according to tab
-            let recipients = [];
-            switch (selectedTab) {
-                case 'leads':
-                    recipients = leads.map(r => r.email);
-                    break;
-                case 'users':
-                    recipients = users.map(r => r.email);
-                    break;
-                case 'products':
-                    recipients = products.map(r => r.email);
-                    break;
-                case 'orders':
-                    // orders have customer object with email
-                    recipients = orders.map(o => o.customer.email);
-                    break;
+            // Determine recipients: ALWAYS leads
+            const recipients = leads.map(lead => lead.email).filter(email => email); // Filter out any undefined/null emails
+
+            if (recipients.length === 0) {
+                alert('No leads found with email addresses to send the newsletter to.');
+                return;
             }
 
-            await fetch('/api/send-newsletter', {
+            const response = await fetch('/api/send-newsletter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...newsletterData,
-                    recipients,
-                    recipientType: selectedTab
+                    recipients, // Only send recipients array
                 }),
             });
 
-            alert('Newsletter enviado exitosamente');
+            const result = await response.json();
+
+            if (!response.ok) {
+                 throw new Error(result.error || 'Error al iniciar el envío del newsletter');
+            }
+
+            alert(`Newsletter sending process started for ${recipients.length} leads. Check logs or database for status.`);
+            setShowNewsletter(false); // Optionally close the form
         } catch (err) {
             console.error('Error sending newsletter:', err);
-            alert('Error al enviar el newsletter');
+            alert(err.message || 'Error al enviar el newsletter');
         }
     };
 
@@ -134,28 +122,24 @@ export default function AdminDashboard() {
             <div className={styles.header}>
                 <h1 className={styles.title}>Panel de Administración</h1>
                 <div className={styles.tabs}>
-                    {/* Leads tab */}
                     <button
                         className={`${styles.tab} ${selectedTab === 'leads' ? styles.active : ''}`}
                         onClick={() => setSelectedTab('leads')}
                     >
                         Leads
                     </button>
-                    {/* Users tab */}
                     <button
                         className={`${styles.tab} ${selectedTab === 'users' ? styles.active : ''}`}
                         onClick={() => setSelectedTab('users')}
                     >
                         Usuarios
                     </button>
-                    {/* Products tab */}
                     <button
                         className={`${styles.tab} ${selectedTab === 'products' ? styles.active : ''}`}
                         onClick={() => setSelectedTab('products')}
                     >
                         Productos
                     </button>
-                    {/* Orders tab */}
                     <button
                         className={`${styles.tab} ${selectedTab === 'orders' ? styles.active : ''}`}
                         onClick={() => setSelectedTab('orders')}
@@ -172,11 +156,12 @@ export default function AdminDashboard() {
                             Enviar Emails de Creación de Cuenta
                         </button>
                     )}
+                    {/* Newsletter button is always available, but will always send to leads */}
                     <button
                         className={styles.newsletterButton}
                         onClick={() => setShowNewsletter(!showNewsletter)}
                     >
-                        {showNewsletter ? 'Cerrar Newsletter' : 'Enviar Newsletter'}
+                        {showNewsletter ? 'Cerrar Newsletter' : 'Enviar Newsletter a Leads'}
                     </button>
                 </div>
             </div>
@@ -188,8 +173,8 @@ export default function AdminDashboard() {
             )}
 
             <div className={styles.content}>
-                {/* Render tables based on tab */}
                 {selectedTab === 'leads' && <LeadsTable leads={leads} />}
+                {/* Assuming LeadsTable can also display users by checking isUsers prop */}
                 {selectedTab === 'users' && <LeadsTable leads={users} isUsers={true} />}
                 {selectedTab === 'products' && <ProductsTable products={products} />}
                 {selectedTab === 'orders' && <OrdersTable orders={orders} />}

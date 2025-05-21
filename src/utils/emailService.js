@@ -5,7 +5,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: process.env.MAIL_USER,
+    user: process.env.MAIL_USER, // Make sure these are set in your .env.local or environment variables
     pass: process.env.MAIL_PASS,
   },
 });
@@ -13,20 +13,20 @@ const transporter = nodemailer.createTransport({
 export async function sendEmail({ to, subject, html }) {
   try {
     const info = await transporter.sendMail({
-      from: `"NCNL" <${process.env.MAIL_USER}>`,
+      from: `"NCNL" <${process.env.MAIL_USER}>`, // Replace NCNL with your sender name
       to,
       subject,
       html,
-      headers: {
-        'X-Priority': '1',
-        'X-MSMail-Priority': 'High',
-        'Importance': 'high'
+      headers: { // These headers might help with deliverability but aren't a silver bullet
+        'X-Priority': '3', // Normal priority
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'normal'
       }
     });
-    console.log('Email sent:', info.messageId);
+    console.log('Email sent:', info.messageId, 'to:', to);
     return true;
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw error;
+    console.error('Error sending email to:', to, error);
+    throw error; // Re-throw to be caught by the batch processor
   }
-} 
+}

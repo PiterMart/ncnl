@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation'; // Removed
 import Link from 'next/link';
 import Image from 'next/image';
-import { auth } from '../../firebase/firebaseConfig';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+// import { auth } from '../../firebase/firebaseConfig'; // Removed
+// import { onAuthStateChanged, signOut } from 'firebase/auth'; // Removed
 import { usePathname } from 'next/navigation';
 import { useCart } from '../../contexts/CartContext';
 import CartModal from '../../components/CartModal';
@@ -20,27 +20,27 @@ export default function Nav() {
     const currentPath = usePathname();
     const { items } = useCart();
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
-  
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUser(user);
-        setLoading(false);
-      });
-  
-      return () => unsubscribe();
-    }, []);
-  
-    const handleLogout = async () => {
-      try {
-        await signOut(auth);
-        router.push('/');
-      } catch (error) {
-        console.error('Error signing out:', error);
-      }
-    };
+    // const [user, setUser] = useState(null); // Removed
+    // const [loading, setLoading] = useState(true); // Removed
+    // const router = useRouter(); // Removed
+
+    // useEffect(() => { // Removed Firebase auth listener
+    //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //     setUser(user);
+    //     setLoading(false);
+    //   });
+    //
+    //   return () => unsubscribe();
+    // }, []);
+
+    // const handleLogout = async () => { // Removed
+    //   try {
+    //     await signOut(auth);
+    //     router.push('/');
+    //   } catch (error) {
+    //     console.error('Error signing out:', error);
+    //   }
+    // };
 
     const pages = [
         { name: 'TIENDA', path: '/shop', delay: '0s' },
@@ -57,7 +57,12 @@ export default function Nav() {
     const controlNavbar = () => {
         if (typeof window !== 'undefined') {
             setHasScrolled(window.scrollY > 50);
-            setIsVisible(window.scrollY < lastScrollY);
+            // Show navbar if scrolling up, or if at the very top
+            if (window.scrollY < lastScrollY || window.scrollY < 50) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
             setLastScrollY(window.scrollY);
         }
     };
@@ -67,18 +72,18 @@ export default function Nav() {
             window.addEventListener('scroll', controlNavbar);
             return () => window.removeEventListener('scroll', controlNavbar);
         }
-    }, [lastScrollY]);
+    }, [lastScrollY]); // lastScrollY dependency ensures re-evaluation if needed
 
-    if (loading) {
-        return null;
-    }
+    // if (loading) { // Removed
+    //   return null;
+    // }
 
     return (
-        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible ? styles.nav_hidden : ''}`}>
+        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible && hasScrolled ? styles.nav_hidden : ''}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                <img 
-                    src="/NCNL_LOGO.png" 
-                    alt="NCNL Logo" 
+                <img
+                    src="/NCNL_LOGO.png"
+                    alt="NCNL Logo"
                     className={styles.logo}
                     style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
                 />
@@ -101,40 +106,25 @@ export default function Nav() {
                             </Link>
                         </li>
                     ))}
-                        <CartModal 
-                            isOpen={isCartOpen} 
-                            onClose={() => setIsCartOpen(false)} 
-                        />
+                    {/* CartModal is kept as it's part of cart functionality, not auth */}
+                    <CartModal
+                        isOpen={isCartOpen}
+                        onClose={() => setIsCartOpen(false)}
+                    />
                 </ul>
                 <div className={styles.rightSection}>
                     <div className={styles.cartSection}>
-                        <button 
+                        <button
                             className={styles.cartButton}
                             onClick={() => setIsCartOpen(true)}
                         >
                             <span className={styles.cartCounter}>
                                 [{items.length}]
                             </span>
-                            CART
+                            BOLSA
                         </button>
                     </div>
-                    {user ? (
-                        <div className={styles.userInfo}>
-                            <button
-                                onClick={handleLogout}
-                                className={styles.logoutButton}
-                            >
-                                LOGOUT
-                            </button>
-                        </div>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className={styles.loginButton}
-                        >
-                            LOGIN
-                        </Link>
-                    )}
+                    {/* Removed UserInfo and Login/Logout Link */}
                 </div>
             </div>
         </div>
