@@ -2,7 +2,7 @@
 // Encapsulates Firestore operations for products
 
 import {
-    getFirestore,
+    // getFirestore, // No longer needed here if using the imported db directly
     collection,
     addDoc,
     serverTimestamp,
@@ -13,11 +13,12 @@ import {
     orderBy,
     onSnapshot,
 } from "firebase/firestore";
-import { firebaseApp } from "../firebase/firebaseConfig";
+// Import db directly from your Firebase configuration
+import { db } from "../firebase/firebaseConfig"; // Changed import
 
 class ProductService {
     constructor() {
-        this.db = getFirestore(firebaseApp);
+        this.db = db; // Use the imported db instance
         this.productsRef = collection(this.db, "products");
     }
 

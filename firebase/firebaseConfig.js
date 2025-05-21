@@ -1,3 +1,5 @@
+// ../firebase/firebaseConfig.js
+
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, Timestamp } from "firebase/firestore";
@@ -18,4 +20,5 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const db = getFirestore(app);
 
-export { db, storage, Timestamp, auth };
+// Modified export statement:
+export { db, storage, Timestamp, auth, app as firebaseApp }; // Export 'app' as 'firebaseApp'

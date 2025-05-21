@@ -1,7 +1,7 @@
 // src/services/orderService.js
 
 import {
-    getFirestore,
+    // getFirestore, // No longer needed here if using the imported db directly
     collection,
     addDoc,
     serverTimestamp,
@@ -11,11 +11,12 @@ import {
     deleteDoc,
     doc
 } from "firebase/firestore";
-import { firebaseApp } from "../firebase/firebaseConfig";
+// Import db directly from your Firebase configuration
+import { db } from "../firebase/firebaseConfig"; // Changed import
 
 export class OrderService {
     constructor() {
-        this.db = getFirestore(firebaseApp);
+        this.db = db; // Use the imported db instance
         this.ordersRef = collection(this.db, "orders");
     }
 
@@ -50,9 +51,7 @@ export class OrderService {
      * @returns {Promise<void>}
      */
     async deleteOrder(orderId) {
-        // Get a reference to the specific order document
         const orderDocRef = doc(this.db, "orders", orderId);
-        // Delete it
         await deleteDoc(orderDocRef);
     }
 }
