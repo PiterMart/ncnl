@@ -1,58 +1,85 @@
+// src/components/ProductsGrid.js
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
-import Link from "next/link";
-// Removed: import useEmblaCarousel
+
+/**
+ * Formats a numeric value into a string with thousands separators (.)
+ * and decimal comma (,) according to es-AR locale.
+ * @param {string|number} value - The price to format.
+ * @returns {string} - Formatted price string.
+ */
+function formatPrice(value) {
+    try {
+        const number = Number(value);
+        if (isNaN(number)) {
+            throw new Error(`Invalid price value: ${value}`);
+        }
+        return new Intl.NumberFormat('es-AR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(number);
+    } catch (error) {
+        console.error('Error formatting price:', error);
+        // Fallback to raw value
+        return String(value);
+    }
+}
 
 export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
-    // Removed: const [emblaRef] = useEmblaCarousel...
 
-    // Effect to subscribe to product data
     useEffect(() => {
+        // Subscribe to product updates
         const unsubscribe = productService.subscribeToProducts(
             (snapshot) => {
                 setProducts(snapshot);
-                onProductsLoaded?.(); // Call onProductsLoaded when data arrives
+                onProductsLoaded?.(); // Notify parent when data arrives
             },
             (err) => {
                 console.error("Error loading products:", err);
                 setError("No se pudieron cargar los productos.");
-                onProductsLoaded?.(); // Call onProductsLoaded even on error
+                onProductsLoaded?.(); // Notify parent even on error
             }
         );
         return () => unsubscribe();
-    }, [onProductsLoaded]); // Dependency on onProductsLoaded
+    }, [onProductsLoaded]);
 
-    // handle error state
     if (error) {
         return <p className={styles.errorText}>{error}</p>;
     }
-    // handle empty state
+
     if (products.length === 0) {
         return <p>No hay productos disponibles.</p>;
     }
 
     return (
         <div className={styles.container}>
-            {/* Reverting to a grid layout container */}
             <div className={styles.grid}>
                 {products.map((p) => (
-                    // Each Link is now a grid item
-                    <Link href={`/shop/${p.id}`} key={p.id} className={styles.card}>
-                         {/* Keeping the structure within the card */}
+                    <Link
+                        href={`/shop/${p.id}`}
+                        key={p.id}
+                        className={styles.card}
+                    >
                         {p.images?.[0] && (
-                             // Image takes full width of its grid cell
-                             <img src={p.images[0]} alt={p.name} className={styles.image} />
+                            <img
+                                src={p.images[0]}
+                                alt={p.name}
+                                className={styles.image}
+                            />
                         )}
-                         {/* Text container if needed, or style text directly */}
-                         <div className={styles.textContainer}>
-                             <h2 className={styles.name}>{p.name}</h2>
-                             <p className={styles.price}>${p.price}</p>
-                         </div>
+                        <div className={styles.textContainer}>
+                            <h2 className={styles.name}>{p.name}</h2>
+                            {/* Apply localized formatting */}
+                            <p className={styles.price}>
+                                ${formatPrice(p.price)}
+                            </p>
+                        </div>
                     </Link>
                 ))}
             </div>
