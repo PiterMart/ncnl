@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 
 // Initialize MercadoPago client with access token
 const client = new MercadoPagoConfig({
-    accessToken: "APP_USR-3457585408128452-051019-8b5c6dab85c5f31cfe67af3841ddad8e-201404516",
+    // accessToken: "APP_USR-3457585408128452-051019-8b5c6dab85c5f31cfe67af3841ddad8e-201404516",
+    accessToken: "APP_USR-4097106721723679-052015-3b709477eef03b47f1a93213f16a7ed7-108676363",
     options: { timeout: 10000 },
 });
 

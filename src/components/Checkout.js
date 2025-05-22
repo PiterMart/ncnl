@@ -11,7 +11,9 @@ import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { createPreference } from "../utils/mercadopagoService";
 
 // Initialize MercadoPago SDK with your public key
-initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
+// initMercadoPago("APP_USR-bf88a3d1-a7f7-464a-a299-5b95e4c6a656");
+initMercadoPago("APP_USR-07f67e31-9b52-4c1e-8d5c-dad4d0c14bc2");
+
 
 export default function Checkout({ onBack }) {
     // Retrieve cart items and clearCart method
