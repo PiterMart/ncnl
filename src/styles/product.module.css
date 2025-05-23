@@ -4,7 +4,7 @@
     padding: 0 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 1rem;
     padding-top: 25vh;
     padding-bottom: 15vh;
     background-color: aliceblue;
@@ -16,6 +16,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-top: 3.75rem;
 }
 
 .productImage {
@@ -38,18 +39,18 @@
 
 
 .productName {
-    font-size: 1.8rem;
-    font-weight: 300;
+    font-size: 1.35rem;
+    font-weight: 400;
     letter-spacing: 0.10rem;
     margin: 0;
 }
 
 
 .productPrice {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     letter-spacing: 0.1em; 
     margin: 0;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .productMeta {
@@ -65,7 +66,7 @@
 }
 
 .productShortDescription {
-    font-size: 0.75rem; 
+    font-size: 0.65rem; 
     line-height: 1.5;
     color: #333;
     padding-bottom: 0.5rem;

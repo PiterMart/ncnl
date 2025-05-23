@@ -178,20 +178,18 @@ export default function ProductPage() {
                         ))}
                     </div>
                     <div className={styles.productInfo}>
-                        <div>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.5rem' }}>
                             <h1 className={styles.productName}>{product.title}</h1>
-                            {/* Formatted price */}
                             <p className={styles.productPrice}>
-                                ${formatPrice(product.price)}
+                                $ {formatPrice(product.price)}
                             </p>
-                            <p className={styles.productPrice}>{product.collection}</p>
                         </div>
-                        <div className={styles.productMeta}>
-                            <span>{product.collection}</span>
+                        <div className={styles.productShortDescription}>
+                            <span>COLLECCION | {product.collection}</span>
                         </div>
 
                         <ExpandableSection
-                            title="DETALLES"
+                            title=""
                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
                         >
                             <div className={styles.productShortDescription}>
@@ -201,15 +199,18 @@ export default function ProductPage() {
                                 {product.fullDescription}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Color: {product.color}
+                                Color | {product.color}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Material: {product.material}
+                                Material | {product.material}
                             </div>
                         </ExpandableSection>
 
                         {product.sizes && product.sizes.length > 0 && (
                             <div className={styles.sizeSelector}>
+                                <div className={styles.productShortDescription}>
+                                    TALLE
+                                </div>
                                 <div className={styles.sizeOptions}>
                                     {product.sizes.map(size => (
                                         <button
@@ -229,14 +230,14 @@ export default function ProductPage() {
                             </div>
                         )}
 
-                        {product.sizeGuideImage && (
+                        {/* {product.sizeGuideImage && (
                             <button
                                 className={styles.sizeGuideButton}
                                 onClick={() => setShowSizeGuide(true)}
                             >
                                 Size Guide Chart
                             </button>
-                        )}
+                        )} */}
                         {showSizeGuide && product.sizeGuideImage && (
                             <div
                                 className={styles.sizeGuideModal}

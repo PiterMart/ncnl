@@ -226,15 +226,8 @@
         align-items: flex-start; /* Align content to the left */
         gap: 1rem; /* Space between stacked sections */
         margin: auto;
+        width: 100%;
     }
-
-     /* Optional: Adjust image size on small screens */
-    /* .itemImage {
-        width: 60px;
-        height: 60px;
-        margin-right: 0;
-        margin-bottom: 0.5rem;
-    } */
 
     .itemDetails {
         margin-right: 0; /* Remove right margin */

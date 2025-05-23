@@ -14,6 +14,7 @@ export default function Footer() {
         { name: 'CONTACT', path: '/contact' },
         { name: 'PRIVACY POLICY', path: '/politica-de-privacidad' },
         { name: 'TERMS AND CONDITIONS', path: '/terminos-y-condiciones' },
+        { name: 'NEWSLETTER', path: '/newsletter' },
     ];
 
     const isCurrent = (path) => currentPath === path;
@@ -44,7 +45,6 @@ export default function Footer() {
                         ))}
                     </ul>
                 </nav>
-                <Form />
             </div>
         </footer>
     );

@@ -13,10 +13,7 @@
 /* Reverting to a CSS Grid layout */
 .grid {
     display: grid;
-    /* Responsive columns: auto-fill ensures it wraps, minmax sets min/max item width */
-    /* Adjust minmax(300px, 1fr) based on desired item size on large screens */
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    /* Gap between grid items - adjust as needed */
     gap: 1.5rem; /* Example gap, adjust to match reference */
     width: 100%; /* Take full width of container */
     max-width: 1200px; /* Optional: Limit grid max width like the reference site */
@@ -29,41 +26,34 @@
     border: none;
     display: flex;
     flex-direction: column;
-    text-decoration: none; /* Remove underline from Link */
-    color: inherit; /* Inherit text color */
-    /* Adjust padding if needed */
-    padding: 0; /* Remove default card padding */
-    /* background-color: #fff; /* Optional: Add background if items need separation */
+    text-decoration: none;
+    color: inherit;
+    padding: 0;
+    margin-bottom: 1rem;
 }
 
 .image {
-    width: 100%; /* Image fills the width of the grid item */
-    /* Use height: auto to maintain aspect ratio */
+    width: 100%;
     height: auto;
-    /* object-fit: cover might crop, contain might leave space. Cover often looks better in grids. */
+    padding-bottom: 10px;
     object-fit: cover;
-     /* Set a minimum height or aspect ratio if needed */
     min-height: 350px; /* Example min height */
     display: block; /* Remove extra space below image */
 }
 
 .textContainer {
-    padding: 0.5rem 0; /* Add padding around text */
     color: #000000; /* White text color */
 }
 
 .name {
-    font-size: 1.1rem; /* Slightly smaller font size */
+    font-size: 1rem; /* Slightly smaller font size */
     margin: 0 0 0.25rem 0; /* Adjust margins */
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
-    /* font-weight: normal; /* Optional: Use normal weight like reference */
+    font-weight: 100; /* Optional: Use normal weight like reference */
 }
 
 .price {
-    font-size: 1.1rem; /* Match name font size */
-    font-weight: normal; /* Use normal weight */
-    margin: 0; /* Remove margins */
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
 }
@@ -106,7 +96,7 @@
 
      .name,
      .price {
-         font-size: 1rem; /* Smaller text on mobile */
+         font-size: 10px; /* Smaller text on mobile */
      }
 
      .textContainer {
