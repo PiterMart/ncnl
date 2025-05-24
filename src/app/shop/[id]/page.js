@@ -14,7 +14,8 @@ import { useCart } from '../../../contexts/CartContext';
 // Import Lightbox components and styles
 import 'yet-another-react-lightbox/styles.css';
 // Import the NextJsImage plugin for rendering Next.js Image components
-import Lightbox, { NextJsImage } from 'yet-another-react-lightbox';
+import Lightbox from 'yet-another-react-lightbox';
+
 
 /**
  * Formats a numeric price into a string with thousands separators (.)
@@ -280,7 +281,7 @@ export default function ProductPage() {
                     close={() => setLightboxOpen(false)}
                     slides={slides}
                     index={currentImageIndex}
-                    render={{ slide: NextJsImage }}
+                    render={{ slide: Image }}
                 />
             )}
         </main>
