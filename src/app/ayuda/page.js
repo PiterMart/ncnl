@@ -37,7 +37,7 @@ export default function HelpPage() {
                     <br /><br />
 
                     <strong>¿Tienen atención al cliente?</strong><br />
-                    Sí. Podés escribirnos a 📧 <strong>[tu email]</strong> o por Instagram <strong>@nacional</strong> y te respondemos lo antes posible.
+                    Sí. Podés escribirnos a  Instagram <strong><a href="https://www.instagram.com/ncnl.co" target="_blank" rel="noopener noreferrer">ncnl.co</a></strong> y te respondemos lo antes posible.
                     <br /><br />
 
                     <strong>¿Dónde puedo ver los Términos y Condiciones?</strong><br />

@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 35vh;
+  padding-top: 45vh;
   padding-bottom: 15vh;
   background-color: aliceblue;
   color: #110708;
@@ -34,10 +34,9 @@
 }
 
 .formContainer {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
   width: 100%;
 }
 
@@ -57,6 +56,6 @@
   }
 
   .formContainer {
-    padding: 1.5rem;
+    padding: 0rem;
   }
 } 

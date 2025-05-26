@@ -24,7 +24,7 @@
     "typeit": "^8.8.7",
     "uuid": "^11.1.0",
     "validator": "^13.15.0",
-    "yet-another-react-lightbox": "^3.23.1"
+    "yet-another-react-lightbox": "^3.23.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

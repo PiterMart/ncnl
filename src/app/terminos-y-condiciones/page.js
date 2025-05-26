@@ -56,9 +56,9 @@ export default function TermsPage() {
 
                     <strong>10. Contacto</strong><br />
                     Para consultas relacionadas con estos Términos y Condiciones, podés escribirnos a:<br />
-                    📧 <strong>[tu email]</strong>
+                    <strong><a href="https://www.instagram.com/ncnl.co" target="_blank" rel="noopener noreferrer">ncnl.co</a></strong>
                 </p>
-                <p>Gracias por bancar una forma de producir con sentido y sin apuro.</p>
+                <p style={{textAlign: 'center', marginTop: '2rem'}}>Gracias por bancar una forma de producir con sentido y sin apuro.</p>
             </div>
         </main>
     );
