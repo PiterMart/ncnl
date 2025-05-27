@@ -5,7 +5,7 @@ import styles from '../../styles/privacy.module.css';
 export default function TermsPage() {
     return (
         <main className={styles.container}>
-            <h1 className={styles.title}>TÉRMINOS Y CONDICIONES DE USO</h1>
+            <h1 className={styles.title}>TÉRMINOS Y CONDICIONES</h1>
             <div className={styles.content}>
                 <p>
                     <strong>Última actualización:</strong> 18.05.2025

@@ -50,7 +50,7 @@ export default function Hero() {
                     href="/shop"
                     className={`${styles.shopLink} ${showShop ? styles.visible : ''}`}
                 >
-                   <p className={styles.shopText}>[COMPRAR]</p>
+                   <p className={styles.shopText}> Comprar {"^"} </p>
                 </Link>
             </div>
           <Image

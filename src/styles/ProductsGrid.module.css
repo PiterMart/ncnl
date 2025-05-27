@@ -50,12 +50,14 @@
     margin: 0 0 0.25rem 0; /* Adjust margins */
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
-    font-weight: 100; /* Optional: Use normal weight like reference */
+    font-weight: 900;
+    transform: scaleY(1.5);
 }
 
 .price {
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
+    font-weight: 500;
 }
 
 /* Description style (optional, based on previous code) */

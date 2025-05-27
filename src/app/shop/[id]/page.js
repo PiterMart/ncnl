@@ -119,7 +119,8 @@ export default function ProductPage() {
                 quantity: 1,
                 size: selectedSize,
                 mainImage: product.mainImage,
-                collection: product.collection
+                collection: product.collection,
+                color: product.color
             });
             router.push("/cart");
         } catch (err) {
@@ -186,7 +187,7 @@ export default function ProductPage() {
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
-                            <span>COLLECCION | {product.collection}</span>
+                            <span>{product.collection}</span>
                         </div>
 
                         <ExpandableSection
@@ -200,10 +201,10 @@ export default function ProductPage() {
                                 {product.fullDescription}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Color | {product.color}
+                                Color^ {product.color}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Material | {product.material}
+                                Material^ {product.material}
                             </div>
                         </ExpandableSection>
 
@@ -269,6 +270,9 @@ export default function ProductPage() {
                                 disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
                             >
                                 AGREGAR A LA BOLSA
+                            </button>
+                            <button className={styles.shopButton} onClick={() => router.push("/shop")}>
+                                VOLVER A LA TIENDA
                             </button>
                         </div>
                     </div>

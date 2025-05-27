@@ -109,7 +109,6 @@ export default function Form() {
     </div>
   ) : (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <h1>NEWSLETTER</h1>
       <input
         name="firstName"
         placeholder="Nombre"

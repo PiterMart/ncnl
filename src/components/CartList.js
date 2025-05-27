@@ -87,6 +87,7 @@ export default function CartList() {
                             {items.map(item => {
                                 const itemPrice = parseFloat(item.price) || 0;
                                 const itemQuantity = item.quantity || 0;
+                                const itemColor = item.color || 0;
                                 const itemSubtotal = itemPrice * itemQuantity;
 
                                 if (itemPrice < 0 || itemQuantity < 0) {
@@ -97,6 +98,7 @@ export default function CartList() {
                                 return (
                                     <div key={item.id} className={styles.cartItem}>
                                         {/* Add image if available */}
+                                        
                                         {item.mainImage && (
                                             <div className={styles.itemImage}>
                                                 {/* Using a standard <img> tag */}
@@ -105,12 +107,7 @@ export default function CartList() {
                                         )}
                                         <div className={styles.itemDetails}>
                                             <div className={styles.itemName}>{item.name}</div>
-                                            {item.size && <div className={styles.itemSize}>Talle | {item.size}</div>}
-                                            <div className={styles.itemQuantity}>Cantidad | {itemQuantity}</div>
-                                            <div className={styles.itemPrice}>Precio unitario | ${itemPrice.toFixed(2)}</div>
-                                            <div className={styles.itemSubtotal}>SUBTOTAL | ${itemSubtotal.toFixed(2)}</div>
-                                        </div>
-                                        <div className={styles.itemActions}>
+                                            <div className={styles.itemActions}>
                                              <button
                                                 className={styles.removeButton}
                                                 onClick={() => removeItem(item.id)}
@@ -118,13 +115,18 @@ export default function CartList() {
                                                 X
                                             </button>
                                         </div>
+                                            {item.size && <div className={styles.itemSize}>Talle {item.size}</div>}
+                                            <div className={styles.itemQuantity}>Cnt {itemQuantity}</div>
+                                            <div className={styles.itemQuantity}>{itemColor}</div>
+                                            <div className={styles.itemSubtotal}>${itemSubtotal.toFixed(2)}</div>
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
 
                         <div className={styles.cartSummary}>
-                             <div className={styles.total}>Total | ${items.reduce((sum, item) => {
+                             <div className={styles.total}>Total: ${items.reduce((sum, item) => {
                                 const price = parseFloat(item.price) || 0;
                                 const quantity = item.quantity || 0;
                                 return sum + price * quantity;

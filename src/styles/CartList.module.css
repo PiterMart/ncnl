@@ -28,12 +28,15 @@
 
 
 .cartTitle {
-    font-size: 2rem; /* Larger title */
+    color: #110708;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
     font-weight: 900;
-    letter-spacing: 0.1rem;
-    margin-bottom: 2rem; /* Space below title */
-    text-align: center;
-    width: 100%; /* Ensure title centers properly */
+    background-color: transparent;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: -2px;
+    transform: scaleY(3);
+    padding-bottom: 2rem;/* Ensure title centers properly */
 }
 
 .cartItemsContainer {
@@ -51,7 +54,7 @@
     justify-content: space-between; /* Distribute space between details and actions */
     align-items: center; /* Vertically align content */
     background-color: #fff; /* White background for each item */
-    padding: 1rem;
+    padding-bottom: 1rem;
     border-radius: 8px; /* Rounded corners */ /* Subtle shadow */
     flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
@@ -66,7 +69,7 @@
 
 .itemName {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 800;
     transform: scaleY(2);
 }
 
@@ -86,6 +89,8 @@
 
 .itemActions {
     display: flex;
+    height: 0;
+    top: 0px;
     align-items: center;
 }
 
@@ -108,6 +113,11 @@
 }
 
 .removeButton {
+    z-index: 100;
+    margin-bottom: 1.5rem;
+    top: 0;
+    font-size: 0.9rem;
+    margin-right: -1rem;
     background: none;
     border: none; /* Subtle border */
     padding: 0.5rem 1rem;
@@ -153,7 +163,7 @@
     font-size: 1.5rem;
     padding-bottom: 2rem;
     padding-top: 1rem;
-    font-weight: 600;
+    font-weight: 900;
     color: #110708; /* Primary text color for total */
 }
 
@@ -211,12 +221,11 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .container {
-        padding-top: 20vh;
+        padding-top: 25vh;
     }
 
     .cartTitle {
         font-size: 2rem;
-        margin-bottom: 1.5rem;
         text-align: left;
     }
 
@@ -226,6 +235,7 @@
         gap: 1rem; /* Space between stacked sections */
         margin: auto;
         width: 100%;
+        padding-right: 1rem;
     }
 
     .itemDetails {
