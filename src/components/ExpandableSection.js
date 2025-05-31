@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import styles from '../styles/ExpandableSection.module.css';
 
-export default function ExpandableSection({ title, children }) {
-    const [isOpen, setIsOpen] = useState(false);
+export default function ExpandableSection({ title, children, defaultExpanded = false }) {
+    const [isOpen, setIsOpen] = useState(defaultExpanded);
 
     return (
         <div className={styles.container}>

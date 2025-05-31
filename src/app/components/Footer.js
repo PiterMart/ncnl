@@ -9,8 +9,9 @@ export default function Footer() {
     const currentPath = usePathname();
 
     const pages = [
-        { name: 'TIENDA', path: '/shop' },
-        { name: 'AYUDA', path: '/ayuda' },
+        { name: 'SHOP', path: '/shop' },
+        { name: 'ABOUT', path: '/about' },
+        { name: 'HELP', path: '/ayuda' },
         { name: 'CONTACT', path: '/contact' },
         { name: 'NEWSLETTER', path: '/newsletter' },
         { name: 'POLITICA DE PRIVACIDAD', path: '/politica-de-privacidad' },

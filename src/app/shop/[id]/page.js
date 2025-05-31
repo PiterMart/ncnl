@@ -193,18 +193,19 @@ export default function ProductPage() {
                         <ExpandableSection
                             title=""
                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                            defaultExpanded={true}
                         >
                             <div className={styles.productShortDescription}>
                                 {product.shortDescription}
                             </div>
                             <div className={styles.productShortDescription}>
-                                {product.fullDescription}
+                                Material^ {product.material}
                             </div>
                             <div className={styles.productShortDescription}>
                                 Color^ {product.color}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Material^ {product.material}
+                                {product.fullDescription}
                             </div>
                         </ExpandableSection>
 
@@ -269,10 +270,10 @@ export default function ProductPage() {
                                 className={styles.buyButton}
                                 disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
                             >
-                                AGREGAR A LA BOLSA
+                                ADD TO BAG
                             </button>
                             <button className={styles.shopButton} onClick={() => router.push("/shop")}>
-                                VOLVER A LA TIENDA
+                                BACK TO SHOP
                             </button>
                         </div>
                     </div>

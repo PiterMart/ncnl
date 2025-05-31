@@ -32,7 +32,7 @@ export default function Home() {
         {/* <div className={styles.ticket}>
           <img src="/ticket-web.png" alt="Ticket" className={styles.ticketImage}/>
         </div> */}
-        <Hero />
+        {/* <Hero /> */}
       </div>
     </main>
   );

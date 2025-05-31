@@ -12,7 +12,9 @@ export default function ShopPage() {
     const [productsLoaded, setProductsLoaded] = useState(false);
 
     const handleLoadingComplete = () => {
-        setIsLoading(false);
+        if (productsLoaded) {
+            setIsLoading(false);
+        }
     };
 
     return (

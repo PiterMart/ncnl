@@ -62,8 +62,9 @@ export default function Nav() {
 
     const pages = [
         { name: 'SHOP', path: '/shop', delay: '0s' },
-        { name: 'HELP', path: '/ayuda', delay: '0.1s' },
-        { name: 'CONTACT', path: '/contact', delay: '0.2s' },
+        { name: 'ABOUT', path: '/about', delay: '0.1s' },
+        { name: 'HELP', path: '/ayuda', delay: '0.2s' },
+        { name: 'CONTACT', path: '/contact', delay: '0.3s' },
     ];
 
     const toggleMenu = () => {
@@ -97,7 +98,7 @@ export default function Nav() {
     // }
 
     return (
-        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible && hasScrolled ? styles.nav_hidden : ''}`}>
+        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible && hasScrolled ? styles.nav_hidden : ''} ${currentPath === '/' ? styles.nav_white : styles.nav_black}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
                 <img
                     src="/NCNL_LOGO.png"
