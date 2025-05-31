@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import styles from '../../styles/Video.module.css';
+import Link from 'next/link';
 
 export default function Video() {
   const videoRef = useRef(null);
@@ -43,9 +44,9 @@ export default function Video() {
         </video>
 
         {/* "SEE RUNWAY" Button */}
-        {/* <button className={styles.runwayButton} onClick={handleSeeRunway}>
-          <img style={{ width: '250px', height: 'auto' }} src="/la-piedad-logo.png" alt="LA PIEDAD" />
-        </button> */}
+        <Link className={styles.runwayButton} href="/shop">
+          <p>SHOP</p>
+        </Link>
 
         {/* Scrolling Text */}
         <div className={styles.scrollTextContainer}>

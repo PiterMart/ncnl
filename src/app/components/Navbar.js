@@ -61,8 +61,8 @@ export default function Nav() {
     // };
 
     const pages = [
-        { name: 'TIENDA', path: '/shop', delay: '0s' },
-        { name: 'AYUDA', path: '/ayuda', delay: '0.1s' },
+        { name: 'SHOP', path: '/shop', delay: '0s' },
+        { name: 'HELP', path: '/ayuda', delay: '0.1s' },
         { name: 'CONTACT', path: '/contact', delay: '0.2s' },
     ];
 
@@ -123,7 +123,7 @@ export default function Nav() {
                                 <span className={styles.cartCounter}>
                                     {items.length}
                                 </span>
-                                <p>BOLSA</p>
+                                <p>BAG</p>
                             </Link>
                         ) : (
                             <button
@@ -133,7 +133,7 @@ export default function Nav() {
                                 <span className={styles.cartCounter}>
                                     {items.length}
                                 </span>
-                                <p>BOLSA</p>
+                                <p>BAG</p>
                             </button>
                         )}
                     </div>
