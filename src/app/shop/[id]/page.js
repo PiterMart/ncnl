@@ -84,6 +84,7 @@ export default function ProductPage() {
                         sizeGuideImage: productData.sizeGuideImage || '/placeholders/size-guide.webp',
                         mainImage: productData.images?.[0],
                         collection: productData.collection,
+                        category: productData.category || "", // NEW: load category
                     });
                     setContentLoaded(true);
                 } else {
@@ -120,7 +121,8 @@ export default function ProductPage() {
                 size: selectedSize,
                 mainImage: product.mainImage,
                 collection: product.collection,
-                color: product.color
+                color: product.color,
+                category: product.category, // NEW: pass category if needed
             });
             router.push("/cart");
         } catch (err) {
@@ -188,6 +190,12 @@ export default function ProductPage() {
                         </div>
                         <div className={styles.productShortDescription}>
                             <span>{product.collection}</span>
+                            {/* NEW: show category next to collection */}
+                            {product.category && (
+                                <span style={{ marginLeft: '1rem' }}>
+                                    Categoría: {product.category}
+                                </span>
+                            )}
                         </div>
 
                         <ExpandableSection
@@ -199,10 +207,10 @@ export default function ProductPage() {
                                 {product.shortDescription}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Material^ {product.material}
+                                Material: {product.material}
                             </div>
                             <div className={styles.productShortDescription}>
-                                Color^ {product.color}
+                                Color: {product.color}
                             </div>
                             <div className={styles.productShortDescription}>
                                 {product.fullDescription}
@@ -233,14 +241,6 @@ export default function ProductPage() {
                             </div>
                         )}
 
-                        {/* {product.sizeGuideImage && (
-                            <button
-                                className={styles.sizeGuideButton}
-                                onClick={() => setShowSizeGuide(true)}
-                            >
-                                Size Guide Chart
-                            </button>
-                        )} */}
                         {showSizeGuide && product.sizeGuideImage && (
                             <div
                                 className={styles.sizeGuideModal}
@@ -282,12 +282,12 @@ export default function ProductPage() {
 
             {product && galleryImages.length > 0 && (
                 <Lightbox
-                open={lightboxOpen}
-                close={() => setLightboxOpen(false)}
-                slides={slides}
-                index={currentImageIndex}
-                render={{ slide: NextJsImage }}
-            />
+                    open={lightboxOpen}
+                    close={() => setLightboxOpen(false)}
+                    slides={slides}
+                    index={currentImageIndex}
+                    render={{ slide: NextJsImage }}
+                />
             )}
         </main>
     );

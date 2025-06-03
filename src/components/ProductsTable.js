@@ -23,8 +23,8 @@ function Modal({ isOpen, onClose, children }) {
 
 /**
  * ProductsTable component:
- * - suscribe en tiempo real a Firestore
- * - muestra, agrega, edita y elimina productos
+ * - subscribes in real time to Firestore
+ * - displays, adds, edits and deletes products
  */
 export default function ProductsTable() {
     const [products, setProducts] = useState([]);
@@ -32,6 +32,7 @@ export default function ProductsTable() {
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
+    // Initial form values, now including "category"
     const initialForm = {
         name: "",
         description: "",
@@ -40,19 +41,18 @@ export default function ProductsTable() {
         collection: "",
         color: "",
         material: "",
-        // stock: "",
-        // size: "",
+        category: "", // NEW: category field
     };
     const [formValues, setFormValues] = useState(initialForm);
     const [selectedImages, setSelectedImages] = useState([]); // File[]
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
 
-    // Suscripción en tiempo real
+    // Real-time subscription
     useEffect(() => {
         const unsubscribe = productService.subscribeToProducts(
             setProducts,
-            (err) => console.error("Error en suscripción:", err)
+            (err) => console.error("Error in subscription:", err)
         );
         return () => unsubscribe();
     }, []);
@@ -78,10 +78,9 @@ export default function ProductsTable() {
             collection: product.collection,
             color: product.color,
             material: product.material,
-            // size: product.size,
-            // stock: product.stock,
+            category: product.category || "", // Load existing category
         });
-        setSelectedImages([]); // no cambiar imágenes a menos que suban nuevas
+        setSelectedImages([]); // do not change images unless new ones uploaded
         setIsModalOpen(true);
     };
 
@@ -92,13 +91,13 @@ export default function ProductsTable() {
         setSelectedImages([]);
     };
 
-    // Input change
+    // Handle input/select change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
     };
 
-    // File input change
+    // Handle file input change
     const handleImageChange = (e) => {
         setSelectedImages(e.target.files);
     };
@@ -109,7 +108,7 @@ export default function ProductsTable() {
         try {
             await productService.deleteProduct(id);
         } catch (err) {
-            console.error("Error eliminando producto:", err);
+            console.error("Error deleting product:", err);
             alert("No se pudo eliminar el producto.");
         }
     };
@@ -122,17 +121,17 @@ export default function ProductsTable() {
 
         try {
             if (isEditing && editingId) {
-                // 1) Update fields
+                // 1) Update fields (including category)
                 await productService.updateProduct(editingId, formValues);
-                // 2) If suben imágenes nuevas: subir y actualizar
+                // 2) If new images uploaded: upload and update
                 if (selectedImages.length > 0) {
                     const urls = await imageService.uploadImages(editingId, selectedImages);
                     await productService.updateProductImages(editingId, urls);
                 }
             } else {
-                // 1) Añadir nuevo
+                // 1) Add new product (with category)
                 const newId = await productService.addProduct(formValues);
-                // 2) Si hay imágenes: subir y actualizar
+                // 2) If images exist: upload and update
                 if (selectedImages.length > 0) {
                     const urls = await imageService.uploadImages(newId, selectedImages);
                     await productService.updateProductImages(newId, urls);
@@ -140,7 +139,7 @@ export default function ProductsTable() {
             }
             handleCloseModal();
         } catch (err) {
-            console.error("Error guardando producto:", err);
+            console.error("Error saving product:", err);
             setError("No se pudo guardar los cambios.");
         } finally {
             setIsSaving(false);
@@ -173,11 +172,9 @@ export default function ProductsTable() {
                             required: true,
                         },
                         { id: "price", label: "Precio", type: "number", step: "0.01", required: true },
-                        { id: "collection", label: "Colección", type: "text",required: true  },
-                        { id: "color", label: "Color", type: "text", required: true  },
-                        { id: "material", label: "Material", type: "text", required: true  },
-                        // { id: "size", label: "Talle", type: "text" },
-                        // { id: "stock", label: "Stock", type: "number", required: true },
+                        { id: "collection", label: "Colección", type: "text", required: true },
+                        { id: "color", label: "Color", type: "text", required: true },
+                        { id: "material", label: "Material", type: "text", required: true },
                     ].map(({ id, label, ...rest }) => (
                         <div key={id} className={styles.formGroup}>
                             <label htmlFor={id}>{label}</label>
@@ -191,6 +188,30 @@ export default function ProductsTable() {
                             />
                         </div>
                     ))}
+
+                    {/* NEW: Category select field */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="category">Categoría</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={formValues.category}
+                            onChange={handleChange}
+                            required
+                            className={styles.input}
+                        >
+                            <option value="">-- Seleccionar --</option>
+                            <option value="Campera">Campera</option>
+                            <option value="Buzo">Buzo</option>
+                            <option value="Remera">Remera</option>
+                            <option value="Pantalon">Pantalón</option>
+                            <option value="Chaleco">Chaleco</option>
+                            <option value="Camisa">Camisa</option>
+                            <option value="Gorra">Gorra</option>
+                            <option value="Botas">Botas</option>
+                            <option value="Morral">Morral</option>
+                        </select>
+                    </div>
 
                     <div className={styles.formGroup}>
                         <label htmlFor="images">
@@ -235,10 +256,9 @@ export default function ProductsTable() {
                         <th>Talle</th>
                         <th>Color</th>
                         <th>Material</th>
+                        <th>Categoría</th> {/* NEW: Mostrar categoría */}
                         <th>Imágenes</th>
                         <th>Acciones</th>
-                        {/* <th>Stock</th> */}
-                        {/* <th>Talle</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -253,6 +273,7 @@ export default function ProductsTable() {
                             <td>{p.size}</td>
                             <td>{p.color}</td>
                             <td>{p.material}</td>
+                            <td>{p.category}</td> {/* NEW: Mostrar categoría */}
                             <td>
                                 {p.images?.map((url, i) => (
                                     <img
