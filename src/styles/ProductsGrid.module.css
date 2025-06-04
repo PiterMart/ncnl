@@ -123,3 +123,23 @@
          font-size: 0.9rem; /* Even smaller text */
      }
 }
+
+.filterContainer {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.categoryFilter {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-width: 200px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.categoryFilter:hover {
+    border-color: #999;
+}

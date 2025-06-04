@@ -32,6 +32,7 @@ function formatPrice(value) {
 export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     useEffect(() => {
         // Subscribe to product updates
@@ -49,6 +50,15 @@ export default function ProductsGrid({ onProductsLoaded }) {
         return () => unsubscribe();
     }, [onProductsLoaded]);
 
+    const categories = [
+        "Campera", "Buzo", "Remera", "Pantalon", "Chaleco", 
+        "Camisa", "Gorra", "Botas", "Morral"
+    ];
+
+    const filteredProducts = selectedCategory
+        ? products.filter(p => p.category === selectedCategory)
+        : products;
+
     if (error) {
         return <p className={styles.errorText}>{error}</p>;
     }
@@ -59,8 +69,22 @@ export default function ProductsGrid({ onProductsLoaded }) {
 
     return (
         <div className={styles.container}>
+            {/* <div className={styles.filterContainer}>
+                <select 
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className={styles.categoryFilter}
+                >
+                    <option value="">Todas las categorías</option>
+                    {categories.map(category => (
+                        <option key={category} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
+            </div> */}
             <div className={styles.grid}>
-                {products.map((p) => (
+                {filteredProducts.map((p) => (
                     <Link
                         href={`/shop/${p.id}`}
                         key={p.id}
