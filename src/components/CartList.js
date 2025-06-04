@@ -106,6 +106,7 @@ export default function CartList() {
                                             </div>
                                         )}
                                         <div className={styles.itemDetails}>
+                                            <p className={styles.itemName} style={{ marginBottom: '-7px', transform: 'none' }}>{item.category}</p>
                                             <div className={styles.itemName}>{item.name}</div>
                                             <div className={styles.itemActions}>
                                              <button

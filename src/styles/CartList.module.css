@@ -92,6 +92,7 @@
     height: 0;
     top: 0px;
     align-items: center;
+    justify-content: right;
 }
 
 /* Style for item image container */
@@ -114,23 +115,22 @@
 
 .removeButton {
     z-index: 100;
+    margin-top: -1.5rem;
     margin-bottom: 1.5rem;
     top: 0;
     font-size: 0.9rem;
     margin-right: -1rem;
     background: none;
     border: none; /* Subtle border */
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     cursor: pointer;
     font-size: 0.8rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, font-size 0.3s ease;
      color: #110708; /* Default text color */
 }
 
 .removeButton:hover {
-    background-color: #110708; /* Dark background on hover */
-    color: aliceblue; /* Light text on hover */
+    font-size: 1.5rem;
 }
 
 .removeButton:focus {

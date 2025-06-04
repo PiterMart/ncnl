@@ -183,19 +183,14 @@ export default function ProductPage() {
                     </div>
                     <div className={styles.productInfo}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.5rem' }}>
-                            <h1 className={styles.productName}>{product.title}</h1>
+                            <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
+                            <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
                                 $ {formatPrice(product.price)}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
                             <span>{product.collection}</span>
-                            {/* NEW: show category next to collection */}
-                            {product.category && (
-                                <span style={{ marginLeft: '1rem' }}>
-                                    Categoría: {product.category}
-                                </span>
-                            )}
                         </div>
 
                         <ExpandableSection

@@ -113,33 +113,6 @@ export default function Nav() {
                 <span className={styles.bar}></span>
             </button>
             <div className={`${styles.nav_list} ${isMenuOpen ? styles.active : ''}`} id="navMenu">
-            <div className={styles.rightSection}>
-                    <div className={styles.cartSection}>
-                        {isMobile ? (
-                            <Link 
-                                href="/cart" 
-                                className={styles.cartButton}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                <span className={styles.cartCounter}>
-                                    {items.length}
-                                </span>
-                                <p>BAG</p>
-                            </Link>
-                        ) : (
-                            <button
-                                className={styles.cartButton}
-                                onClick={() => setIsCartOpen(true)}
-                            >
-                                <span className={styles.cartCounter}>
-                                    {items.length}
-                                </span>
-                                <p>BAG</p>
-                            </button>
-                        )}
-                    </div>
-                    {/* Removed UserInfo and Login/Logout Link */}
-                </div>
                 <ul>
                     {pages.map((page, index) => (
                         <li key={index} style={{ '--delay': page.delay }}>
@@ -152,12 +125,28 @@ export default function Nav() {
                             </Link>
                         </li>
                     ))}
-                    {/* CartModal is kept as it's part of cart functionality, not auth */}
-                    <CartModal
-                        isOpen={isCartOpen}
-                        onClose={() => setIsCartOpen(false)}
-                    />
+                    <li style={{ '--delay': '0.4s' }}>
+                        {isMobile ? (
+                            <Link 
+                                href="/cart" 
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                BAG ({items.length})
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit' }}
+                            >
+                                BAG ({items.length})
+                            </button>
+                        )}
+                    </li>
                 </ul>
+                <CartModal
+                    isOpen={isCartOpen}
+                    onClose={() => setIsCartOpen(false)}
+                />
             </div>
         </div>
     );

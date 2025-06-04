@@ -5,7 +5,7 @@ import styles from '../../styles/privacy.module.css';
 export default function HelpPage() {
     return (
         <main className={styles.container}>
-            <h1 className={styles.title}>AYUDA / PREGUNTAS FRECUENTES</h1>
+            <h1 className={styles.title}>HELP</h1>
             <div className={styles.content}>
                 <p>
                     <strong>¿Cómo realizo una compra?</strong><br />

@@ -13,18 +13,29 @@
 }
 
 .title {
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: -px;
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 900;
+    background-color: transparent;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: -px;
+    transform: scaleY(3);
     font-size: 2rem;
-    font-weight: 300;
-    letter-spacing: 0.10rem;
-    margin-bottom: 4rem;
-    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 5rem;
+    text-wrap: auto;
+    line-height: 24px;
 }
 
 .contactList {
     display: flex;
     flex-direction: column;
     gap: 3rem;
-    align-items: center;
+    align-items: left;
 }
 
 .contactItem {

@@ -51,13 +51,14 @@
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
     font-weight: 900;
-    transform: scaleY(1.5);
+    transform: scaleY(2);
 }
 
 .price {
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
     font-weight: 500;
+    margin-top: 5px;
 }
 
 /* Description style (optional, based on previous code) */

@@ -74,13 +74,14 @@ export default function ProductsGrid({ onProductsLoaded }) {
                             />
                         )}
                         <div className={styles.textContainer}>
+                            <p className={styles.name} style={{ marginBottom: '-3px', transform: 'none' }}>{p.category}</p>
                             <h2 className={styles.name}>{p.name}</h2>
                             {/* Apply localized formatting */}
                             <p className={styles.price}>
                                 ${formatPrice(p.price)}
                             </p>
                         </div>
-                    </Link>
+                    </Link> 
                 ))}
             </div>
         </div>
