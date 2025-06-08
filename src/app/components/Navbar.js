@@ -104,7 +104,7 @@ export default function Nav() {
                     src="/NCNL_LOGO.png"
                     alt="NCNL Logo"
                     className={styles.logo}
-                    style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
+                    style={{ width: '100%', position: 'fixed', maxWidth: '468px', top: "1rem" }}
                 />
             </Link>
             <button className={`${styles.navButton} ${isMenuOpen ? styles.open : ''}`} onClick={toggleMenu}>
