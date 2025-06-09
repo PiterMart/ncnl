@@ -2,23 +2,25 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 2rem;
-  border-radius: 8px;
+  background-color: transparent;
+  padding: 0rem;
+  border-radius: 0px;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+  text-align: left;
 }
 
 .title {
-  font-family: 'Nacional-Extended', sans-serif;
-  color: #fff;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  color: #110708;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 900;
+  background-color: transparent;
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: -2px;
+  transform: scaleY(3);
+  padding-bottom: 1rem;
 }
 
 .inputGroup {
@@ -30,23 +32,23 @@
 .input {
   font-family: 'Nacional-Extended', sans-serif;
   padding: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  border: 1px solid rgba(17, 7, 8, 0.2);
+  border-radius: 0px;
+  background-color: white;
+  color: #110708;
   font-size: 1rem;
   transition: all 0.3s ease;
   font-weight: 700;
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(17, 7, 8, 0.5);
 }
 
 .input:focus {
   outline: none;
-  border-color: #fff;
-  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #110708;
+  background-color: white;
 }
 
 .textarea {
@@ -56,8 +58,8 @@
 
 .submitButton {
   font-family: 'Nacional-Extended', sans-serif;
-  background-color: #fff;
-  color: #000;
+  background-color: #110708;
+  color: white;
   border: none;
   padding: 0.8rem;
   border-radius: 4px;
@@ -71,11 +73,11 @@
 }
 
 .submitButton:hover {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(17, 7, 8, 0.9);
 }
 
 .submitButton:disabled {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(17, 7, 8, 0.5);
   cursor: not-allowed;
 }
 
@@ -88,11 +90,11 @@
 
 .successMessage {
   font-family: 'Nacional-Extended', sans-serif;
-  color: #fff;
+  color: #110708;
   text-align: center;
   font-size: 1.5rem;
   padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: white;
   border-radius: 8px;
   width: 100%;
   max-width: 400px;
@@ -102,6 +104,7 @@
   transition: opacity 0.5s ease, visibility 0.5s ease;
   text-transform: uppercase;
   letter-spacing: 2px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .successMessage.visible {

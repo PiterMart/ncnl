@@ -1,0 +1,154 @@
+/* src/styles/ProductsGrid.module.css */
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Reference site uses a dark background */
+    background-color: aliceblue; /* Dark grey/black background */
+    padding: 20vh 1rem; /* Add some vertical padding, keep horizontal minimal */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+}
+
+/* Reverting to a CSS Grid layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem; /* Example gap, adjust to match reference */
+    width: 100%; /* Take full width of container */
+    max-width: 1200px; /* Optional: Limit grid max width like the reference site */
+    margin-top: 0; /* Adjust or remove margin top based on page header */
+    margin-bottom: 0; /* Adjust or remove margin bottom */
+    padding: 0; /* Remove internal padding */
+}
+
+.card {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    padding: 0;
+    margin-bottom: 1.75rem;
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.textContainer {
+    margin-top: 1.75rem;
+    position: relative;
+    color: #000000; /* White text color */
+}
+
+.name {
+    font-size: 1rem; /* Slightly smaller font size */
+    margin: 0 0 0.25rem 0; /* Adjust margins */
+    color: inherit; /* Inherit color from textContainer */
+    text-align: left; /* Align text to the left */
+    font-weight: 900;
+    transform: scaleY(2);
+}
+
+.price {
+    color: inherit; /* Inherit color from textContainer */
+    text-align: left; /* Align text to the left */
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+/* Description style (optional, based on previous code) */
+.description {
+    font-size: 0.8rem;
+    color: #ccc; /* Lighter color for description */
+    margin-top: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit description lines */
+    -webkit-box-orient: vertical;
+}
+
+
+.errorText {
+    color: #f44336;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .grid {
+        /* On smaller screens, maybe 2 columns or adjust minmax */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem; /* Smaller gap on mobile */
+        padding: 0 0.5rem; /* Add slight horizontal padding to the grid */
+    }
+
+     .container {
+         padding: 10rem 0.5rem; /* Adjust container padding on mobile */
+     }
+
+     .image {
+         min-height: 250px; /* Smaller min height on mobile */
+     }
+
+     .name,
+     .price {
+         font-size: 10px; /* Smaller text on mobile */
+     }
+
+     .textContainer {
+         padding-top: '1rem';/* Reduced padding around text on mobile */
+     }
+     .card {
+        margin-bottom: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        /* On very small screens, maybe 1 column or larger minmax for 2 */
+         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+         gap: 0.5rem; /* Even smaller gap */
+    }
+
+     .image {
+         min-height: 180px; /* Smaller min height on very small screens */
+     }
+
+     .name,
+     .price {
+         font-size: 0.9rem; /* Even smaller text */
+     }
+}
+
+.filterContainer {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.categoryFilter {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-width: 200px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.categoryFilter:hover {
+    border-color: #999;
+}

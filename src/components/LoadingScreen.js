@@ -1,16 +1,24 @@
 import { useState, useEffect } from 'react';
 import styles from '../styles/LoadingScreen.module.css';
 
-export default function LoadingScreen({ onLoadingComplete }) {
+export default function LoadingScreen({ onLoadingComplete, isLoading = true }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    if (!isLoading) {
+      setProgress(100);
+      setTimeout(() => {
+        onLoadingComplete?.();
+      }, 500);
+      return;
+    }
+
     const interval = setInterval(() => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            onLoadingComplete();
+            onLoadingComplete?.();
           }, 500);
           return 100;
         }
@@ -19,7 +27,7 @@ export default function LoadingScreen({ onLoadingComplete }) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [onLoadingComplete]);
+  }, [onLoadingComplete, isLoading]);
 
   return (
     <div className={styles.loadingContainer}>

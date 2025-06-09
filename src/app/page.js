@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from 'react';
-import Form from '../components/Form';
+import { useState, useEffect } from 'react';
 import LoadingScreen from '../components/LoadingScreen';
 import styles from '../styles/Home.module.css';
+import Video from './components/Video';
+import Hero from '../components/Hero';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [contentLoaded, setContentLoaded] = useState(false);
+
+  useEffect(() => {
+    // Simulate initial content loading
+    const timer = setTimeout(() => {
+      setContentLoaded(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -14,30 +25,14 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
-      
-      <div className={styles.videoContainer}>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className={styles.backgroundVideo}
-        >
-          <source src="https://firebasestorage.googleapis.com/v0/b/ncnl-9fd04.firebasestorage.app/o/video%2FNCNL_VID.mp4?alt=media&token=860598dc-8a60-4aa0-b979-7fe9e19d86cf" type="video/mp4" />
-        </video>
-      </div>
-      <div className={styles.logoContainer}>
-        <img 
-          src="/NCNL_LOGO.png" 
-          alt="NCNL Logo" 
-          className={styles.logo}
-          style={{ filter: 'brightness(0) invert(1)', width: '100%', position: 'fixed', maxWidth: '500px' }}
-        />
-      </div>
+      {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} isLoading={!contentLoaded} />}
 
-      <div className={styles.content}>
-        <Form />
+      <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }}>
+        <Video />
+        {/* <div className={styles.ticket}>
+          <img src="/ticket-web.png" alt="Ticket" className={styles.ticketImage}/>
+        </div> */}
+        {/* <Hero /> */}
       </div>
     </main>
   );

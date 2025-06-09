@@ -3,6 +3,7 @@
 .container {
   padding: 2rem;
   min-height: 100vh;
+  padding-top: 200px;
   background-color: #f5f5f5;
 }
 

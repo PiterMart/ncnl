@@ -47,8 +47,11 @@ export async function POST(request) {
       console.log('User document created successfully');
 
       // Delete the lead document
-      await deleteDoc(leadDoc.ref);
-      console.log('Lead document deleted successfully');
+      // change to updateDoc and add the field "migratedFromLead" to true
+      await updateDoc(leadDoc.ref, {
+        hasAccount: true
+      });
+      console.log('Lead document updated successfully');
 
       return new Response(
         JSON.stringify({ 

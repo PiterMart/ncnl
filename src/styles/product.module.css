@@ -1,0 +1,247 @@
+/* src/styles/product.module.css */
+
+.productContainer {
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding-top: 25vh;
+    padding-bottom: 15vh;
+    background-color: aliceblue;
+    color: #110708;
+    min-height: 100vh;
+}
+
+.productGallery {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 3.75rem;
+}
+
+.productImage {
+    width: 100%;
+    position: relative;
+    aspect-ratio: 3/4;
+}
+
+.productInfo {
+    position: fixed; /* Keeping the fixed position as requested */
+    margin-left: 50vw; /* Keeping the fixed margin as requested */
+    top: 25vh;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 500px;
+    padding-right: 1rem;
+}
+
+
+.productName {
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: -2px;
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 900;
+    background-color: transparent;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: -px;
+    transform: scaleY(3);
+    font-size: 2rem;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-wrap: auto;
+    line-height: 24px;
+}
+
+
+.productPrice {
+    font-size: 1.35rem;
+    letter-spacing: 0px; 
+    margin: 0;
+    font-weight: 800;
+    transform: scaleY(1.25);
+}
+
+.productMeta {
+    font-size: 1rem; 
+    letter-spacing: 0px;
+    color: #333;
+}
+
+.productFullName {
+    font-size: 1.2rem; 
+    letter-spacing: 0.15rem;
+    font-weight: bold;
+}
+
+.productShortDescription {
+    font-size: 0.75rem; 
+    font-weight: 600;
+    line-height: 1.65;
+    padding-bottom: 0.5rem;
+}
+
+.productFullDescription {
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    color: #333;
+}
+
+.productSpecs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.sizeSelector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.sizeOptions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.sizeButton {
+    border: none;
+    color: #110708;
+    background: none;
+    cursor: pointer;
+    min-width: 50px;
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+}
+
+.selectedSize {
+    background-color: #110708;
+    color: aliceblue;
+    border: 1px solid #1107084c;
+    cursor: pointer;
+    min-width: 50px;
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
+}
+
+.sizeGuideButton {
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+}
+
+.sizeGuideModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.sizeGuideContent {
+    background: white;
+    padding: 2rem;
+    position: relative;
+}
+
+.buyButton {
+    background-color: #110708;
+    color: aliceblue;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem; /* Keeping original size */
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.3s ease;
+    font-weight: 800;
+}
+
+.shopButton {
+    background-color: #11070800;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem; /* Keeping original size */
+    cursor: pointer;
+    width: 100%;
+}
+.buyButton:hover {
+    opacity: 0.8;
+}
+
+.buyButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.errorContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    /* Added standard text color, was not explicitly set before */
+    color: #333;
+}
+
+.errorContainer h2 {
+    font-size: 1.5rem; /* Keeping original size */
+    color: inherit;
+    font-weight: 500;
+}
+
+@media (max-width: 850px) {
+    .buyButton {
+        width: 100%;
+        position: sticky;
+        bottom: 10rem;
+        margin: auto;
+    }
+
+    .productContainer {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding-top: 13vh;
+    }
+
+    .productGallery {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+
+    .productImage {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+    }
+
+    .productInfo {
+        position: relative;
+        top: 0;
+        padding-top: 1rem;
+        margin-left: 0;
+        gap: 1rem;
+    }
+}

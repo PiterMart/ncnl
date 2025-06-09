@@ -29,7 +29,7 @@ export default function Login() {
       if (user) {
         console.log("Redirecting to admin page");
         setLoading(false);
-        router.push('/admin');
+        router.push('/');
       }
     });
 

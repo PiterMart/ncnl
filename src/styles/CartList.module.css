@@ -1,0 +1,318 @@
+/* Base styles for the cart container, similar to productContainer */
+.container {
+    padding-top: 30vh;
+    display: flex; /* Use flexbox for overall layout */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center content horizontally */
+    padding-bottom: 20vh; /* Adjust bottom padding as needed */
+    background-color: aliceblue; /* Match background */
+    color: #110708; /* Match text color */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+}
+
+.emptyCartContainer {
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30vh;
+    min-height: 100vh;
+    background-color: aliceblue;
+    color: #110708;
+}
+
+.emptyCartMessage {
+    font-size: 1.5rem; /* Larger font for empty message */
+    font-weight: 600;
+    margin-bottom: 2rem; /* More space below message */
+}
+
+
+.cartTitle {
+    color: #110708;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 900;
+    background-color: transparent;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: -2px;
+    transform: scaleY(3);
+    padding-bottom: 2rem;/* Ensure title centers properly */
+}
+
+.cartItemsContainer {
+    width: 100%;
+    max-width: 800px; /* Max width for the items list */
+    margin-bottom: 2rem; /* Space below items list */
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    gap: 1rem; /* Space between cart items */
+}
+
+.cartItem {
+    display: flex; /* Use flexbox for individual item layout */
+    justify-content: space-between; /* Distribute space between details and actions */
+    align-items: center; /* Vertically align content */
+    background-color: #fff; /* White background for each item */
+    padding-bottom: 1rem;
+    border-radius: 8px; /* Rounded corners */ /* Subtle shadow */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.itemDetails {
+    flex-grow: 1; /* Allow details to take up available space */
+    display: flex;
+    flex-direction: column; /* Stack details vertically */
+    gap: 0.5rem; /* Space between detail lines */
+    margin-right: 1rem; /* Space between details and actions */
+}
+
+.itemName {
+    font-size: 1.1rem;
+    font-weight: 800;
+    transform: scaleY(2);
+}
+
+.itemSize,
+.itemQuantity,
+.itemPrice,
+.itemSubtotal {
+    font-size: 0.9rem;
+    text-align: right;
+    color: #333; /* Slightly muted color for details */
+}
+
+.itemSubtotal {
+    font-weight: 600; /* Make subtotal stand out slightly */
+    color: #110708; /* Use primary text color */
+}
+
+.itemActions {
+    display: flex;
+    height: 0;
+    top: 0px;
+    align-items: center;
+    justify-content: right;
+}
+
+/* Style for item image container */
+.itemImage {
+    width: 80px; /* Fixed width for the image container */
+    height: 100px; /* Fixed height for the image container */
+    flex-shrink: 0; /* Prevent image from shrinking */
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative; /* Needed for object-fit to work well */
+}
+
+/* Style for the actual image tag */
+.itemImageTag {
+    display: block; /* Remove extra space below image */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the container while maintaining aspect ratio */
+}
+
+.removeButton {
+    z-index: 100;
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+    top: 0;
+    font-size: 0.9rem;
+    margin-right: -1rem;
+    background: none;
+    border: none; /* Subtle border */
+    padding: 0.5rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease, font-size 0.3s ease;
+     color: #110708; /* Default text color */
+}
+
+.removeButton:hover {
+    font-size: 1.5rem;
+}
+
+.removeButton:focus {
+    outline: 2px solid #b0b0b0;
+    outline-offset: 2px;
+}
+
+.cartSummary {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    align-items: flex-end; /* Align summary items to the right */
+    gap: 1rem; /* Space between summary elements */
+}
+
+.emptyCart {
+    text-align: center;
+    color: #666;
+    margin-top: 40px;
+    font-weight: 100;
+    font-size: 2rem;
+    transform: scaleY(2);
+    letter-spacing: -0.1em;
+    margin-bottom: 2rem;
+}
+
+.total {
+    font-size: 1.5rem;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+    font-weight: 900;
+    color: #110708; /* Primary text color for total */
+}
+
+/* General button styling based on product.module.css buyButton */
+.button {
+    background-color: #110708;
+    color: aliceblue;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%; /* Allow button to size based on content */
+    min-width: 200px; /* Minimum width for buttons */
+    transition: opacity 0.3s ease;
+    border-radius: 4px; /* Slightly rounded corners */
+    text-align: center; /* Center button text */
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Style for the "Vaciar carrito" button */
+.clearButton {
+    background-color: transparent; /* Transparent background */
+    color: #110708; /* Dark text color */
+}
+
+.clearButton:hover {
+    background-color: #110708; /* Dark background on hover */
+    color: aliceblue; /* Light text on hover */
+     opacity: 1; /* No opacity change on hover for this button */
+}
+
+.clearButton:disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+     background-color: transparent; /* Keep background transparent when disabled */
+     color: #110708; /* Keep text color when disabled */
+     border-color: #110708; /* Keep border color when disabled */
+}
+
+
+.error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 25vh;
+    }
+
+    .cartTitle {
+        font-size: 2rem;
+        text-align: left;
+    }
+
+    .cartItem {
+        flex-direction: column; /* Stack item details and actions vertically */
+        align-items: flex-start; /* Align content to the left */
+        gap: 1rem; /* Space between stacked sections */
+        margin: auto;
+        width: 100%;
+        padding-right: 1rem;
+    }
+
+    .itemDetails {
+        margin-right: 0; /* Remove right margin */
+         width: 100%; /* Full width for details */
+    }
+
+    .itemImage {
+        width: 80px;
+        height: 100px;
+        position: absolute;
+        margin-top: 3rem;
+        /* margin-bottom: 0.5rem; Removed margin, using gap in .cartItem instead */
+    }
+
+
+    .itemActions {
+         width: 100%; /* Full width for actions */
+         justify-content: flex-end; /* Align remove button to the right */
+    }
+
+    .removeButton {
+        padding: 0.7rem 1.5rem; /* Adjust button padding */
+        font-size: 0.9rem;
+    }
+
+    .cartSummary {
+        align-items: center; /* Center summary items on small screens */
+    }
+
+    .total {
+        font-size: 2rem;
+    }
+
+    .button {
+        width: 100%; /* Full width buttons */
+        min-width: unset; /* Remove minimum width constraint */
+        padding: 0.8rem 1rem; /* Adjust button padding */
+    }
+
+    .emptyCartMessage {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+}
+
+.checkboxContainer {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkboxItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+.checkboxLabel {
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.link {
+    color: #000;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.link:hover {
+    color: #666;
+}
