@@ -186,7 +186,7 @@ export default function ProductPage() {
                             <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
                             <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
-                                $ {formatPrice(product.price)}
+                                {product.title === "La Piedad" ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
@@ -212,7 +212,7 @@ export default function ProductPage() {
                             </div>
                         </ExpandableSection>
 
-                        {product.sizes && product.sizes.length > 0 && (
+                        {product.sizes && product.sizes.length > 0 && product.title !== "La Piedad" && (
                             <div className={styles.sizeSelector}>
                                 <div className={styles.productShortDescription}>
                                     TALLE
@@ -260,13 +260,15 @@ export default function ProductPage() {
                         )}
 
                         <div className={styles.actionButtons}>
-                            <button
-                                onClick={() => handleAddToCart(product)}
-                                className={styles.buyButton}
-                                disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
-                            >
-                                ADD TO BAG
-                            </button>
+                            {product.title !== "La Piedad" && (
+                                <button
+                                    onClick={() => handleAddToCart(product)}
+                                    className={styles.buyButton}
+                                    disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
+                                >
+                                    ADD TO BAG
+                                </button>
+                            )}
                             <button className={styles.shopButton} onClick={() => router.push("/shop")}>
                                 BACK TO SHOP
                             </button>
