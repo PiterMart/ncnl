@@ -125,10 +125,10 @@ export default function ProductsGrid({ onProductsLoaded }) {
                             </div>
                         )}
                         <div className={styles.textContainer}>
-                            <p className={styles.name} style={{ marginBottom: '-1px', transform: 'none' }}>{p.category}</p>
-                            <h2 className={styles.name}>{p.name}</h2>
+                            <p className={styles.name} style={{ top: '-1.5rem', position: 'absolute', transform: 'none' }}>{p.category}</p>
+                            <h2 className={styles.name} style={{ top: '-0.25rem', position: 'absolute' }}>{p.name}</h2>
                             {/* Apply localized formatting */}
-                            <p className={styles.price}>
+                            <p className={styles.price} style={{ top: '1.25rem', position: 'absolute' }}>
                                 ${formatPrice(p.price)}
                             </p>
                         </div>
