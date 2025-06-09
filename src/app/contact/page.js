@@ -15,6 +15,10 @@ export default function ContactPage() {
                     <span className={styles.name}>PAULINO</span>
                     <a href="mailto:paulino@ncnl.com" className={styles.email}>paulino@ncnl.com</a>
                 </div>
+                <div className={styles.contactItem}>
+                    <span className={styles.name}>CONTACT</span>
+                    <a href="mailto:contact@ncnl.com" className={styles.email}>contact@ncnl.com</a>
+                </div>
             </div>
         </main>
     );

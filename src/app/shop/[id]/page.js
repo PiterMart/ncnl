@@ -15,7 +15,7 @@ import { useCart } from '../../../contexts/CartContext';
 import 'yet-another-react-lightbox/styles.css';
 // Import the NextJsImage plugin for rendering Next.js Image components
 import Lightbox from 'yet-another-react-lightbox';
-
+import NextJsImage from "../../../components/NextJsImage";
 
 /**
  * Formats a numeric price into a string with thousands separators (.)
@@ -84,6 +84,7 @@ export default function ProductPage() {
                         sizeGuideImage: productData.sizeGuideImage || '/placeholders/size-guide.webp',
                         mainImage: productData.images?.[0],
                         collection: productData.collection,
+                        category: productData.category || "", // NEW: load category
                     });
                     setContentLoaded(true);
                 } else {
@@ -119,7 +120,9 @@ export default function ProductPage() {
                 quantity: 1,
                 size: selectedSize,
                 mainImage: product.mainImage,
-                collection: product.collection
+                collection: product.collection,
+                color: product.color,
+                category: product.category, // NEW: pass category if needed
             });
             router.push("/cart");
         } catch (err) {
@@ -180,30 +183,32 @@ export default function ProductPage() {
                     </div>
                     <div className={styles.productInfo}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.5rem' }}>
-                            <h1 className={styles.productName}>{product.title}</h1>
+                            <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
+                            <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
                                 $ {formatPrice(product.price)}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
-                            <span>COLLECCION | {product.collection}</span>
+                            <span>{product.collection}</span>
                         </div>
 
                         <ExpandableSection
                             title=""
                             style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                            defaultExpanded={true}
                         >
                             <div className={styles.productShortDescription}>
                                 {product.shortDescription}
                             </div>
                             <div className={styles.productShortDescription}>
+                                Material: {product.material}
+                            </div>
+                            <div className={styles.productShortDescription}>
+                                Color: {product.color}
+                            </div>
+                            <div className={styles.productShortDescription}>
                                 {product.fullDescription}
-                            </div>
-                            <div className={styles.productShortDescription}>
-                                Color | {product.color}
-                            </div>
-                            <div className={styles.productShortDescription}>
-                                Material | {product.material}
                             </div>
                         </ExpandableSection>
 
@@ -231,14 +236,6 @@ export default function ProductPage() {
                             </div>
                         )}
 
-                        {/* {product.sizeGuideImage && (
-                            <button
-                                className={styles.sizeGuideButton}
-                                onClick={() => setShowSizeGuide(true)}
-                            >
-                                Size Guide Chart
-                            </button>
-                        )} */}
                         {showSizeGuide && product.sizeGuideImage && (
                             <div
                                 className={styles.sizeGuideModal}
@@ -268,7 +265,10 @@ export default function ProductPage() {
                                 className={styles.buyButton}
                                 disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
                             >
-                                AGREGAR A LA BOLSA
+                                ADD TO BAG
+                            </button>
+                            <button className={styles.shopButton} onClick={() => router.push("/shop")}>
+                                BACK TO SHOP
                             </button>
                         </div>
                     </div>
@@ -281,7 +281,7 @@ export default function ProductPage() {
                     close={() => setLightboxOpen(false)}
                     slides={slides}
                     index={currentImageIndex}
-                    render={{ slide: Image }}
+                    render={{ slide: NextJsImage }}
                 />
             )}
         </main>

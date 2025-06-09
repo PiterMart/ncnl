@@ -29,10 +29,10 @@ export default function Home() {
 
       <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }}>
         <Video />
-        <div className={styles.ticket}>
+        {/* <div className={styles.ticket}>
           <img src="/ticket-web.png" alt="Ticket" className={styles.ticketImage}/>
-        </div>
-        <Hero />
+        </div> */}
+        {/* <Hero /> */}
       </div>
     </main>
   );

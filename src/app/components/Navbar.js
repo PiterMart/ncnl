@@ -11,6 +11,23 @@ import { useCart } from '../../contexts/CartContext';
 import CartModal from '../../components/CartModal';
 import styles from '../../styles/nav.module.css';
 
+// Custom hook for media queries
+const useMediaQuery = (query) => {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+        const media = window.matchMedia(query);
+        if (media.matches !== matches) {
+            setMatches(media.matches);
+        }
+        const listener = () => setMatches(media.matches);
+        media.addEventListener('change', listener);
+        return () => media.removeEventListener('change', listener);
+    }, [matches, query]);
+
+    return matches;
+};
+
 export default function Nav() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -19,6 +36,7 @@ export default function Nav() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const currentPath = usePathname();
     const { items } = useCart();
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     // const [user, setUser] = useState(null); // Removed
     // const [loading, setLoading] = useState(true); // Removed
@@ -43,9 +61,10 @@ export default function Nav() {
     // };
 
     const pages = [
-        { name: 'TIENDA', path: '/shop', delay: '0s' },
-        { name: 'AYUDA', path: '/ayuda', delay: '0.1s' },
-        { name: 'CONTACT', path: '/contact', delay: '0.2s' },
+        { name: 'SHOP', path: '/shop', delay: '0s' },
+        { name: 'ABOUT', path: '/about', delay: '0.1s' },
+        { name: 'HELP', path: '/ayuda', delay: '0.2s' },
+        { name: 'CONTACT', path: '/contact', delay: '0.3s' },
     ];
 
     const toggleMenu = () => {
@@ -79,13 +98,13 @@ export default function Nav() {
     // }
 
     return (
-        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible && hasScrolled ? styles.nav_hidden : ''}`}>
+        <div className={`${styles.nav} ${hasScrolled ? styles.nav_scrolled : styles.nav_transparent} ${!isVisible && hasScrolled ? styles.nav_hidden : ''} ${currentPath === '/' ? styles.nav_white : styles.nav_black}`}>
             <Link href="/" onClick={() => setIsMenuOpen(false)}>
                 <img
                     src="/NCNL_LOGO.png"
                     alt="NCNL Logo"
                     className={styles.logo}
-                    style={{ width: '100%', position: 'fixed', maxWidth: '500px', top: "1rem" }}
+                    style={{ width: '100%', position: 'fixed', maxWidth: '468px', top: "1rem" }}
                 />
             </Link>
             <button className={`${styles.navButton} ${isMenuOpen ? styles.open : ''}`} onClick={toggleMenu}>
@@ -106,26 +125,28 @@ export default function Nav() {
                             </Link>
                         </li>
                     ))}
-                    {/* CartModal is kept as it's part of cart functionality, not auth */}
-                    <CartModal
-                        isOpen={isCartOpen}
-                        onClose={() => setIsCartOpen(false)}
-                    />
+                    <li style={{ '--delay': '0.4s' }}>
+                        {isMobile ? (
+                            <Link 
+                                href="/cart" 
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                BAG ({items.length})
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit' }}
+                            >
+                                BAG ({items.length})
+                            </button>
+                        )}
+                    </li>
                 </ul>
-                <div className={styles.rightSection}>
-                    <div className={styles.cartSection}>
-                        <button
-                            className={styles.cartButton}
-                            onClick={() => setIsCartOpen(true)}
-                        >
-                            <span className={styles.cartCounter}>
-                                [{items.length}]
-                            </span>
-                            BOLSA
-                        </button>
-                    </div>
-                    {/* Removed UserInfo and Login/Logout Link */}
-                </div>
+                <CartModal
+                    isOpen={isCartOpen}
+                    onClose={() => setIsCartOpen(false)}
+                />
             </div>
         </div>
     );

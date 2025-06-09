@@ -4,7 +4,7 @@
   gap: 1rem;
   background-color: transparent;
   padding: 0rem;
-  border-radius: 8px;
+  border-radius: 0px;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
@@ -12,14 +12,15 @@
 }
 
 .title {
-  font-family: 'Nacional-Extended', sans-serif;
   color: #110708;
-  text-align: left;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 900;
+  background-color: transparent;
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: -2px;
+  transform: scaleY(3);
+  padding-bottom: 1rem;
 }
 
 .inputGroup {
@@ -32,7 +33,7 @@
   font-family: 'Nacional-Extended', sans-serif;
   padding: 0.8rem;
   border: 1px solid rgba(17, 7, 8, 0.2);
-  border-radius: 4px;
+  border-radius: 0px;
   background-color: white;
   color: #110708;
   font-size: 1rem;

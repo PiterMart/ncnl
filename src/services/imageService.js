@@ -2,7 +2,7 @@
 // Encapsulates Firebase Storage operations
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseApp } from "../firebase/firebaseConfig";
+import { firebaseApp } from "../../firebase/firebaseConfig";
 
 class ImageService {
   constructor() {

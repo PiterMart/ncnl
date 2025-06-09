@@ -5,7 +5,7 @@ import styles from '../../styles/privacy.module.css';
 export default function HelpPage() {
     return (
         <main className={styles.container}>
-            <h1 className={styles.title}>AYUDA / PREGUNTAS FRECUENTES</h1>
+            <h1 className={styles.title}>HELP</h1>
             <div className={styles.content}>
                 <p>
                     <strong>¿Cómo realizo una compra?</strong><br />
@@ -24,9 +24,9 @@ export default function HelpPage() {
                     Por el momento, las entregas se realizan dentro de [tu zona/localidad]. En caso de estar fuera de ese radio, escribinos antes de realizar tu compra para ver si podemos coordinar.
                     <br /><br />
 
-                    <strong>¿Necesito crear una cuenta para comprar?</strong><br />
+                    {/* <strong>¿Necesito crear una cuenta para comprar?</strong><br />
                     No. Podés realizar tu compra como invitado. Solo necesitás dejar tus datos para poder contactarte y coordinar la entrega.
-                    <br /><br />
+                    <br /><br /> */}
 
                     <strong>¿Puedo cancelar o modificar un pedido?</strong><br />
                     Si aún no realizaste el pago, podés cancelar sin problema. Si ya lo pagaste, contactanos lo antes posible para ver si es posible hacer un cambio o devolución.
@@ -37,7 +37,7 @@ export default function HelpPage() {
                     <br /><br />
 
                     <strong>¿Tienen atención al cliente?</strong><br />
-                    Sí. Podés escribirnos a 📧 <strong>[tu email]</strong> o por Instagram <strong>@nacional</strong> y te respondemos lo antes posible.
+                    Sí. Podés escribirnos al mail <strong><a href="mailto:contact@ncnl.co">contact@ncnl.co</a></strong> o al Instagram <strong><a href="https://www.instagram.com/ncnl.co" target="_blank" rel="noopener noreferrer">ncnl.co</a></strong> y te respondemos lo antes posible.
                     <br /><br />
 
                     <strong>¿Dónde puedo ver los Términos y Condiciones?</strong><br />

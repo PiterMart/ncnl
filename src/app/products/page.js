@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import ProductsTable from "../../components/ProductsTable";
 import { productService } from "../../services/productService";
+import styles from "../../styles/ProductsTable.module.css";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);

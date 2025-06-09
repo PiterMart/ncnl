@@ -19,7 +19,7 @@ export default function Hero() {
     isTyping.current = true;
 
     typeInstance.current = new TypeIt(typeRef.current, {
-      speed: 150,
+      speed: 80,
       cursor: false,
       lifeLike: true,
       loop: false,
@@ -27,7 +27,7 @@ export default function Hero() {
         isTyping.current = false;
         setTimeout(() => {
           setShowShop(true);
-        }, 40);
+        }, 10);
         setHasAnimated(true);
       },
     })
@@ -50,7 +50,7 @@ export default function Hero() {
                     href="/shop"
                     className={`${styles.shopLink} ${showShop ? styles.visible : ''}`}
                 >
-                   <p className={styles.shopText}>[COMPRAR]</p>
+                   <p className={styles.shopText}> Comprar {"^"} </p>
                 </Link>
             </div>
           <Image

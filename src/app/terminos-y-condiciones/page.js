@@ -5,7 +5,7 @@ import styles from '../../styles/privacy.module.css';
 export default function TermsPage() {
     return (
         <main className={styles.container}>
-            <h1 className={styles.title}>TÉRMINOS Y CONDICIONES DE USO</h1>
+            <h1 className={styles.title}>TÉRMINOS Y CONDICIONES</h1>
             <div className={styles.content}>
                 <p>
                     <strong>Última actualización:</strong> 18.05.2025
@@ -55,10 +55,10 @@ export default function TermsPage() {
                     <br /><br />
 
                     <strong>10. Contacto</strong><br />
-                    Para consultas relacionadas con estos Términos y Condiciones, podés escribirnos a:<br />
-                    📧 <strong>[tu email]</strong>
+                    Para consultas relacionadas con estos Términos y Condiciones.<br />
+                    Podés escribirnos al mail <strong><a href="mailto:contact@ncnl.co">contact@ncnl.co</a></strong> o al Instagram <strong><a href="https://www.instagram.com/ncnl.co" target="_blank" rel="noopener noreferrer">ncnl.co</a></strong> y te respondemos lo antes posible.
                 </p>
-                <p>Gracias por bancar una forma de producir con sentido y sin apuro.</p>
+                <p style={{textAlign: 'center', marginTop: '2rem'}}>Gracias por bancar una forma de producir con sentido y sin apuro.</p>
             </div>
         </main>
     );

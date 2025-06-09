@@ -71,8 +71,8 @@ export default function PrivacyPolicyPage() {
                     <br /><br />
                     <strong>9. Contacto</strong>
                     <br />
-                    Para consultas o reclamos relacionados con el uso de tus datos personales, podés escribirnos a:<br />
-                    📧 <strong>[tu email]</strong>
+                        Para consultas o reclamos relacionados con el uso de tus datos personales.<br />
+                        Podés escribirnos al mail <strong><a href="mailto:contact@ncnl.co">contact@ncnl.co</a></strong> o al Instagram <strong><a href="https://www.instagram.com/ncnl.co" target="_blank" rel="noopener noreferrer">ncnl.co</a></strong> y te respondemos lo antes posible.
                     <br /><br />
                     <strong>Autoridad de Control:</strong> La Agencia de Acceso a la Información Pública, órgano de control de la Ley N.º 25.326, tiene la facultad de atender denuncias y reclamos vinculados con el incumplimiento de las normas sobre protección de datos personales. Más información en: <a href="https://www.argentina.gob.ar/aaip" target="_blank">https://www.argentina.gob.ar/aaip</a>
                 </p>

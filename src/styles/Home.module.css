@@ -34,6 +34,7 @@
   justify-content: center;
   align-items: center;
   height: 100%;
+  padding-bottom: 2rem;
   padding-top: 5em;
   box-sizing: border-box;
   margin: auto;
@@ -41,9 +42,9 @@
 }
 .ticketImage {
   max-width: 550px;
-  box-shadow: -3px 10px 11px 0px rgba(0,0,0,0.75);
-  -webkit-box-shadow: -3px 10px 11px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: -3px 10px 11px 0px rgba(0,0,0,0.75);
+  box-shadow: -3px 3px 11px 0px rgba(0, 0, 0, 0.75);;
+  -webkit-box-shadow: -3px 3px 11px 0px rgba(0, 0, 0, 0.75);;
+  -moz-box-shadow: --3px 3px 11px 0px rgba(0, 0, 0, 0.75);
 }
 
 /* Mobile breakpoint */
