@@ -33,6 +33,7 @@ export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [hoveredProduct, setHoveredProduct] = useState(null);
 
     useEffect(() => {
         // Subscribe to product updates
@@ -57,7 +58,11 @@ export default function ProductsGrid({ onProductsLoaded }) {
 
     const filteredProducts = selectedCategory
         ? products.filter(p => p.category === selectedCategory)
-        : products;
+        : [...products].sort((a, b) => {
+            if (a.category === "Campera" && b.category !== "Campera") return -1;
+            if (a.category !== "Campera" && b.category === "Campera") return 1;
+            return 0;
+        });
 
     if (error) {
         return <p className={styles.errorText}>{error}</p>;
@@ -89,13 +94,35 @@ export default function ProductsGrid({ onProductsLoaded }) {
                         href={`/shop/${p.id}`}
                         key={p.id}
                         className={styles.card}
+                        onMouseEnter={() => setHoveredProduct(p.id)}
+                        onMouseLeave={() => setHoveredProduct(null)}
                     >
                         {p.images?.[0] && (
-                            <img
-                                src={p.images[0]}
-                                alt={p.name}
-                                className={styles.image}
-                            />
+                            <div className={styles.imageContainer}>
+                                <img
+                                    src={p.images[0]}
+                                    alt={p.name}
+                                    className={styles.image}
+                                    style={{
+                                        opacity: hoveredProduct === p.id ? 0 : 1,
+                                        transition: 'opacity 0.3s ease-in-out'
+                                    }}
+                                />
+                                {p.images[1] && (
+                                    <img
+                                        src={p.images[1]}
+                                        alt={p.name}
+                                        className={styles.image}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            opacity: hoveredProduct === p.id ? 1 : 0,
+                                            transition: 'opacity 0.3s ease-in-out'
+                                        }}
+                                    />
+                                )}
+                            </div>
                         )}
                         <div className={styles.textContainer}>
                             <p className={styles.name} style={{ marginBottom: '-1px', transform: 'none' }}>{p.category}</p>
