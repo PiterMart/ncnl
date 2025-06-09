@@ -111,6 +111,9 @@
      .textContainer {
          padding-top: '1rem';/* Reduced padding around text on mobile */
      }
+     .card {
+        margin-bottom: 2.5rem;
+    }
 }
 
 @media (max-width: 480px) {
