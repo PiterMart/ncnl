@@ -1,6 +1,7 @@
 /* src/styles/ProductsGrid.module.css */
 
 .container {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,7 +30,7 @@
     text-decoration: none;
     color: inherit;
     padding: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1.75rem;
 }
 
 .imageContainer {
@@ -45,6 +46,8 @@
 }
 
 .textContainer {
+    margin-top: 1.75rem;
+    position: relative;
     color: #000000; /* White text color */
 }
 
