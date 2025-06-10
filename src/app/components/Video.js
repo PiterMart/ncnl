@@ -93,7 +93,7 @@ export default function Video() {
           style={{ filter: 'brightness(0) invert(1)', position: 'absolute', top: '0px', left: '0px', maxWidth: '1000px' }}
         />
               <p className={styles.runwayButton} style={{position: 'absolute', bottom: '0'}}>
-                {`${timeLeft.days}DIA ${timeLeft.hours}:${timeLeft.minutes}:${timeLeft.seconds}.${Math.floor(timeLeft.milliseconds/100)}`}
+                {`${timeLeft.days > 0 ? `${timeLeft.days}DIA ` : ''}${timeLeft.hours}:${timeLeft.minutes}:${timeLeft.seconds}.${Math.floor(timeLeft.milliseconds/100)}`}
               </p>
       </div>
 
