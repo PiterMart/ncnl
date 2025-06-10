@@ -42,10 +42,6 @@
 }
 
 .runwayButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) scaleY(3);
     background: rgba(0, 0, 0, 0);
     color: white;
     border: none;
@@ -53,6 +49,11 @@
     font-weight: 900;
     background-color: transparent;
     letter-spacing: -2px;
+    transform: scaleY(3);
+    left: 2rem;
+    top: 81%;
+    position: absolute;
+
 }
   
 .modalOverlay {
@@ -130,9 +131,4 @@
         object-fit: cover;
       }
   
-    .runwayButton {
-        left: 38%;
-        top: 80%;
-        transform: scaleY(3);
-    }
 }

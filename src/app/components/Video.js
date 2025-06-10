@@ -1,15 +1,58 @@
 import { useRef, useEffect, useState } from 'react';
 import styles from '../../styles/Video.module.css';
+import Image from 'next/image';
+import styles2 from '../../styles/LoadingScreen.module.css';
 import Link from 'next/link';
+import { differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, differenceInMilliseconds, parseISO } from 'date-fns';
 
 export default function Video() {
   const videoRef = useRef(null);
   const [showPlayer, setShowPlayer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0
+  });
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 1.0;
     }
+  }, []);
+
+  useEffect(() => {
+    // Set a fixed end date - Argentina timezone (UTC-3)
+    const endDate = parseISO('2025-06-12T00:00:00-03:00');
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const days = differenceInDays(endDate, now);
+      const hours = differenceInHours(endDate, now) % 24;
+      const minutes = differenceInMinutes(endDate, now) % 60;
+      const seconds = differenceInSeconds(endDate, now) % 60;
+      const milliseconds = differenceInMilliseconds(endDate, now) % 1000;
+
+      console.log('Debug - Current time:', now);
+      console.log('Debug - End date:', endDate);
+      console.log('Debug - Time left:', { days, hours, minutes, seconds, milliseconds });
+
+      if (days >= 0) {
+        setTimeLeft({ days, hours, minutes, seconds, milliseconds });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
+      }
+    };
+
+    // Calculate immediately
+    calculateTimeLeft();
+    
+    // Update every millisecond for smoother countdown
+    const timer = setInterval(calculateTimeLeft, 10);
+
+    // Cleanup
+    return () => clearInterval(timer);
   }, []);
 
   const handleSeeRunway = async () => {
@@ -42,12 +85,19 @@ export default function Video() {
         >
           <source src="/NCNL_RUNWAY_FINAL_2.mp4" type="video/mp4" />
         </video>
+        <div className={styles.logoContainer}>
+        <img 
+          src="/NCNL_LOGO.png" 
+          alt="NCNL Logo" 
+          className={styles2.logo}
+          style={{ filter: 'brightness(0) invert(1)', position: 'absolute', top: '0px', left: '0px', maxWidth: '1000px' }}
+        />
+              <p className={styles.runwayButton} style={{position: 'absolute', bottom: '0'}}>
+                {`${timeLeft.days}DIA ${timeLeft.hours}:${timeLeft.minutes}:${timeLeft.seconds}.${Math.floor(timeLeft.milliseconds/100)}`}
+              </p>
+      </div>
 
         {/* "SEE RUNWAY" Button */}
-        <Link className={styles.runwayButton} href="/shop">
-          <p>SHOP</p>
-        </Link>
-
         {/* Scrolling Text */}
         <div className={styles.scrollTextContainer}>
           {/* <div className={styles.scrollText}>
