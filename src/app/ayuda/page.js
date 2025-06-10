@@ -21,7 +21,7 @@ export default function HelpPage() {
                     <br /><br />
 
                     <strong>¿Dónde entregan?</strong><br />
-                    Por el momento, las entregas se realizan dentro de [tu zona/localidad]. En caso de estar fuera de ese radio, escribinos antes de realizar tu compra para ver si podemos coordinar.
+                    Las entregas se coordinan una vez realizada la compra.
                     <br /><br />
 
                     {/* <strong>¿Necesito crear una cuenta para comprar?</strong><br />
