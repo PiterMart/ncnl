@@ -24,7 +24,7 @@ export default function Video() {
 
   useEffect(() => {
     // Set a fixed end date - Argentina timezone (UTC-3)
-    const endDate = parseISO('2025-06-12T00:00:00-03:00');
+    const endDate = parseISO('2025-06-12T00:00:00-14:00');
 
     const calculateTimeLeft = () => {
       const now = new Date();
