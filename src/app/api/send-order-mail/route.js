@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import admin from "firebase-admin";
 import { sendEmail } from "../../../utils/emailService";
 
+process.env.FIRESTORE_USE_REST = "true";
+
 // Initialize Firebase Admin SDK only once
 if (!admin.apps.length) {
     admin.initializeApp({

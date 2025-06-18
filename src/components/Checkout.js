@@ -60,6 +60,10 @@ export default function Checkout({ onBack }) {
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
 
+        // 🔒 Evita doble ejecución
+        if (isSending) return;
+
+        // Validación de campos
         setErrors({});
         const newErrors = {};
         Object.entries(formData).forEach(([key, value]) => {
@@ -76,6 +80,7 @@ export default function Checkout({ onBack }) {
         const toastId = toast.loading("Enviando pedido...");
 
         try {
+            // Total de la orden
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
@@ -83,11 +88,11 @@ export default function Checkout({ onBack }) {
 
             const orderPayload = { customer: formData, items, total };
 
-            // 1. Guardar la orden
+            // 🔹 1. Guardar orden en Firestore
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
-            // 2. Enviar mail
+            // 🔹 2. Enviar mails
             const emailResp = await fetch("/api/send-order-mail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -105,7 +110,7 @@ export default function Checkout({ onBack }) {
                 return;
             }
 
-            // 3. Crear preferencia de MP
+            // 🔹 3. Crear preferencia MercadoPago
             const mpItems = items.map((item) => ({
                 title: item.name,
                 quantity: Number(item.quantity),
@@ -113,7 +118,9 @@ export default function Checkout({ onBack }) {
             }));
 
             const origin =
-                typeof window !== "undefined" ? window.location.origin : "https://www.ncnl.co";
+                typeof window !== "undefined"
+                    ? window.location.origin
+                    : "https://www.ncnl.co";
 
             const back_urls = {
                 success: `${origin}/thanks`,
@@ -124,13 +131,13 @@ export default function Checkout({ onBack }) {
             const preferencePayload = {
                 items: mpItems,
                 back_urls,
-                auto_return: "approved",
+                ...(origin.startsWith("https://") && { auto_return: "approved" }),
             };
 
-            console.debug("Preference payload:", preferencePayload); // 👈 DEBUG IMPORTANTE
+            console.debug("Payload enviado a createPreference:", preferencePayload);
+
             const mpId = await createPreference(preferencePayload);
-            console.debug("MP preference ID generado:", mpId);
-            setPreferenceId(mpId);
+            setPreferenceId(mpId); // 🔥 Ahora se muestra <Wallet />
 
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
         } catch (err) {
@@ -140,6 +147,7 @@ export default function Checkout({ onBack }) {
             setIsSending(false);
         }
     };
+
 
     // Compute order total for display
     const total = items.reduce(
@@ -318,7 +326,7 @@ export default function Checkout({ onBack }) {
                         alignItems: "center",
                     }}
                 >
-                    {/* Paso 1: Botón para confirmar y guardar la orden */}
+                    {/* Paso 1: Confirmar orden */}
                     {!preferenceId && (
                         <button
                             type="submit"
@@ -329,20 +337,14 @@ export default function Checkout({ onBack }) {
                         </button>
                     )}
 
-                    {/* Paso 2: Botón de MercadoPago solo si ya se confirmó */}
+                    {/* Paso 2: Mostrar Wallet si hay preference */}
                     {preferenceId && (
-                        <>
-                            {loadingMp && <p>Cargando pago...</p>}
-                            {mpError && <p>Error al generar el pago: {mpError}</p>}
-                            {!loadingMp && (
-                                <div style={{ width: "300px" }}>
-                                    <Wallet initialization={{ preferenceId }} />
-                                </div>
-                            )}
-                        </>
+                        <div style={{ width: "300px" }}>
+                            <Wallet initialization={{ preferenceId }} />
+                        </div>
                     )}
 
-                    {/* Botón Volver */}
+                    {/* Volver al carrito */}
                     <button
                         type="button"
                         className={styles.button}

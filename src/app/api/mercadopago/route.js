@@ -30,9 +30,8 @@ export async function POST(request) {
         const preferencePayload = {
             items,
             back_urls,
-            ...(back_urls.success.startsWith("https://") && { auto_return: auto_return || "approved" }),
+            ...(back_urls.success.startsWith("https://") && { auto_return }),
         };
-
 
         console.debug("Payload enviado a MP:", preferencePayload);
 
