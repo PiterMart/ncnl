@@ -26,12 +26,18 @@ export class OrderService {
      * @returns {Promise<string>} - the new order document ID
      */
     async addOrder(orderData) {
-        const data = {
-            ...orderData,
-            createdAt: serverTimestamp(),
-        };
-        const docRef = await addDoc(this.ordersRef, data);
-        return docRef.id;
+        try {
+            const data = {
+                ...orderData,
+                createdAt: serverTimestamp(),
+            };
+            const docRef = await addDoc(this.ordersRef, data);
+            console.debug("Order document written with ID:", docRef.id);
+            return docRef.id;
+        } catch (error) {
+            console.error("Error adding order to Firestore:", error);
+            throw new Error("No se pudo guardar la orden en Firestore.");
+        }
     }
 
     /**

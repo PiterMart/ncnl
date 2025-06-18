@@ -49,33 +49,6 @@ export default function Checkout({ onBack }) {
         .every((key) => formData[key].trim() !== "");
 
     // Fetch MercadoPago preference whenever cart items change
-    useEffect(() => {
-        async function fetchPreference() {
-            setLoadingMp(true);
-            setMpError(null);
-            try {
-                // Map cart items to MercadoPago item format
-                const mpItems = items.map((item) => ({
-                    title: item.name,
-                    quantity: item.quantity,
-                    unit_price: item.price,
-                }));
-                // Create preference via backend util
-                const id = await createPreference(mpItems);
-                setPreferenceId(id);
-                console.debug("MP preference created:", id);
-            } catch (error) {
-                console.error("MP preference error:", error);
-                setMpError(error.message);
-            } finally {
-                setLoadingMp(false);
-            }
-        }
-
-        if (items.length > 0) {
-            fetchPreference();
-        }
-    }, [items]);
 
     // Generic input change handler
     const handleChange = (e) => {
@@ -87,9 +60,7 @@ export default function Checkout({ onBack }) {
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
 
-        // Reset errors
         setErrors({});
-        // Validate required fields
         const newErrors = {};
         Object.entries(formData).forEach(([key, value]) => {
             if (key !== "observations" && !value.trim()) {
@@ -105,36 +76,23 @@ export default function Checkout({ onBack }) {
         const toastId = toast.loading("Enviando pedido...");
 
         try {
-            // Calculate total amount
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
             );
 
-            // Build order payload
             const orderPayload = { customer: formData, items, total };
 
-            // Save order to backend
+            // 1. Guardar la orden
             const orderId = await orderService.addOrder(orderPayload);
             console.debug("Order saved with ID:", orderId);
 
-            // Send confirmation emails
-            let emailResp;
-            try {
-                emailResp = await fetch("/api/send-order-mail", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ orderId, ...orderPayload }),
-                });
-            } catch (networkErr) {
-                console.error("Network error sending order emails:", networkErr);
-                toast.error(
-                    "No se pudo conectar con el servidor. Por favor, revisá tu conexión y volvé a intentar.",
-                    { id: toastId }
-                );
-                setIsSending(false);
-                return;
-            }
+            // 2. Enviar mail
+            const emailResp = await fetch("/api/send-order-mail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, ...orderPayload }),
+            });
 
             if (!emailResp.ok) {
                 const errorText = await emailResp.text();
@@ -147,13 +105,38 @@ export default function Checkout({ onBack }) {
                 return;
             }
 
-            // Success: notify user and clear cart
+            // 3. Crear preferencia de MP
+            const mpItems = items.map((item) => ({
+                title: item.name,
+                quantity: Number(item.quantity),
+                unit_price: Number(item.price),
+            }));
+
+            const origin =
+                typeof window !== "undefined" ? window.location.origin : "https://www.ncnl.co";
+
+            const back_urls = {
+                success: `${origin}/thanks`,
+                failure: `${origin}/checkout`,
+                pending: `${origin}/checkout`,
+            };
+
+            const preferencePayload = {
+                items: mpItems,
+                back_urls,
+                auto_return: "approved",
+            };
+
+            console.debug("Preference payload:", preferencePayload); // 👈 DEBUG IMPORTANTE
+            const mpId = await createPreference(preferencePayload);
+            console.debug("MP preference ID generado:", mpId);
+            setPreferenceId(mpId);
+
             toast.success(`Pedido enviado con éxito. ID: ${orderId}`, { id: toastId });
-            clearCart();
-            onBack();
         } catch (err) {
-            console.error("Error processing order:", err);
+            console.error("Error procesando el pedido:", err);
             toast.error("Ocurrió un error al procesar el pedido.", { id: toastId });
+        } finally {
             setIsSending(false);
         }
     };
@@ -335,32 +318,29 @@ export default function Checkout({ onBack }) {
                         alignItems: "center",
                     }}
                 >
-                    {/* MercadoPago Wallet */}
-                    <div>
-                        {loadingMp && <p>Cargando pago...</p>}
-                        {mpError && <p>Error al generar el pago: {mpError}</p>}
-                        {!loadingMp && preferenceId && (
-                            <>
-                                {isFormValid ? (
-                                    // On click, call handleSubmit to send mail before payment
-                                    <div style={{ width: "300px" }} onClick={handleSubmit}>
-                                        <Wallet
-                                            initialization={{ preferenceId }}
-                                        />
-                                    </div>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className={styles.button}
-                                        disabled
-                                        style={{ cursor: "not-allowed", color: "black" }}
-                                    >
-                                        Complete todos los campos para pagar
-                                    </button>
-                                )}
-                            </>
-                        )}
-                    </div>
+                    {/* Paso 1: Botón para confirmar y guardar la orden */}
+                    {!preferenceId && (
+                        <button
+                            type="submit"
+                            className={styles.button}
+                            disabled={!isFormValid || isSending}
+                        >
+                            Confirmar pedido
+                        </button>
+                    )}
+
+                    {/* Paso 2: Botón de MercadoPago solo si ya se confirmó */}
+                    {preferenceId && (
+                        <>
+                            {loadingMp && <p>Cargando pago...</p>}
+                            {mpError && <p>Error al generar el pago: {mpError}</p>}
+                            {!loadingMp && (
+                                <div style={{ width: "300px" }}>
+                                    <Wallet initialization={{ preferenceId }} />
+                                </div>
+                            )}
+                        </>
+                    )}
 
                     {/* Botón Volver */}
                     <button
