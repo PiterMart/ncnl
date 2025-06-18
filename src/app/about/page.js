@@ -14,7 +14,7 @@ export default function About() {
                 </p>
                 <p style={{ marginTop: '5rem', padding: '1rem', color: 'black' }}>
                     Anclados en una mirada del sur, nos interesa pensar la moda desde Latinoamérica: sus tensiones, sus gestos, su potencia cultural.
-                    Trabajamos con textiles recuperados y procesos artesanales. Creemos en una forma de producir con sentido, sin apuro.
+                    Trabajamos con textiles recuperados y procesos artesanales. Creemos en una forma de producir con sentido, sin apuro. 
                 </p>
             </div>
             <Image src="/aboutpagencnl.jpeg"  className={styles.aboutImage} alt="NCNL About Page Image" width={0} height={0} sizes="100vw" />
