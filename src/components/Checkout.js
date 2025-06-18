@@ -86,7 +86,14 @@ export default function Checkout({ onBack }) {
                 0
             );
 
-            const orderPayload = { customer: formData, items, total };
+            const cleanedCustomer = Object.fromEntries(
+                Object.entries(formData).filter(([_, v]) => v !== undefined)
+            );
+            const cleanedItems = items.map((item) =>
+                Object.fromEntries(Object.entries(item).filter(([_, v]) => v !== undefined))
+            );
+
+            const orderPayload = { customer: cleanedCustomer, items: cleanedItems, total };
 
             // 🔹 1. Guardar orden en Firestore
             const orderId = await orderService.addOrder(orderPayload);
