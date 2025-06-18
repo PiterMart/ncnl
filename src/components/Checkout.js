@@ -323,45 +323,45 @@ export default function Checkout({ onBack }) {
                     <p>Total: ${total.toFixed(2)}</p>
                 </div>
 
-                {/* Botones de acción */}
-                <div
-                    style={{
-                        display: "flex",
-                        gap: "12px",
-                        marginTop: "12px",
-                        flexDirection: "column",
-                        alignItems: "center",
-                    }}
-                >
-                    {/* Paso 1: Confirmar orden */}
-                    {!preferenceId && (
-                        <button
-                            type="submit"
-                            className={styles.button}
-                            disabled={!isFormValid || isSending}
-                        >
-                            Confirmar pedido
-                        </button>
-                    )}
-
-                    {/* Paso 2: Mostrar Wallet si hay preference */}
-                    {preferenceId && (
-                        <div style={{ width: "300px" }}>
-                            <Wallet initialization={{ preferenceId }} />
-                        </div>
-                    )}
-
-                    {/* Volver al carrito */}
+                {/* Botón de confirmar pedido */}
+                {!preferenceId && (
                     <button
-                        type="button"
+                        type="submit"
                         className={styles.button}
-                        onClick={onBack}
-                        disabled={isSending}
+                        disabled={!isFormValid || isSending}
                     >
-                        Volver al carrito
+                        Confirmar pedido
                     </button>
-                </div>
+                )}
             </form>
+
+            {/* Acciones fuera del form */}
+            <div
+                style={{
+                    display: "flex",
+                    gap: "12px",
+                    marginTop: "20px",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                {/* Botón de pago MercadoPago */}
+                {preferenceId && (
+                    <div style={{ width: "300px" }}>
+                        <Wallet initialization={{ preferenceId }} />
+                    </div>
+                )}
+
+                {/* Botón volver */}
+                <button
+                    type="button"
+                    className={styles.button}
+                    onClick={onBack}
+                    disabled={isSending}
+                >
+                    Volver al carrito
+                </button>
+            </div>
         </div>
     );
 }
