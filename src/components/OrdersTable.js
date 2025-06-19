@@ -155,6 +155,7 @@ export default function OrdersTable() {
                             {selectedOrder.items.map((i, idx) => (
                                 <li key={idx}>
                                     {i.name} x{i.quantity} — ${(i.price * i.quantity).toFixed(2)}
+                                    <li key={idx}>{i.size}</li>
                                 </li>
                             ))}
                         </ul>
