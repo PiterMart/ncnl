@@ -163,7 +163,7 @@ export default function CartList() {
                             </div>
 
                             <button
-                                style={{fontSize: '1.5rem'}}
+                                style={{fontSize: '1.5rem', fontWeight: '600'}}
                                 className={styles.button}
                                 onClick={() => setShowCheckout(true)}
                                 disabled={!preferenceId || loadingMp || items.length === 0 || !acceptPrivacy || !acceptTerms}

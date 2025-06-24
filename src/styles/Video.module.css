@@ -53,6 +53,22 @@
     font-weight: 900;
     background-color: transparent;
     letter-spacing: -2px;
+    transition: letter-spacing 0.5s ease-in-out, transform 0.5s ease-in-out;
+    animation: letterSpacing 0.5s ease-in-out;
+}
+/* @keyframes letterSpacing {
+  from {
+    letter-spacing: -2px;
+    transform: translateX(-50%) scaleY(3);
+  }
+  to {
+    letter-spacing: 20px;
+    transform: translateX(-50%) scaleY(1);
+  }
+} */
+.runwayButton:hover {
+  letter-spacing: 20px;
+  /* transform: translateX(-50%) scaleY(1); */
 }
   
 .modalOverlay {

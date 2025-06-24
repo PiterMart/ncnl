@@ -166,7 +166,7 @@ export default function Checkout({ onBack }) {
         <div className={styles.container}>
             <Toaster /> {/* Toast notifications */}
 
-            <h2>Finalizar Compra</h2>
+            <p className={styles.title}>Finalizar Compra</p>
 
             <form className={styles.form} onSubmit={handleSubmit}>
                 {/* Nombre */}
@@ -305,7 +305,7 @@ export default function Checkout({ onBack }) {
                             <tr>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
-                                <th>Precio</th>
+                                {/* <th>Precio</th> */}
                                 <th>Subtotal</th>
                             </tr>
                         </thead>
@@ -314,13 +314,13 @@ export default function Checkout({ onBack }) {
                                 <tr key={item.id}>
                                     <td>{item.name}</td>
                                     <td>{item.quantity}</td>
-                                    <td>${item.price}</td>
+                                    {/* <td>${item.price}</td> */}
                                     <td>${(item.price * item.quantity).toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    <p>Total: ${total.toFixed(2)}</p>
+                    <p style={{fontSize: '1.5rem', fontWeight: '600'}}>Total: ${total.toFixed(2)}</p>
                 </div>
 
                 {/* Botón de confirmar pedido */}
