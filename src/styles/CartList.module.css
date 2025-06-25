@@ -173,13 +173,11 @@
     color: aliceblue;
     border: none;
     padding: 1rem 2rem;
-    font-size: 1rem;
+    font-size: 1rem; /* Keeping original size */
     cursor: pointer;
-    width: 100%; /* Allow button to size based on content */
-    min-width: 200px; /* Minimum width for buttons */
+    width: 100%;
     transition: opacity 0.3s ease;
-    border-radius: 4px; /* Slightly rounded corners */
-    text-align: center; /* Center button text */
+    font-weight: 800;
 }
 
 .button:hover {
@@ -190,7 +188,15 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
-
+.shopButton {
+    background-color: #11070800;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem; /* Keeping original size */
+    cursor: pointer;
+    width: 100%;
+}
 /* Style for the "Vaciar carrito" button */
 .clearButton {
     background-color: transparent; /* Transparent background */

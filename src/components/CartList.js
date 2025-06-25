@@ -170,7 +170,7 @@ export default function CartList() {
                             >
                                 {loadingMp ? 'CARGANDO...' : 'FINALIZAR COMPRA'}
                             </button>
-                            <button className={`${styles.button} ${styles.clearButton}`} onClick={() => router.push("/shop")}>
+                            <button className={styles.shopButton} onClick={() => router.push("/shop")}>
                                 SEGUIR COMPRANDO
                             </button>
                         </div>

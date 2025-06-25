@@ -138,8 +138,8 @@ export default function OrdersTable() {
 
             <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
                 {selectedOrder && (
-                    <div>
-                        <h3>Detalle Pedido {selectedOrder.id}</h3>
+                    <div className={styles.modalContent} style={{padding: '0rem'}}>
+                        <h3>Detalle Pedido: {selectedOrder.id}</h3>
                         <p><strong>Cliente:</strong> {selectedOrder.customer.name}</p>
                         <p><strong>Email:</strong> {selectedOrder.customer.email}</p>
                         <p><strong>Tel:</strong> {selectedOrder.customer.phone}</p>
@@ -154,8 +154,7 @@ export default function OrdersTable() {
                         <ul>
                             {selectedOrder.items.map((i, idx) => (
                                 <li key={idx}>
-                                    {i.name} x{i.quantity} — ${(i.price * i.quantity).toFixed(2)}
-                                    <li key={idx}>{i.size}</li>
+                                    {i.category} {i.name} x {i.quantity} {i.size} — ${(i.price * i.quantity).toFixed(2)}
                                 </li>
                             ))}
                         </ul>
