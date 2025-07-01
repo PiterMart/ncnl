@@ -56,6 +56,7 @@ export async function POST(request) {
                         .join("")}
                 </ul>
                 <p><strong>Total: $${total.toFixed(2)}</strong></p>
+                <p>NCNL se pondrá en contacto contigo en la brevedad para coordinar la entrega de tu pedido</p>
               </div>
             `
                     : `
