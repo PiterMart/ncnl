@@ -7,12 +7,22 @@ export async function POST(request) {
     try {
         const { orderId, customer, items, total } = await request.json();
 
-        const internalEmail = process.env.NOTIFY_EMAIL;
-        if (!internalEmail) {
+        // Get internal notify emails from env, split by comma
+        const internalEmailsRaw = process.env.NOTIFY_EMAIL;
+        if (!internalEmailsRaw) {
             throw new Error("Missing NOTIFY_EMAIL env var");
         }
+        // Split and clean up email list
+        const internalEmails = internalEmailsRaw
+            .split(",")
+            .map((e) => e.trim())
+            .filter(Boolean);
+        if (internalEmails.length === 0) {
+            throw new Error("No internal emails specified in NOTIFY_EMAIL");
+        }
 
-        const recipients = [customer.email, internalEmail];
+        // Build recipients: customer + all internal
+        const recipients = [customer.email, ...internalEmails];
 
         // Log en consola en lugar de Firestore
         console.log("Enviando emails para pedido:", {
@@ -79,8 +89,8 @@ export async function POST(request) {
               </div>
             `;
 
+                // Send the email and push result
                 await sendEmail({ to, subject, html });
-
                 results.push({ email: to, status: "success" });
             } catch (mailErr) {
                 console.error(`Error sending email to ${to}:`, mailErr);
