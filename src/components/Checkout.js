@@ -1,23 +1,22 @@
 // src/components/Checkout.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "../styles/Checkout.module.css";
 
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { createPreference } from "../utils/mercadopagoService";
-import { redirect } from "next/navigation";
 
 // Initialize MercadoPago SDK with your public key
 initMercadoPago("APP_USR-07f67e31-9b52-4c1e-8d5c-dad4d0c14bc2");
 
 export default function Checkout({ onBack }) {
-    // Retrieve cart items
+    // Get cart items
     const { items } = useCart();
 
-    // Form input state
+    // State for form inputs
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -31,10 +30,10 @@ export default function Checkout({ onBack }) {
         observations: "",
     });
 
-    // Validation errors state
+    // State for validation errors
     const [errors, setErrors] = useState({});
 
-    // Prevent double submissions
+    // Prevent duplicate requests
     const [isSending, setIsSending] = useState(false);
 
     // MercadoPago preference ID
@@ -45,44 +44,49 @@ export default function Checkout({ onBack }) {
         .filter((key) => key !== "observations")
         .every((key) => formData[key].trim() !== "");
 
-    // Handle form field changes
+    // Trigger preference creation automatically when form becomes valid
+    useEffect(() => {
+        if (isFormValid && !preferenceId && !isSending) {
+            handlePreparePayment();
+        }
+    }, [isFormValid]);
+
+    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle form submission: validate, store pending order, create MP preference
-    const handleSubmit = async (e) => {
-        if (e?.preventDefault) e.preventDefault();
+    // Core logic moved to its own function so we can call it from useEffect
+    const handlePreparePayment = async () => {
+        // Reset errors and guard
+        setErrors({});
         if (isSending) return;
 
-        // Reset errors
-        setErrors({});
-        const validationErrors = {};
-
-        // Validate required fields
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key !== "observations" && !value.trim()) {
-                validationErrors[key] = "Este campo es obligatorio";
-            }
-        });
-
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
         setIsSending(true);
-        const toastId = toast.loading("Preparando pago...");
 
         try {
-            // Calculate total amount
+            // Validate again to avoid race
+            const validationErrors = {};
+            Object.entries(formData).forEach(([key, value]) => {
+                if (key !== "observations" && !value.trim()) {
+                    validationErrors[key] = "Este campo es obligatorio";
+                }
+            });
+            if (Object.keys(validationErrors).length > 0) {
+                setErrors(validationErrors);
+                setIsSending(false);
+                toast.dismiss(toastId);
+                return;
+            }
+
+            // Calculate total
             const total = items.reduce(
                 (sum, item) => sum + item.price * item.quantity,
                 0
             );
 
-            // Clean undefined properties
+            // Clean undefined fields for payload
             const cleanedCustomer = Object.fromEntries(
                 Object.entries(formData).filter(([_, v]) => v !== undefined)
             );
@@ -90,27 +94,18 @@ export default function Checkout({ onBack }) {
                 Object.fromEntries(Object.entries(item).filter(([_, v]) => v !== undefined))
             );
 
-            // Pending order payload for sessionStorage
-            const orderPayload = {
-                customer: cleanedCustomer,
-                items: cleanedItems,
-                total,
-            };
+            // Store pending order for /thanks
+            const orderPayload = { customer: cleanedCustomer, items: cleanedItems, total };
+            sessionStorage.setItem("pendingOrder", JSON.stringify(orderPayload));
 
-            // Store pending order to finalize after payment
-            sessionStorage.setItem(
-                "pendingOrder",
-                JSON.stringify(orderPayload)
-            );
-
-            // Prepare MercadoPago items
+            // Build MercadoPago items
             const mpItems = items.map((item) => ({
                 title: item.name,
                 quantity: Number(item.quantity),
                 unit_price: Number(item.price),
             }));
 
-            // Define back URLs
+            // Configure back URLs
             const origin = window.location.origin;
             const back_urls = {
                 success: `${origin}/thanks`,
@@ -118,20 +113,16 @@ export default function Checkout({ onBack }) {
                 pending: `${origin}/checkout`,
             };
 
-            // Build preference with auto_return
+            // Create preference payload
             const preferencePayload = {
                 items: mpItems,
                 back_urls,
                 auto_return: "approved",
             };
 
-            console.debug("createPreference payload:", preferencePayload);
-
-            // Create MercadoPago preference
+            console.debug("Preference payload:", preferencePayload);
             const mpId = await createPreference(preferencePayload);
             setPreferenceId(mpId);
-
-            toast.success("Redirigiendo al pago...", { id: toastId });
         } catch (error) {
             console.error("Error creating preference:", error);
             toast.error("No se pudo iniciar el pago.", { id: toastId });
@@ -152,7 +143,8 @@ export default function Checkout({ onBack }) {
 
             <p className={styles.title}>Finalizar Compra</p>
 
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={styles.form}>
+                {/* Name */}
                 <label className={styles.label}>
                     Nombre:
                     <input
@@ -162,11 +154,10 @@ export default function Checkout({ onBack }) {
                         value={formData.name}
                         onChange={handleChange}
                     />
-                    {errors.name && (
-                        <span className={styles.error}>{errors.name}</span>
-                    )}
+                    {errors.name && <span className={styles.error}>{errors.name}</span>}
                 </label>
 
+                {/* Email */}
                 <label className={styles.label}>
                     Correo electrónico:
                     <input
@@ -176,11 +167,10 @@ export default function Checkout({ onBack }) {
                         value={formData.email}
                         onChange={handleChange}
                     />
-                    {errors.email && (
-                        <span className={styles.error}>{errors.email}</span>
-                    )}
+                    {errors.email && <span className={styles.error}>{errors.email}</span>}
                 </label>
 
+                {/* Phone */}
                 <label className={styles.label}>
                     Número de celular:
                     <input
@@ -190,11 +180,10 @@ export default function Checkout({ onBack }) {
                         value={formData.phone}
                         onChange={handleChange}
                     />
-                    {errors.phone && (
-                        <span className={styles.error}>{errors.phone}</span>
-                    )}
+                    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
                 </label>
 
+                {/* DNI */}
                 <label className={styles.label}>
                     DNI:
                     <input
@@ -204,11 +193,10 @@ export default function Checkout({ onBack }) {
                         value={formData.dni}
                         onChange={handleChange}
                     />
-                    {errors.dni && (
-                        <span className={styles.error}>{errors.dni}</span>
-                    )}
+                    {errors.dni && <span className={styles.error}>{errors.dni}</span>}
                 </label>
 
+                {/* Address */}
                 <label className={styles.label}>
                     Dirección:
                     <input
@@ -218,11 +206,10 @@ export default function Checkout({ onBack }) {
                         value={formData.address}
                         onChange={handleChange}
                     />
-                    {errors.address && (
-                        <span className={styles.error}>{errors.address}</span>
-                    )}
+                    {errors.address && <span className={styles.error}>{errors.address}</span>}
                 </label>
 
+                {/* Province */}
                 <label className={styles.label}>
                     Provincia:
                     <input
@@ -232,11 +219,10 @@ export default function Checkout({ onBack }) {
                         value={formData.province}
                         onChange={handleChange}
                     />
-                    {errors.province && (
-                        <span className={styles.error}>{errors.province}</span>
-                    )}
+                    {errors.province && <span className={styles.error}>{errors.province}</span>}
                 </label>
 
+                {/* City */}
                 <label className={styles.label}>
                     Ciudad:
                     <input
@@ -246,11 +232,10 @@ export default function Checkout({ onBack }) {
                         value={formData.city}
                         onChange={handleChange}
                     />
-                    {errors.city && (
-                        <span className={styles.error}>{errors.city}</span>
-                    )}
+                    {errors.city && <span className={styles.error}>{errors.city}</span>}
                 </label>
 
+                {/* Country */}
                 <label className={styles.label}>
                     País:
                     <input
@@ -260,11 +245,10 @@ export default function Checkout({ onBack }) {
                         value={formData.country}
                         onChange={handleChange}
                     />
-                    {errors.country && (
-                        <span className={styles.error}>{errors.country}</span>
-                    )}
+                    {errors.country && <span className={styles.error}>{errors.country}</span>}
                 </label>
 
+                {/* Postal Code */}
                 <label className={styles.label}>
                     Código Postal:
                     <input
@@ -274,11 +258,10 @@ export default function Checkout({ onBack }) {
                         value={formData.postalCode}
                         onChange={handleChange}
                     />
-                    {errors.postalCode && (
-                        <span className={styles.error}>{errors.postalCode}</span>
-                    )}
+                    {errors.postalCode && <span className={styles.error}>{errors.postalCode}</span>}
                 </label>
 
+                {/* Observations */}
                 <label className={styles.label}>
                     Observaciones:
                     <textarea
@@ -289,6 +272,7 @@ export default function Checkout({ onBack }) {
                     />
                 </label>
 
+                {/* Order summary */}
                 <div className={styles.summary}>
                     <h3>Resumen del pedido</h3>
                     <table>
@@ -313,34 +297,26 @@ export default function Checkout({ onBack }) {
                         Total: ${total.toFixed(2)}
                     </p>
                 </div>
-
-                {!preferenceId && (
-                    <button
-                        type="submit"
-                        className={styles.button}
-                        disabled={!isFormValid || isSending}
-                    >
-                        Confirmar pedido
-                    </button>
-                )}
             </form>
 
-            <div style={{ marginTop: 20, textAlign: "center" }}>
-                {preferenceId && (
+            {/* MercadoPago button appears as soon as preferenceId is ready */}
+            <div style={{ marginTop: 20, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                {preferenceId ? (
                     <div style={{ width: 300, margin: "0 auto" }}>
                         <Wallet
                             initialization={{
                                 preferenceId,
                                 redirectMode: "self",
                             }}
-                            onError={(err) =>
-                                console.error("MP Wallet error:", err)
-                            }
-                            onReady={() =>
-                                console.debug("MP Wallet ready")
-                            }
+                            onError={(err) => console.error("MP Wallet error:", err)}
+                            onReady={() => console.debug("MP Wallet ready")}
                         />
                     </div>
+                ) : (
+                    // Disabled placeholder until form valid and preferenceId generated
+                    <button className={styles.button} disabled>
+                        Completa los campos para pagar
+                    </button>
                 )}
 
                 <button
@@ -348,6 +324,7 @@ export default function Checkout({ onBack }) {
                     className={styles.button}
                     onClick={onBack}
                     disabled={isSending}
+                    // style={{ marginTop: 12 }}
                 >
                     Volver al carrito
                 </button>
