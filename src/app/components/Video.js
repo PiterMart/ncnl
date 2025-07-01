@@ -1,21 +1,31 @@
 import { useRef, useEffect, useState } from 'react';
 import styles from '../../styles/Video.module.css';
 import Link from 'next/link';
+import Image from 'next/image'; // Import the Image component from Next.js
 
 export default function Video() {
   const videoRef = useRef(null);
   const [showPlayer, setShowPlayer] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false); // New state to track video loading
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 1.0;
+      // Set videoLoaded to true when video can play through
+      videoRef.current.addEventListener('canplaythrough', () => {
+        setVideoLoaded(true);
+      });
+      // Handle cases where video might not load (e.g., network error, unsupported format)
+      videoRef.current.addEventListener('error', () => {
+        console.error('Error loading video, displaying fallback image.');
+        setVideoLoaded(false); // Ensure image is shown if video errors out
+      });
     }
   }, []);
 
   const handleSeeRunway = async () => {
     setShowPlayer(true);
 
-    // Optional: Try to lock orientation (works only after user interaction)
     if (screen.orientation && screen.orientation.lock) {
       try {
         await screen.orientation.lock('landscape');
@@ -32,76 +42,37 @@ export default function Video() {
   return (
     <div className={styles.videoWrapper}>
       <div className={styles.videoContainer}>
+        {/* Fallback Image - always present, but hidden when video loads */}
+        {!videoLoaded && (
+          <Image
+            src="/heroimage.png" // **CHANGE THIS TO YOUR IMAGE PATH**
+            alt="Video loading background"
+            layout="fill" // Makes the image fill the parent container
+            objectFit="cover" // Covers the area without distortion
+            className={styles.fallbackImage}
+            priority // Prioritize loading this image
+          />
+        )}
+
         <video
           ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          className={styles.backgroundVideo}
+          className={`${styles.backgroundVideo} ${videoLoaded ? styles.videoLoaded : ''}`}
         >
           <source src="/NCNL_RUNWAY_FINAL_2.mp4" type="video/mp4" />
         </video>
 
-        {/* "SEE RUNWAY" Button */}
+        {/* "SHOP" Button */}
         <Link className={styles.runwayButton} href="/shop">
           <p>SHOP</p>
         </Link>
 
-        {/* Scrolling Text */}
+        {/* Scrolling Text (commented out in your original code, kept as is) */}
         <div className={styles.scrollTextContainer}>
-          {/* <div className={styles.scrollText}>
-            Director Creativo: @paulnicolino<br />
-            Director de Marca: @xul.vf<br /><br />
-            Director de Arte: @buendiaignacio<br />
-            Consultoría Creativa: @antonella.dellarossa @josephechenique_<br /><br />
-            Productora Ejecutiva: @anitarod<br />
-            Soldado único: @romaboi<br />
-            Dirección equipo vestuario: @palomabelossi<br />
-            Pelo: @n_iche<br />
-            Makeup: @celestegonzalezmud<br /><br />
-            Productoras: @genesisnotcis @lolanofal<br />
-            Productor: @sandroyvos<br />
-            PR: @carbatello<br /><br />
-            Ayudante de vestuario: @lulugambarte<br />
-            Confección en set : @lourgimenez<br />
-            Asistente confección: @johistumpo<br /><br />
-            Asistentes de producción: @yacodoorn @agus.tin @whoacore<br />
-            Asistente de arte: @juanitaraw<br />
-            Auto: @xrebagliati<br /><br />
-            Instalación olfativa: @odor.sudor<br />
-            Diseño sonoro: @faraonikababy<br />
-            DJ rave: @estoesmabel<br />
-            DJ recepción: @pedro999<br />
-            Live Set: @akachebrolet<br />
-            Fotógrafo back: @manriquepablo<br /><br />
-            Agencias de Modelos<br />
-            @about_mgmt<br />
-            @castingclub_street<br />
-            @look1modelmanagement<br />
-            @sunmodelmanagement<br />
-            @streetagency.xyz<br />
-            @ceres_management<br /><br />
-            Sponsors:<br />
-            @lalindavinos<br />
-            @chandon_ar<br />
-            @donnet_te_ama<br />
-            @lucasdanielemilio<br />
-            @saldiaspolocultural<br />
-            @cervezabrahma<br />
-            @charquiqui<br /><br />
-            DESIGNERS FW25<br />
-            Invita: @hairssime<br />
-            Produce & Organiza: @guillermoazarok<br />
-            Dirección Creativa: @romina_cardillo @cnavar<br />
-            Agencia creativa: @duoido<br />
-            AI: @paulo_f_cueto & @isimo.agency<br />
-            Prensa: @grupomass<br />
-            Audiovisual: @caiman.danilo @herrerovalen<br />
-            Apoya: @bacreativa - Ministerio de Desarrollo Económico<br />
-            Acompañan: @segurosantartida @sparklingarg @eamoda<br />
-            Locación: @ccomplejoartmedia<br />
-          </div> */}
+          {/* <div className={styles.scrollText}>...</div> */}
         </div>
       </div>
 
