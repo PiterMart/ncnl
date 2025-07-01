@@ -1,24 +1,50 @@
-// src/app/thanks/page.jsx (o /pages/thanks.js en Next 12/13)
-
+// src/app/thanks/page.jsx
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useCart } from "../../contexts/CartContext";
-import { useRouter } from "next/navigation"; // o "next/router" en versiones viejas
+import { useRouter } from "next/navigation";
+import { orderService } from "../../services/orderService";
 
 export default function ThanksPage() {
     const { clearCart } = useCart();
     const router = useRouter();
 
     useEffect(() => {
-        clearCart(); // Limpiar carrito al llegar a esta página
+        const pending = sessionStorage.getItem("pendingOrder");
+        if (pending) {
+            const { customer, items, total } = JSON.parse(pending);
 
-        // Opcional: redirigir a inicio tras unos segundos
-        const timeout = setTimeout(() => {
-            router.push("/");
-        }, 5000);
+            // Finalize order and send mails
+            (async () => {
+                try {
+                    // Save order in Firestore
+                    const orderId = await orderService.addOrder({ customer, items, total });
+                    console.debug("Order saved with ID:", orderId);
 
-        return () => clearTimeout(timeout);
+                    // Send order emails
+                    const resp = await fetch("/api/send-order-mail", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ orderId, customer, items, total }),
+                    });
+                    if (!resp.ok) {
+                        const text = await resp.text();
+                        console.error("Failed to send emails:", text);
+                    }
+                } catch (err) {
+                    console.error("Error finalizing order:", err);
+                } finally {
+                    sessionStorage.removeItem("pendingOrder");
+                    clearCart();
+                    // Redirect home after 5s
+                    setTimeout(() => router.push("/"), 5000);
+                }
+            })();
+        } else {
+            clearCart();
+            setTimeout(() => router.push("/"), 5000);
+        }
     }, []);
 
     return (
