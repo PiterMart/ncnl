@@ -8,12 +8,12 @@ export default function ContactPage() {
             <h1 className={styles.title}>CONTACT</h1>
             <div className={styles.contactList}>
                 <div className={styles.contactItem}>
-                    <span className={styles.name}>PABLO</span>
-                    <a href="mailto:paulino@ncnl.com" className={styles.email}>paulino@ncnl.com</a>
-                </div>
-                <div className={styles.contactItem}>
                     <span className={styles.name}>CONTACT</span>
                     <a href="mailto:contact@ncnl.com" className={styles.email}>contact@ncnl.com</a>
+                </div>
+                <div className={styles.contactItem}>
+                    <span className={styles.name}>PABLO</span>
+                    <a href="mailto:paulino@ncnl.com" className={styles.email}>paulino@ncnl.com</a>
                 </div>
             </div>
         </main>
