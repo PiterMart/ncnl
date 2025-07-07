@@ -95,6 +95,7 @@
     align-self: flex-start; /* Kept from original, for buttons not needing full width */
     margin-top: 1.5rem; /* Space above the button (24px) */
     text-align: center; /* Center text within the button */
+    margin: auto;
 }
 
 .button:hover {
