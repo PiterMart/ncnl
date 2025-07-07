@@ -35,6 +35,15 @@
     gap: 0.75rem;
     max-width: 500px;
     padding-right: 1rem;
+    max-height: calc(100vh - 25vh - 2rem); /* Account for top offset and some bottom padding */
+    overflow-y: auto; /* Allow scrolling if content is too tall */
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar on IE/Edge */
+}
+
+/* Hide scrollbar on WebKit browsers (Chrome, Safari, etc.) */
+.productInfo::-webkit-scrollbar {
+    display: none;
 }
 
 
@@ -191,6 +200,13 @@
     cursor: not-allowed;
 }
 
+.actionButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
 .errorContainer {
     display: flex;
     justify-content: center;
@@ -243,5 +259,56 @@
         padding-top: 1rem;
         margin-left: 0;
         gap: 1rem;
+        max-height: none; /* Remove max-height constraint on mobile */
+        overflow-y: visible; /* Remove scroll on mobile */
+        scrollbar-width: auto; /* Show scrollbar on mobile if needed */
+        -ms-overflow-style: auto; /* Show scrollbar on mobile if needed */
+    }
+    
+    /* Show scrollbar on mobile for WebKit browsers */
+    .productInfo::-webkit-scrollbar {
+        display: auto;
+    }
+}
+
+/* Handle ultra-wide/panoramic screens */
+@media (min-width: 2000px) {
+    .productInfo {
+        max-height: calc(100vh - 25vh - 4rem); /* More bottom padding for ultra-wide screens */
+        padding-bottom: 2rem; /* Add bottom padding to ensure buttons are visible */
+    }
+    
+    .actionButtons {
+        position: sticky;
+        bottom: 0;
+        background-color: aliceblue;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        z-index: 5; /* Ensure buttons stay on top */
+    }
+}
+
+/* Handle very tall content and ensure buttons are always accessible */
+@media (min-height: 1000px) {
+    .productInfo {
+        max-height: calc(100vh - 25vh - 6rem); /* More space for tall screens */
+    }
+    
+    .actionButtons {
+        position: sticky;
+        bottom: 0;
+        background-color: aliceblue;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        z-index: 5;
+        border-top: 1px solid rgba(17, 7, 8, 0.1); /* Subtle border to separate from content */
+    }
+}
+
+/* Handle extremely wide screens */
+@media (min-width: 3000px) {
+    .productInfo {
+        max-width: 600px; /* Slightly wider for ultra-wide screens */
+        margin-left: calc(50vw + 2rem); /* Adjust position for ultra-wide screens */
     }
 }
