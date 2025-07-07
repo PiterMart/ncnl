@@ -31,6 +31,7 @@
     color: #110708;
     font-size: clamp(1.5rem, 5vw, 2.5rem);
     font-weight: 900;
+    text-align: center;
     background-color: transparent;
     pointer-events: none;
     white-space: nowrap;
@@ -50,13 +51,15 @@
 }
 
 .cartItem {
-    display: flex; /* Use flexbox for individual item layout */
-    justify-content: space-between; /* Distribute space between details and actions */
-    align-items: center; /* Vertically align content */
-    background-color: #fff; /* White background for each item */
-    padding-bottom: 1rem;
-    border-radius: 8px; /* Rounded corners */ /* Subtle shadow */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    display: flex;
+        border: 1px solid black;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        padding-bottom: 1rem;
+        border-radius: 0;
+        flex-wrap: wrap;
+        padding: 0.5rem;
 }
 
 .itemDetails {
@@ -98,7 +101,7 @@
 /* Style for item image container */
 .itemImage {
     width: 80px; /* Fixed width for the image container */
-    height: 100px; /* Fixed height for the image container */
+    height: 200px; /* Fixed height for the image container */
     flex-shrink: 0; /* Prevent image from shrinking */
     border-radius: 4px;
     overflow: hidden;
@@ -122,7 +125,7 @@
     margin-right: -1rem;
     background: none;
     border: none; /* Subtle border */
-    padding: 0.5rem 0.5rem;
+    padding: 1rem;
     cursor: pointer;
     font-size: 0.8rem;
     transition: background-color 0.3s ease, font-size 0.3s ease;
@@ -241,20 +244,20 @@
         gap: 1rem; /* Space between stacked sections */
         margin: auto;
         width: 100%;
-        padding-right: 1rem;
     }
 
     .itemDetails {
         margin-right: 0; /* Remove right margin */
          width: 100%; /* Full width for details */
+         z-index: 10;
     }
 
     .itemImage {
-        width: 80px;
-        height: 100px;
+        width: 81px;
+        height: 154px;
         position: absolute;
-        margin-top: 3rem;
-        /* margin-bottom: 0.5rem; Removed margin, using gap in .cartItem instead */
+        /* margin-top: 3rem; */
+        margin-left: 9rem
     }
 
 
@@ -264,7 +267,7 @@
     }
 
     .removeButton {
-        padding: 0.7rem 1.5rem; /* Adjust button padding */
+        padding: 1rem; /* Adjust button padding */
         font-size: 0.9rem;
     }
 
@@ -289,7 +292,7 @@
 }
 
 .checkboxContainer {
-    margin: 1.5rem 0;
+    margin: 0rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
