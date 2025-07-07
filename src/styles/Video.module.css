@@ -42,35 +42,30 @@
 }
 
 .runwayButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) scaleY(3);
-    background: rgba(0, 0, 0, 0);
-    color: white;
-    border: none;
-    font-size: 2.5rem;
-    font-weight: 900;
-    background-color: transparent;
-    letter-spacing: -2px;
-    transition: letter-spacing 0.5s ease-in-out, transform 0.5s ease-in-out;
-    animation: letterSpacing 0.5s ease-in-out;
+  /* Add this line */
+  display: inline-block;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) scaleY(3) perspective(1000px) rotateY(0deg);
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  transition: all 0.5s ease-in-out;
+  transform-origin: left center;
+  /* Optional: Improves text rendering during transforms in some browsers */
+  -webkit-font-smoothing: antialiased;
 }
-/* @keyframes letterSpacing {
-  from {
-    letter-spacing: -2px;
-    transform: translateX(-50%) scaleY(3);
-  }
-  to {
-    letter-spacing: 20px;
-    transform: translateX(-50%) scaleY(1);
-  }
-} */
+
 .runwayButton:hover {
-  letter-spacing: 20px;
-  /* transform: translateX(-50%) scaleY(1); */
+transform: translateX(-50%) scaleY(3) perspective(1000px) rotateY(25deg);
+letter-spacing: 2px;
 }
-  
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -149,6 +144,12 @@
     .runwayButton {
         left: 38%;
         top: 80%;
-        transform: scaleY(3);
+        transform: scaleY(3) perspective(1000px) rotateY(0deg) rotateX(0deg);
+        transform-origin: left center;
+    }
+    
+    .runwayButton:hover {
+        transform: scaleY(3) perspective(1000px) rotateY(15deg) rotateX(-10deg) scaleX(0.8);
+        letter-spacing: 2px;
     }
 }

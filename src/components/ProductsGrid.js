@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
+import ProductImage from "./ProductImage";
 
 /**
  * Formats a numeric value into a string with thousands separators (.)
@@ -97,9 +98,9 @@ export default function ProductsGrid({ onProductsLoaded }) {
                         onMouseEnter={() => setHoveredProduct(p.id)}
                         onMouseLeave={() => setHoveredProduct(null)}
                     >
-                        {p.images?.[0] && (
-                            <div className={styles.imageContainer}>
-                                <img
+                        <div className={styles.imageContainer}>
+                            {p.images?.[0] && (
+                                <ProductImage
                                     src={p.images[0]}
                                     alt={p.name}
                                     className={styles.image}
@@ -108,22 +109,24 @@ export default function ProductsGrid({ onProductsLoaded }) {
                                         transition: 'opacity 0.3s ease-in-out'
                                     }}
                                 />
-                                {p.images[1] && (
-                                    <img
-                                        src={p.images[1]}
-                                        alt={p.name}
-                                        className={styles.image}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            opacity: hoveredProduct === p.id ? 1 : 0,
-                                            transition: 'opacity 0.3s ease-in-out'
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        )}
+                            )}
+                            {p.images?.[1] && (
+                                <ProductImage
+                                    src={p.images[1]}
+                                    alt={p.name}
+                                    className={styles.image}
+                                    useContainer={false}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        opacity: hoveredProduct === p.id ? 1 : 0,
+                                        transition: 'opacity 0.3s ease-in-out',
+                                        zIndex: 1
+                                    }}
+                                />
+                            )}
+                        </div>
                         <div className={styles.textContainer}>
                             <p className={styles.name} style={{ top: '-1.5rem', position: 'absolute', transform: 'none' }}>{p.category}</p>
                             <h2 className={styles.name} style={{ top: '-0.25rem', position: 'absolute' }}>{p.name}</h2>

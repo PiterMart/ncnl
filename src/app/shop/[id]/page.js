@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import Image from 'next/image';
 import styles from '../../../styles/product.module.css';
 import { db } from '../../../firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
@@ -10,6 +9,7 @@ import ExpandableSection from '../../../components/ExpandableSection';
 import Display from '@/app/components/Display'; // Assuming this is used elsewhere or needed
 import LoadingScreen from '../../../components/LoadingScreen';
 import { useCart } from '../../../contexts/CartContext';
+import ProductImage from '../../../components/ProductImage';
 
 // Import Lightbox components and styles
 import 'yet-another-react-lightbox/styles.css';
@@ -169,14 +169,15 @@ export default function ProductPage() {
                                 }}
                                 style={{ cursor: 'pointer' }}
                             >
-                                <Image
+                                <ProductImage
                                     src={image}
                                     alt={`Product image ${index + 1}`}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    priority={index === 0}
-                                    quality={100}
-                                    style={{ objectFit: 'contain' }}
+                                    className={styles.productImage}
+                                    objectFit="contain"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%'
+                                    }}
                                 />
                             </div>
                         ))}
@@ -245,12 +246,14 @@ export default function ProductPage() {
                                     className={styles.sizeGuideContent}
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    <Image
+                                    <ProductImage
                                         src={product.sizeGuideImage}
                                         alt="Size Guide"
-                                        width={400}
-                                        height={400}
-                                        style={{ objectFit: 'contain' }}
+                                        objectFit="contain"
+                                        style={{
+                                            width: '400px',
+                                            height: '400px'
+                                        }}
                                     />
                                     <button onClick={() => setShowSizeGuide(false)}>
                                         Close

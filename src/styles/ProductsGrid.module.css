@@ -15,7 +15,7 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem; /* Example gap, adjust to match reference */
+    gap: 1.75rem; /* Example gap, adjust to match reference */
     width: 100%; /* Take full width of container */
     max-width: 1200px; /* Optional: Limit grid max width like the reference site */
     margin-top: 0; /* Adjust or remove margin top based on page header */
@@ -37,12 +37,66 @@
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: 300px; /* Maintain consistent height */
+    border-bottom: 2px solid black;
 }
 
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.imageHidden {
+    opacity: 0;
+}
+
+/* Loading skeleton styles */
+.imageSkeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeletonAnimation {
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: inherit;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Error state styles */
+.imageError {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border: 1px dashed #ccc;
+    color: #666;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 1rem;
 }
 
 .textContainer {
@@ -99,7 +153,7 @@
          padding: 10rem 0.5rem; /* Adjust container padding on mobile */
      }
 
-     .image {
+     .imageContainer {
          min-height: 250px; /* Smaller min height on mobile */
      }
 
@@ -120,10 +174,10 @@
     .grid {
         /* On very small screens, maybe 1 column or larger minmax for 2 */
          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-         gap: 0.5rem; /* Even smaller gap */
+         gap: 1.5rem; /* Even smaller gap */
     }
 
-     .image {
+     .imageContainer {
          min-height: 180px; /* Smaller min height on very small screens */
      }
 
