@@ -7,6 +7,7 @@ import Checkout from "./Checkout";
 import LoadingScreen from "./LoadingScreen";
 import styles from "../styles/CartList.module.css";
 import Link from "next/link";
+import { formatPrice } from "../utils/priceUtils";
 
 // Placeholder for MercadoPago related state and function if not from context
 const createPreference = async (items) => {
@@ -82,7 +83,7 @@ export default function CartList() {
                     </div>
                 ) : (
                     <>
-                        <h1 className={styles.cartTitle}>BOLSA</h1>
+                        <h1 className={styles.cartTitle}>BAG</h1>
                         <div className={styles.cartItemsContainer}>
                             {items.map(item => {
                                 const itemPrice = parseFloat(item.price) || 0;
@@ -119,7 +120,7 @@ export default function CartList() {
                                             {item.size && <div className={styles.itemSize}>Talle {item.size}</div>}
                                             <div className={styles.itemQuantity}>Cnt {itemQuantity}</div>
                                             <div className={styles.itemQuantity}>{itemColor}</div>
-                                            <div className={styles.itemSubtotal}>${itemSubtotal.toFixed(2)}</div>
+                                            <div className={styles.itemSubtotal}>${formatPrice(itemSubtotal)}</div>
                                         </div>
                                     </div>
                                 );
@@ -127,11 +128,11 @@ export default function CartList() {
                         </div>
 
                         <div className={styles.cartSummary}>
-                             <div className={styles.total}>Total: ${items.reduce((sum, item) => {
+                             <div className={styles.total}>Total: ${formatPrice(items.reduce((sum, item) => {
                                 const price = parseFloat(item.price) || 0;
                                 const quantity = item.quantity || 0;
                                 return sum + price * quantity;
-                            }, 0).toFixed(2)}</div>
+                            }, 0))}</div>
 
                              {mpError && <div className={styles.error}>{mpError}</div>}
 

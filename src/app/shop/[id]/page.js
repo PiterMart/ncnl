@@ -10,35 +10,13 @@ import Display from '@/app/components/Display'; // Assuming this is used elsewhe
 import LoadingScreen from '../../../components/LoadingScreen';
 import { useCart } from '../../../contexts/CartContext';
 import ProductImage from '../../../components/ProductImage';
+import { formatPrice } from '../../../utils/priceUtils';
 
 // Import Lightbox components and styles
 import 'yet-another-react-lightbox/styles.css';
 // Import the NextJsImage plugin for rendering Next.js Image components
 import Lightbox from 'yet-another-react-lightbox';
 import NextJsImage from "../../../components/NextJsImage";
-
-/**
- * Formats a numeric price into a string with thousands separators (.)
- * and decimal comma (,) according to es-AR locale.
- * @param {string|number} value - The price to format.
- * @returns {string} - Formatted price string.
- */
-function formatPrice(value) {
-    try {
-        const number = Number(value);
-        if (isNaN(number)) {
-            throw new Error(`Invalid price value: ${value}`);
-        }
-        return new Intl.NumberFormat('es-AR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(number);
-    } catch (error) {
-        console.error('Error formatting price:', error);
-        // Fallback to raw value
-        return String(value);
-    }
-}
 
 export default function ProductPage() {
     const [selectedSize, setSelectedSize] = useState(null);
@@ -216,7 +194,7 @@ export default function ProductPage() {
                         {product.sizes && product.sizes.length > 0 && product.title !== "La Piedad" && (
                             <div className={styles.sizeSelector}>
                                 <div className={styles.productShortDescription}>
-                                    TALLE
+                                    ELEGÍ EL TALLE:
                                 </div>
                                 <div className={styles.sizeOptions}>
                                     {product.sizes.map(size => (

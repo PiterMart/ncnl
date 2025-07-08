@@ -6,29 +6,7 @@ import Link from "next/link";
 import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
 import ProductImage from "./ProductImage";
-
-/**
- * Formats a numeric value into a string with thousands separators (.)
- * and decimal comma (,) according to es-AR locale.
- * @param {string|number} value - The price to format.
- * @returns {string} - Formatted price string.
- */
-function formatPrice(value) {
-    try {
-        const number = Number(value);
-        if (isNaN(number)) {
-            throw new Error(`Invalid price value: ${value}`);
-        }
-        return new Intl.NumberFormat('es-AR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(number);
-    } catch (error) {
-        console.error('Error formatting price:', error);
-        // Fallback to raw value
-        return String(value);
-    }
-}
+import { formatPrice } from "../utils/priceUtils";
 
 export default function ProductsGrid({ onProductsLoaded }) {
     const [products, setProducts] = useState([]);
