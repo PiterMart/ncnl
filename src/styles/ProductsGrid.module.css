@@ -117,8 +117,8 @@
 .price {
     color: inherit; /* Inherit color from textContainer */
     text-align: left; /* Align text to the left */
-    font-weight: 500;
-    margin-top: 5px;
+    font-weight: 600;
+    margin-top: 0px;
 }
 
 /* Description style (optional, based on previous code) */
