@@ -35,13 +35,68 @@ export default function ProductsGrid({ onProductsLoaded }) {
         "Camisa", "Gorra", "Botas", "Morral"
     ];
 
+    // Custom sorting function for products
+    const sortProducts = (products) => {
+        const priorityOrder = [
+            "LA BESTIA",
+            "SANTO NEGRO", 
+            "EL SILENCIO",
+            "PASTOR TECH"
+        ];
+
+        // Debug: Log all campera products to see their actual names
+        console.log("All campera products:", products.filter(p => p.category === "Campera").map(p => p.name));
+
+        return [...products].sort((a, b) => {
+            // First, prioritize camperas
+            const aIsCampera = a.category === "Campera";
+            const bIsCampera = b.category === "Campera";
+            
+            if (aIsCampera && !bIsCampera) return -1;
+            if (!aIsCampera && bIsCampera) return 1;
+            
+            // If both are camperas, sort by priority order
+            if (aIsCampera && bIsCampera) {
+                // Try exact match first
+                let aIndex = priorityOrder.indexOf(a.name);
+                let bIndex = priorityOrder.indexOf(b.name);
+                
+                // If exact match fails, try partial match (case insensitive)
+                if (aIndex === -1) {
+                    aIndex = priorityOrder.findIndex(priority => 
+                        a.name.toLowerCase().includes(priority.toLowerCase())
+                    );
+                }
+                if (bIndex === -1) {
+                    bIndex = priorityOrder.findIndex(priority => 
+                        b.name.toLowerCase().includes(priority.toLowerCase())
+                    );
+                }
+                
+                // If both are in priority order, sort by their position
+                if (aIndex !== -1 && bIndex !== -1) {
+                    return aIndex - bIndex;
+                }
+                
+                // If only one is in priority order, prioritize it
+                if (aIndex !== -1 && bIndex === -1) return -1;
+                if (aIndex === -1 && bIndex !== -1) return 1;
+                
+                // If neither is in priority order, sort alphabetically
+                return a.name.localeCompare(b.name);
+            }
+            
+            // For non-camperas, sort alphabetically by name
+            return a.name.localeCompare(b.name);
+        });
+    };
+
     const filteredProducts = selectedCategory
         ? products.filter(p => p.category === selectedCategory)
-        : [...products].sort((a, b) => {
-            if (a.category === "Campera" && b.category !== "Campera") return -1;
-            if (a.category !== "Campera" && b.category === "Campera") return 1;
-            return 0;
-        });
+        : sortProducts(products);
+
+    // Debug: Log the final sorted order
+    console.log("Final sorted products:", filteredProducts.map(p => `${p.name} (${p.category})`));
 
     if (error) {
         return <p className={styles.errorText}>{error}</p>;
