@@ -48,7 +48,7 @@ export default function ThanksPage() {
     }, []);
 
     return (
-        <div style={{ padding: "2rem", textAlign: "center" }}>
+        <div style={{ padding: "2rem", textAlign: "center", marginTop: '15rem' }}>
             <h1>¡Gracias por tu compra!</h1>
             <p>Tu pedido fue procesado correctamente.</p>
             <p>Serás redirigido al inicio en unos segundos...</p>

@@ -298,6 +298,8 @@ export default function Checkout({ onBack }) {
                     </p>
                 </div>
             </form>
+            
+            <p style={{ fontSize: "1rem", fontWeight: 600, textAlign: "center", maxWidth: "300px", margin: "0 auto" }}>Por favor aguarda a ser redireccionado nuevamente a la pagina al finalizar el pago.</p>
 
             {/* MercadoPago button appears as soon as preferenceId is ready */}
             <div style={{ marginTop: 20, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
