@@ -5,9 +5,9 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/OrdersTable.module.css";
 import { orderService } from "../services/orderService";
 
-/**
- * Modal component: overlay + inner content
- */
+// Possible statuses for orders
+const statusOptions = ["pending", "paid", "cancelled", "refunded"];
+
 function Modal({ isOpen, onClose, children }) {
     if (!isOpen) return null;
     return (
@@ -32,13 +32,11 @@ export default function OrdersTable() {
     // Subscribe in real time to 'orders' collection
     useEffect(() => {
         const unsubscribe = orderService.subscribeToOrders(
-            // onNext
             snapshot => {
                 const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setOrders(list);
                 setLoading(false);
             },
-            // onError
             err => {
                 console.error("Error subscribing to orders:", err);
                 setError("No se pudo cargar los pedidos");
@@ -60,12 +58,8 @@ export default function OrdersTable() {
         setSelectedOrder(null);
     };
 
-    /**
-     * Delete order after user confirmation
-     * @param {string} orderId
-     */
+    // Delete order after user confirmation
     const handleDeleteOrder = async orderId => {
-        // Ask for confirmation
         const confirmed = window.confirm("¿Estás seguro que querés eliminar esta orden?");
         if (!confirmed) return;
 
@@ -74,6 +68,23 @@ export default function OrdersTable() {
         } catch (err) {
             console.error("Error deleting order:", err);
             alert("No se pudo eliminar la orden.");
+        }
+    };
+
+    // Change order status via dropdown
+    const handleStatusChange = async (orderId, newStatus) => {
+        // Update UI immediately
+        setOrders(prev =>
+            prev.map(o => (o.id === orderId ? { ...o, status: newStatus } : o))
+        );
+
+        try {
+            // Persist status change
+            await orderService.updateOrderStatus(orderId, newStatus);
+            console.debug("Order status updated:", orderId, newStatus);
+        } catch (err) {
+            console.error("Error updating order status:", err);
+            alert("No se pudo actualizar el estado de la orden.");
         }
     };
 
@@ -97,6 +108,7 @@ export default function OrdersTable() {
                         <th>Items</th>
                         <th>Total</th>
                         <th>Fecha</th>
+                        <th>Estado</th> {/* New column */}
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -112,6 +124,20 @@ export default function OrdersTable() {
                                 {order.createdAt
                                     ? new Date(order.createdAt.seconds * 1000).toLocaleString()
                                     : "-"}
+                            </td>
+                            {/* Status dropdown */}
+                            <td>
+                                <select
+                                    value={order.status || ""}
+                                    onChange={e => handleStatusChange(order.id, e.target.value)}
+                                    className={styles.statusSelect}
+                                >
+                                    {statusOptions.map(status => (
+                                        <option key={status} value={status}>
+                                            {status}
+                                        </option>
+                                    ))}
+                                </select>
                             </td>
                             <td className={styles.actionCell}>
                                 <button
@@ -138,7 +164,7 @@ export default function OrdersTable() {
 
             <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
                 {selectedOrder && (
-                    <div className={styles.modalContent} style={{padding: '0rem'}}>
+                    <div className={styles.modalContent} style={{ padding: '1rem' }}>
                         <h3>Detalle Pedido: {selectedOrder.id}</h3>
                         <p><strong>Cliente:</strong> {selectedOrder.customer.name}</p>
                         <p><strong>Email:</strong> {selectedOrder.customer.email}</p>

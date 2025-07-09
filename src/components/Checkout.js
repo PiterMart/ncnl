@@ -1,22 +1,22 @@
 // src/components/Checkout.js
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "../contexts/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "../styles/Checkout.module.css";
 
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import { createPreference } from "../utils/mercadopagoService";
+import { orderService } from "../services/orderService";
 
 // Initialize MercadoPago SDK with your public key
 initMercadoPago("APP_USR-07f67e31-9b52-4c1e-8d5c-dad4d0c14bc2");
 
 export default function Checkout({ onBack }) {
-    // Get cart items
     const { items } = useCart();
 
-    // State for form inputs
+    // Form state
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -29,54 +29,51 @@ export default function Checkout({ onBack }) {
         postalCode: "",
         observations: "",
     });
-
-    // State for validation errors
     const [errors, setErrors] = useState({});
-
-    // Prevent duplicate requests
     const [isSending, setIsSending] = useState(false);
-
-    // MercadoPago preference ID
     const [preferenceId, setPreferenceId] = useState(null);
+
+    // Ref to ensure preparePayment runs only once
+    const hasPreparedRef = useRef(false);
 
     // Check if all required fields (except observations) are filled
     const isFormValid = Object.keys(formData)
         .filter((key) => key !== "observations")
         .every((key) => formData[key].trim() !== "");
 
-    // Trigger preference creation automatically when form becomes valid
+    // Trigger payment preparation exactly once when form becomes valid
     useEffect(() => {
-        if (isFormValid && !preferenceId && !isSending) {
+        if (isFormValid && !preferenceId && !isSending && !hasPreparedRef.current) {
+            hasPreparedRef.current = true;
             handlePreparePayment();
         }
-    }, [isFormValid]);
+    }, [isFormValid, preferenceId, isSending]);
 
-    // Handle input changes
+    // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Core logic moved to its own function so we can call it from useEffect
+    // Prepare MercadoPago preference and create pending order
     const handlePreparePayment = async () => {
-        // Reset errors and guard
-        setErrors({});
+        // prevent duplicate calls
         if (isSending) return;
 
+        setErrors({});
         setIsSending(true);
 
         try {
-            // Validate again to avoid race
+            // Validate required fields
             const validationErrors = {};
             Object.entries(formData).forEach(([key, value]) => {
                 if (key !== "observations" && !value.trim()) {
                     validationErrors[key] = "Este campo es obligatorio";
                 }
             });
-            if (Object.keys(validationErrors).length > 0) {
+            if (Object.keys(validationErrors).length) {
                 setErrors(validationErrors);
                 setIsSending(false);
-                toast.dismiss(toastId);
                 return;
             }
 
@@ -86,7 +83,7 @@ export default function Checkout({ onBack }) {
                 0
             );
 
-            // Clean undefined fields for payload
+            // Clean undefined fields before sending
             const cleanedCustomer = Object.fromEntries(
                 Object.entries(formData).filter(([_, v]) => v !== undefined)
             );
@@ -94,18 +91,31 @@ export default function Checkout({ onBack }) {
                 Object.fromEntries(Object.entries(item).filter(([_, v]) => v !== undefined))
             );
 
-            // Store pending order for /thanks
-            const orderPayload = { customer: cleanedCustomer, items: cleanedItems, total };
-            sessionStorage.setItem("pendingOrder", JSON.stringify(orderPayload));
+            // Create pending order in Firestore
+            try {
+                const orderId = await orderService.addOrder({
+                    customer: cleanedCustomer,
+                    items: cleanedItems,
+                    total,
+                    status: "pending",
+                });
+                console.debug("Pending order created with ID:", orderId);
+                sessionStorage.setItem(
+                    "pendingOrder",
+                    JSON.stringify({ orderId, customer: cleanedCustomer, items: cleanedItems, total })
+                );
+            } catch (err) {
+                console.error("Error creating pending order:", err);
+                toast.error("No se pudo guardar la orden pendiente.");
+            }
 
-            // Build MercadoPago items
+            // Build MercadoPago items payload
             const mpItems = items.map((item) => ({
                 title: item.name,
                 quantity: Number(item.quantity),
                 unit_price: Number(item.price),
             }));
 
-            // Configure back URLs
             const origin = window.location.origin;
             const back_urls = {
                 success: `${origin}/thanks`,
@@ -113,7 +123,6 @@ export default function Checkout({ onBack }) {
                 pending: `${origin}/checkout`,
             };
 
-            // Create preference payload
             const preferencePayload = {
                 items: mpItems,
                 back_urls,
@@ -125,13 +134,13 @@ export default function Checkout({ onBack }) {
             setPreferenceId(mpId);
         } catch (error) {
             console.error("Error creating preference:", error);
-            toast.error("No se pudo iniciar el pago.", { id: toastId });
+            toast.error("No se pudo iniciar el pago.");
         } finally {
             setIsSending(false);
         }
     };
 
-    // Compute order total for display
+    // Compute total for display
     const total = items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
@@ -144,7 +153,7 @@ export default function Checkout({ onBack }) {
             <p className={styles.title}>Finalizar Compra</p>
 
             <form className={styles.form}>
-                {/* Name */}
+                {/* Nombre */}
                 <label className={styles.label}>
                     Nombre:
                     <input
@@ -157,7 +166,7 @@ export default function Checkout({ onBack }) {
                     {errors.name && <span className={styles.error}>{errors.name}</span>}
                 </label>
 
-                {/* Email */}
+                {/* Correo electrónico */}
                 <label className={styles.label}>
                     Correo electrónico:
                     <input
@@ -170,7 +179,7 @@ export default function Checkout({ onBack }) {
                     {errors.email && <span className={styles.error}>{errors.email}</span>}
                 </label>
 
-                {/* Phone */}
+                {/* Número de celular */}
                 <label className={styles.label}>
                     Número de celular:
                     <input
@@ -196,7 +205,7 @@ export default function Checkout({ onBack }) {
                     {errors.dni && <span className={styles.error}>{errors.dni}</span>}
                 </label>
 
-                {/* Address */}
+                {/* Dirección */}
                 <label className={styles.label}>
                     Dirección:
                     <input
@@ -209,7 +218,7 @@ export default function Checkout({ onBack }) {
                     {errors.address && <span className={styles.error}>{errors.address}</span>}
                 </label>
 
-                {/* Province */}
+                {/* Provincia */}
                 <label className={styles.label}>
                     Provincia:
                     <input
@@ -222,7 +231,7 @@ export default function Checkout({ onBack }) {
                     {errors.province && <span className={styles.error}>{errors.province}</span>}
                 </label>
 
-                {/* City */}
+                {/* Ciudad */}
                 <label className={styles.label}>
                     Ciudad:
                     <input
@@ -235,7 +244,7 @@ export default function Checkout({ onBack }) {
                     {errors.city && <span className={styles.error}>{errors.city}</span>}
                 </label>
 
-                {/* Country */}
+                {/* País */}
                 <label className={styles.label}>
                     País:
                     <input
@@ -248,7 +257,7 @@ export default function Checkout({ onBack }) {
                     {errors.country && <span className={styles.error}>{errors.country}</span>}
                 </label>
 
-                {/* Postal Code */}
+                {/* Código Postal */}
                 <label className={styles.label}>
                     Código Postal:
                     <input
@@ -261,7 +270,7 @@ export default function Checkout({ onBack }) {
                     {errors.postalCode && <span className={styles.error}>{errors.postalCode}</span>}
                 </label>
 
-                {/* Observations */}
+                {/* Observaciones */}
                 <label className={styles.label}>
                     Observaciones:
                     <textarea
@@ -272,7 +281,7 @@ export default function Checkout({ onBack }) {
                     />
                 </label>
 
-                {/* Order summary */}
+                {/* Resumen del pedido */}
                 <div className={styles.summary}>
                     <h3>Resumen del pedido</h3>
                     <table>
@@ -301,8 +310,15 @@ export default function Checkout({ onBack }) {
             
             <p style={{ fontSize: "1rem", fontWeight: 600, textAlign: "center", maxWidth: "300px", margin: "0 auto" }}>Por favor aguarda a ser redireccionado nuevamente a la pagina al finalizar el pago.</p>
 
-            {/* MercadoPago button appears as soon as preferenceId is ready */}
-            <div style={{ marginTop: 20, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div
+                style={{
+                    marginTop: 20,
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
                 {preferenceId ? (
                     <div style={{ width: 300, margin: "0 auto" }}>
                         <Wallet
@@ -310,23 +326,24 @@ export default function Checkout({ onBack }) {
                                 preferenceId,
                                 redirectMode: "self",
                             }}
-                            onError={(err) => console.error("MP Wallet error:", err)}
-                            onReady={() => console.debug("MP Wallet ready")}
+                            onError={(err) =>
+                                console.error("MP Wallet error:", err)
+                            }
+                            onReady={() =>
+                                console.debug("MP Wallet ready")
+                            }
                         />
                     </div>
                 ) : (
-                    // Disabled placeholder until form valid and preferenceId generated
                     <button className={styles.button} disabled>
                         Completa los campos para pagar
                     </button>
                 )}
-
                 <button
                     type="button"
                     className={styles.button}
                     onClick={onBack}
                     disabled={isSending}
-                    // style={{ marginTop: 12 }}
                 >
                     Volver al carrito
                 </button>

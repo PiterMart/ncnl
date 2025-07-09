@@ -130,3 +130,13 @@
     background-color: #2196F3;
     color: #fff;
 }
+
+.statusSelect{
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 150px;
+}

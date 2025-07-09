@@ -13,14 +13,13 @@ export default function ThanksPage() {
     useEffect(() => {
         const pending = sessionStorage.getItem("pendingOrder");
         if (pending) {
-            const { customer, items, total } = JSON.parse(pending);
+            const { orderId, customer, items, total } = JSON.parse(pending);
 
-            // Finalize order and send mails
             (async () => {
                 try {
-                    // Save order in Firestore
-                    const orderId = await orderService.addOrder({ customer, items, total });
-                    console.debug("Order saved with ID:", orderId);
+                    // Update order status to paid
+                    await orderService.updateOrderStatus(orderId, "paid");
+                    console.debug("Order status updated to paid:", orderId);
 
                     // Send order emails
                     const resp = await fetch("/api/send-order-mail", {
@@ -33,11 +32,10 @@ export default function ThanksPage() {
                         console.error("Failed to send emails:", text);
                     }
                 } catch (err) {
-                    console.error("Error finalizing order:", err);
+                    console.error("Error finalizando orden:", err);
                 } finally {
                     sessionStorage.removeItem("pendingOrder");
                     clearCart();
-                    // Redirect home after 5s
                     setTimeout(() => router.push("/"), 5000);
                 }
             })();
