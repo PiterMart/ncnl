@@ -1,3 +1,5 @@
+// src/app/api/mercadopago/route.js
+
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { NextResponse } from 'next/server';
 
