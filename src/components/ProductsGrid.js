@@ -38,8 +38,8 @@ export default function ProductsGrid({ onProductsLoaded }) {
     // Custom sorting function for products
     const sortProducts = (products) => {
         const priorityOrder = [
-            "LA BESTIA",
             "SANTO NEGRO", 
+            "LA BESTIA",
             "EL SILENCIO",
             "PASTOR TECH"
         ];
