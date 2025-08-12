@@ -3,6 +3,7 @@
 import { CartProvider } from "../../contexts/CartContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import BackgroundMusic from "./BackgroundMusic";
 
 export default function ClientLayout({ children }) {
   return (
@@ -12,6 +13,7 @@ export default function ClientLayout({ children }) {
         <main className="flex-grow">{children}</main>
         <Footer />
       </div>
+      <BackgroundMusic />
     </CartProvider>
   );
 } 

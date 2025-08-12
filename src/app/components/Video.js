@@ -47,8 +47,7 @@ export default function Video() {
           <Image
             src="/heroimage.png" // **CHANGE THIS TO YOUR IMAGE PATH**
             alt="Video loading background"
-            layout="fill" // Makes the image fill the parent container
-            objectFit="cover" // Covers the area without distortion
+            fill
             className={styles.fallbackImage}
             priority // Prioritize loading this image
           />

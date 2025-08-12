@@ -8,7 +8,7 @@ export function formatPrice(value) {
     try {
         const number = Number(value);
         if (isNaN(number)) {
-            throw new Error(`Invalid price value: ${value}`);
+            // throw new Error(`Invalid price value: ${value}`);
         }
         return new Intl.NumberFormat('es-AR', {
             minimumFractionDigits: 0,

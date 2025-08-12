@@ -45,7 +45,7 @@ export default function ProductsGrid({ onProductsLoaded }) {
         ];
 
         // Debug: Log all campera products to see their actual names
-        console.log("All campera products:", products.filter(p => p.category === "Campera").map(p => p.name));
+        // console.log("All campera products:", products.filter(p => p.category === "Campera").map(p => p.name));
 
         return [...products].sort((a, b) => {
             // First, prioritize camperas
@@ -96,7 +96,7 @@ export default function ProductsGrid({ onProductsLoaded }) {
         : sortProducts(products);
 
     // Debug: Log the final sorted order
-    console.log("Final sorted products:", filteredProducts.map(p => `${p.name} (${p.category})`));
+    // console.log("Final sorted products:", filteredProducts.map(p => `${p.name} (${p.category})`));
 
     if (error) {
         return <p className={styles.errorText}>{error}</p>;
