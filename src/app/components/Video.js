@@ -66,7 +66,7 @@ export default function Video() {
 
         {/* "SHOP" Button */}
         <Link className={styles.runwayButton} href="/shop">
-          <p>SHOP</p>
+          <p>SHOP now</p>
         </Link>
 
         {/* Scrolling Text (commented out in your original code, kept as is) */}

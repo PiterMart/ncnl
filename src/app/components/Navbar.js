@@ -63,8 +63,9 @@ export default function Nav() {
     const pages = [
         { name: 'SHOP', path: '/shop', delay: '0s' },
         { name: 'ABOUT', path: '/about', delay: '0.1s' },
-        { name: 'HELP', path: '/ayuda', delay: '0.2s' },
-        { name: 'CONTACT', path: '/contact', delay: '0.3s' },
+        { name: 'CAMPAIGNS', path: '/campaigns', delay: '0.2s' },
+        { name: 'LOOKBOOK', path: '/lookbook', delay: '0.3s' },
+        { name: 'CONTACT', path: '/contact', delay: '0.4s' },
     ];
 
     const toggleMenu = () => {
@@ -125,7 +126,7 @@ export default function Nav() {
                             </Link>
                         </li>
                     ))}
-                    <li style={{ '--delay': '0.4s' }}>
+                    <li style={{ '--delay': '0.5s' }}>
                         {isMobile ? (
                             <Link 
                                 href="/cart" 

@@ -5,10 +5,14 @@ export default function About() {
     return (
         <div className={styles.about}>
             <div className={styles.aboutContent}>
+                {/* <p className={styles.aboutTitle}>NACIONAL</p> */}
                 <h1>
                     es una marca argentina que cruza sastrería, streetwear y funcionalidad para crear un lenguaje propio.
                     Cada colección explora nuevas formas de habitar el cuerpo y la ciudad, a través de piezas pensadas para el movimiento y el encuentro.
                 </h1>
+                <p>
+                    Cada colección explora nuevas formas de habitar el cuerpo y la ciudad, a través de piezas pensadas para el movimiento y el encuentro.
+                </p>
                 <p>
                     Nuestra visión dialoga con los íconos de la sociedad y la estética nacional, tomando inspiración de múltiples universos: la música, las comunidades disidentes, los rituales sociales, el fervor del fútbol, la vida nocturna, las turbulencias políticas, el arte, el amor y la complejidad de los vínculos humanos.
                 </p>
