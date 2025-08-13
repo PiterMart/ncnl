@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding-top: 2rem;
+    padding-top: 0rem;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -18,19 +18,39 @@
     max-width: 600px;
     margin: 0 auto;
     font-weight: 700;
-    margin-bottom: 5rem;
+    margin-bottom: 0rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+    margin-top: -10rem;
 }
 
 .aboutImage {
     max-width: 700px;
-    margin-left: 5rem;
     margin-right: auto;
     width: 100%;
     height: auto;
     object-fit: cover;
     object-position: center;
     padding-top: 5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+}
+
+.imageContainer {
+    width: 100%;
+    max-width: 700px;
+    margin-right: auto;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .aboutTitle {
@@ -46,7 +66,7 @@
         color: #222;
         font-weight: 700;
         font-weight: 900;
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
         line-height: 2rem;
 }
 
@@ -65,7 +85,10 @@
 /* Responsive adjustments */
 @media (max-width: 1378px) {
     .about {
-        padding: 9rem 1rem;
+        padding: 14rem 1rem;
+    }
+    .aboutContent {
+        margin-top: -2rem;
     }
     
     

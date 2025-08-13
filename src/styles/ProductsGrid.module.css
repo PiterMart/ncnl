@@ -174,7 +174,7 @@
     .grid {
         /* On very small screens, maybe 1 column or larger minmax for 2 */
          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-         gap: 1.5rem; /* Even smaller gap */
+         gap: 0.5rem; /* Even smaller gap */
     }
 
      .imageContainer {
