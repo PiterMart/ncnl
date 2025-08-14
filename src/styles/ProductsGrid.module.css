@@ -11,6 +11,24 @@
     min-height: 100vh; /* Ensure it takes at least full viewport height */
 }
 
+/* Category section styles */
+.categorySection {
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 3rem;
+}
+
+.categoryTitle {
+    transform: scaleY(3) perspective(1000px) rotateY(0deg) rotateX(0deg);
+    transform-origin: left center;
+    font-size: 2rem;
+    margin-top: 2rem;
+    font-weight: 900;
+    color: #222;
+    text-align: left;
+    margin-bottom: 3rem;
+}
+
 /* Reverting to a CSS Grid layout */
 .grid {
     display: grid;
@@ -140,6 +158,69 @@
     margin-top: 1rem;
 }
 
+.filterContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.categoryFilters {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 0.5rem 1rem;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.categoryFilters::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.categoryFilter {
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s ease;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-family: inherit;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.separator {
+    color: #ccc;
+    font-weight: 300;
+    user-select: none;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+.categoryFilter:hover {
+    color: #000;
+}
+
+.categoryFilter.active {
+    color: #000;
+    font-weight: 600;
+}
+
+@media (max-width: 997px) {
+    .categoryFilters{
+        justify-content: flex-start;
+        
+    }
+}
+
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
     .grid {
@@ -168,6 +249,26 @@
      .card {
         margin-bottom: 2.5rem;
     }
+
+    .categoryTitle {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .categorySection {
+        margin-bottom: 2rem;
+    }
+
+
+    .categoryFilters {
+        gap: 1.5rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .categoryFilter {
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -185,24 +286,26 @@
      .price {
          font-size: 0.9rem; /* Even smaller text */
      }
-}
 
-.filterContainer {
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-}
+     .categoryTitle {
+         font-size: 1.5rem;
+         margin-bottom: 1rem;
+         letter-spacing: 0.5px;
+         border-bottom-width: 2px;
+         padding-bottom: 0.5rem;
+     }
 
-.categoryFilter {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    min-width: 200px;
-    background-color: white;
-    cursor: pointer;
-}
+     .categorySection {
+         margin-bottom: 1.5rem;
+     }
 
-.categoryFilter:hover {
-    border-color: #999;
+
+     .categoryFilters {
+         gap: 1rem;
+         padding: 0.5rem 0.5rem;
+     }
+
+     .categoryFilter {
+         font-size: 0.8rem;
+     }
 }

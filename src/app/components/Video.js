@@ -47,8 +47,7 @@ export default function Video() {
           <Image
             src="/heroimage.png" // **CHANGE THIS TO YOUR IMAGE PATH**
             alt="Video loading background"
-            layout="fill" // Makes the image fill the parent container
-            objectFit="cover" // Covers the area without distortion
+            fill
             className={styles.fallbackImage}
             priority // Prioritize loading this image
           />
@@ -67,7 +66,7 @@ export default function Video() {
 
         {/* "SHOP" Button */}
         <Link className={styles.runwayButton} href="/shop">
-          <p>SHOP</p>
+          <p>SHOP now</p>
         </Link>
 
         {/* Scrolling Text (commented out in your original code, kept as is) */}

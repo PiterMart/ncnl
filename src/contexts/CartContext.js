@@ -48,7 +48,7 @@ const CartContext = createContext();
 
 // Proveedor de carrito
 export function CartProvider({ children }) {
-    console.log('CartProvider rendering'); // Debug log
+    // console.log('CartProvider rendering'); 
     const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
     // Cargar carrito desde localStorage al inicio
@@ -104,7 +104,7 @@ export function CartProvider({ children }) {
         clearCart
     };
 
-    console.log('CartProvider value:', value); // Debug log
+    // console.log('CartProvider value:', value); 
 
     return (
         <CartContext.Provider value={value}>

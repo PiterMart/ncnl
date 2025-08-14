@@ -37,6 +37,9 @@
     margin: 0;
     text-align: right;
 }
+/* .footerNav li{
+    border-bottom: 1px solid #ffffff;
+} */
 
 .footerNav a {
     color: aliceblue;

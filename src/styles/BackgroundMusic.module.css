@@ -1,0 +1,57 @@
+.backgroundMusic {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  mix-blend-mode: difference;
+}
+
+.backgroundMusic:hover {
+  transform: translateY(-2px);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playButton,
+.muteButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.playButton:hover,
+.muteButton:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .backgroundMusic {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .backgroundMusic {
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 12px;
+  }
+}

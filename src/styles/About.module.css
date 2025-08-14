@@ -3,14 +3,14 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding-top: 11rem;
+    padding-top: 0rem;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #333;
-    line-height: 1.6;
+    line-height: 0;
     padding-bottom: 10rem;
 }
 
@@ -18,37 +18,63 @@
     max-width: 600px;
     margin: 0 auto;
     font-weight: 700;
-    line-height: 1.75rem;
-    margin-bottom: 5rem;
+    margin-bottom: 0rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+    margin-top: -10rem;
 }
 
 .aboutImage {
     max-width: 700px;
-    margin-left: 5rem;
     margin-right: auto;
     width: 100%;
     height: auto;
     object-fit: cover;
     object-position: center;
     padding-top: 5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
 }
 
+.imageContainer {
+    width: 100%;
+    max-width: 700px;
+    margin-right: auto;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.aboutTitle {
+    font-size: 8rem !important;
+    font-weight: 900;
+    color: #222 ;
+}
+
+
 .aboutContent h1 {
-    font-size: 2.2rem
-    35.2px
+    font-size: 2rem
     ;
         color: #222;
         font-weight: 700;
         font-weight: 900;
-        line-height: 37px;
-        padding-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        line-height: 2rem;
 }
 
 .aboutContent p {
     font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: justify;
+    line-height: 1.25rem;
 }
 
 .aboutContent p:last-child {
@@ -57,14 +83,14 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1378px) {
     .about {
-        padding: 10rem 1rem;
+        padding: 14rem 1rem;
+    }
+    .aboutContent {
+        margin-top: -2rem;
     }
     
-    .aboutContent h1 {
-        font-size: 1.8rem;
-    }
     
     .aboutContent p {
         font-size: 1rem;

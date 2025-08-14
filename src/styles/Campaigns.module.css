@@ -1,0 +1,109 @@
+.campaigns {
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.campaignTitle {
+    transform: scaleY(3) perspective(1000px) rotateY(0deg) rotateX(0deg);
+    transform-origin: left center;
+    font-size: 3.5rem;
+    margin-top: 10rem;
+    font-weight: 900;
+    color: #222;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.campaignImages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: 4rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.6s forwards;
+}
+
+.campaignImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.credits {
+    max-width: 800px;
+    text-align: left;
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.9s forwards;
+}
+
+.credits h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 1rem;
+}
+
+.creditsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.creditsList li {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .campaigns {
+        padding: 1rem 0.5rem;
+    }
+    
+    .campaignTitle {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .campaignImages {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .credits {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .credits h2 {
+        font-size: 1.25rem;
+    }
+}

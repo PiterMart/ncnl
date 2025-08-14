@@ -45,7 +45,7 @@ export default function LoadingScreen({ onLoadingComplete, isLoading = true }) {
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className={styles.progressText}>{progress}%</div>
+      {/* <div className={styles.progressText}>{progress}%</div> */}
     </div>
   );
 } 

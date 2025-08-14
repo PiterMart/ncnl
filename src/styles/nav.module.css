@@ -15,12 +15,13 @@
   color: #110708;
   /* padding: 4vw; */
   font-family: 'Nacional-Extended', sans-serif;
-  padding-right: 1rem;
   padding-top: 2rem;
   padding-bottom: 1rem;
   transition: all 0.4s ease-in-out;
   opacity: 1;
   transform: translateY(0);
+
+  padding-right: 1rem;
 }
 
 .nav_white {
@@ -208,7 +209,7 @@
 }
 
 /* Mobile-Specific Styles */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .navButton {
     display: flex;
   }
@@ -243,10 +244,12 @@
     gap: 0rem;
     display: flex;
     flex-direction: column;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    padding-left: 0rem;
   }
   .nav_list li {
     font-size: 2rem;
+    border-bottom: 1px solid #ffffff;
     /* color: transparent; */
 
   }
