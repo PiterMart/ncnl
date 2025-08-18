@@ -32,6 +32,9 @@ export default function ProductPage() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    // Array of sold out products
+    const soldoutProducts = ["La Piedad", "LA BESTIA"];
+
     const handleLoadingComplete = () => {
         setIsLoading(false);
     };
@@ -165,7 +168,7 @@ export default function ProductPage() {
                             <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
                             <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
-                                {product.title === "La Piedad" || product.title === "LA BESTIA" ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
+                                {soldoutProducts.includes(product.title) ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
@@ -191,7 +194,7 @@ export default function ProductPage() {
                             </div>
                         </ExpandableSection>
 
-                        {product.sizes && product.sizes.length > 0 && product.title !== "La Piedad" && (
+                        {product.sizes && product.sizes.length > 0 && !soldoutProducts.includes(product.title) && (
                             <div className={styles.sizeSelector}>
                                 <div className={styles.productShortDescription}>
                                     ELEGÍ EL TALLE:
@@ -241,7 +244,7 @@ export default function ProductPage() {
                         )}
 
                         <div className={styles.actionButtons}>
-                            {product.title !== "La Piedad" && (
+                            {!soldoutProducts.includes(product.title) && (
                                 <button
                                     onClick={() => handleAddToCart(product)}
                                     className={styles.buyButton}
