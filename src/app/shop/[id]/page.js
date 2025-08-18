@@ -165,7 +165,7 @@ export default function ProductPage() {
                             <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
                             <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
-                                {product.title === "La Piedad" ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
+                                {product.title === "La Piedad" || product.title === "LA BESTIA" ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
