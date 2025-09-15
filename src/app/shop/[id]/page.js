@@ -32,8 +32,11 @@ export default function ProductPage() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Array of sold out products
-    const soldoutProducts = ["La Piedad", "LA BESTIA"];
+    // Check if product is sold out based on price
+    const isSoldOut = (price) => {
+        const numPrice = Number(price);
+        return isNaN(numPrice) || price === "SOLD OUT";
+    };
 
     const handleLoadingComplete = () => {
         setIsLoading(false);
@@ -168,7 +171,7 @@ export default function ProductPage() {
                             <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
                             <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
-                                {soldoutProducts.includes(product.title) ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
+                                {isSoldOut(product.price) ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
@@ -194,7 +197,7 @@ export default function ProductPage() {
                             </div>
                         </ExpandableSection>
 
-                        {product.sizes && product.sizes.length > 0 && !soldoutProducts.includes(product.title) && (
+                        {product.sizes && product.sizes.length > 0 && !isSoldOut(product.price) && (
                             <div className={styles.sizeSelector}>
                                 <div className={styles.productShortDescription}>
                                     ELEGÍ EL TALLE:
@@ -244,7 +247,7 @@ export default function ProductPage() {
                         )}
 
                         <div className={styles.actionButtons}>
-                            {!soldoutProducts.includes(product.title) && (
+                            {!isSoldOut(product.price) && (
                                 <button
                                     onClick={() => handleAddToCart(product)}
                                     className={styles.buyButton}

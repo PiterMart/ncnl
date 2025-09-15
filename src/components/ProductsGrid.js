@@ -228,7 +228,7 @@ export default function ProductsGrid({ onProductsLoaded }) {
                                     <h2 className={styles.name} style={{ top: '-0.25rem', position: 'absolute' }}>{p.name}</h2>
                                     {/* Apply localized formatting */}
                                     <p className={styles.price} style={{ top: '1.25rem', position: 'absolute' }}>
-                                        ${formatPrice(p.price)}
+                                        {p.price === "SOLD OUT" ? "SOLD OUT" : `$${formatPrice(p.price)}`}
                                     </p>
                                 </div>
                             </Link> 
