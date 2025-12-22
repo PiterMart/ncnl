@@ -31,6 +31,7 @@ export default function ProductsTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [expandedProducts, setExpandedProducts] = useState(new Set());
 
     // Initial form values, now including "category", stock for sizes, video, and new flag
     const initialForm = {
@@ -129,11 +130,30 @@ export default function ProductsTable() {
         setSelectedVideo(file);
     };
 
+    // Toggle product expansion
+    const toggleProduct = (id) => {
+        setExpandedProducts((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    };
+
     // Delete product
     const handleDelete = async (id) => {
         if (!confirm("¿Eliminar este producto?")) return;
         try {
             await productService.deleteProduct(id);
+            // Remove from expanded set if it was expanded
+            setExpandedProducts((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(id);
+                return newSet;
+            });
         } catch (err) {
             console.error("Error deleting product:", err);
             alert("No se pudo eliminar el producto.");
@@ -361,80 +381,134 @@ export default function ProductsTable() {
                 </form>
             </Modal>
 
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        {/* <th>Descripción Técnica</th> */}
-                        <th>Precio</th>
-                        <th>Stock T1</th>
-                        <th>Stock T2</th>
-                        <th>Stock T3</th>
-                        <th>Colección</th>
-                        <th>Color</th>
-                        <th>Material</th>
-                        <th>Categoría</th>
-                        <th>Nuevo</th>
-                        <th>Imágenes</th>
-                        <th>Video</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {products.map((p) => (
-                        <tr key={p.id}>
-                            <td>{p.name}</td>
-                            <td>{p.description}</td>
-                            {/* <td>{p.technicalDescription}</td> */}
-                            <td>{p.price}</td>
-                            <td>{p.stock1 ?? 0}</td>
-                            <td>{p.stock2 ?? 0}</td>
-                            <td>{p.stock3 ?? 0}</td>
-                            <td>{p.collection}</td>
-                            <td>{p.color}</td>
-                            <td>{p.material}</td>
-                            <td>{p.category}</td>
-                            <td>{p.new ? "✓ Sí" : "✗ No"}</td>
-                            <td>
-                                {p.images?.map((url, i) => (
-                                    <img
-                                        key={i}
-                                        src={url}
-                                        alt={`Producto ${p.name} #${i + 1}`}
-                                        className={styles.thumbnail}
-                                    />
-                                ))}
-                            </td>
-                            <td>
-                                {p.video ? (
-                                    <video
-                                        src={p.video}
-                                        controls
-                                        style={{ width: "100px", height: "60px", objectFit: "cover" }}
-                                    />
-                                ) : (
-                                    <span style={{ color: "#999" }}>Sin video</span>
-                                )}
-                            </td>
-                            <td className={styles.actionCell}>
-                                <button
-                                    className={styles.editButton}
-                                    onClick={() => handleOpenEdit(p)}
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    className={styles.deleteButton}
-                                    onClick={() => handleDelete(p.id)}
-                                >
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className={styles.productsList}>
+                {products.map((p) => {
+                    const isExpanded = expandedProducts.has(p.id);
+                    return (
+                        <div key={p.id} className={styles.productItem}>
+                            <div
+                                className={styles.productHeader}
+                                onClick={() => toggleProduct(p.id)}
+                            >
+                                <div className={styles.productHeaderContent}>
+                                    <span className={styles.productName}>{p.name}</span>
+                                    <span className={styles.productId}>ID: {p.id}</span>
+                                </div>
+                                <span className={styles.expandIcon}>
+                                    {isExpanded ? "−" : "+"}
+                                </span>
+                            </div>
+                            {isExpanded && (
+                                <div className={styles.productDetails}>
+                                    <div className={styles.actionsSection}>
+                                        <button
+                                            className={styles.editButton}
+                                            onClick={() => handleOpenEdit(p)}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            className={styles.deleteButton}
+                                            onClick={() => handleDelete(p.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
+
+                                    <div className={styles.detailsGrid}>
+                                        <div className={styles.detailSection}>
+                                            <h3 className={styles.sectionTitle}>Información Básica</h3>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Descripción:</span>
+                                                <span className={styles.detailValue}>{p.description}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Descripción Técnica:</span>
+                                                <span className={styles.detailValue}>{p.technicalDescription}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Precio:</span>
+                                                <span className={styles.detailValue}>${p.price}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Categoría:</span>
+                                                <span className={styles.detailValue}>{p.category || "N/A"}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Producto Nuevo:</span>
+                                                <span className={styles.detailValue}>{p.new ? "✓ Sí" : "✗ No"}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.detailSection}>
+                                            <h3 className={styles.sectionTitle}>Detalles del Producto</h3>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Colección:</span>
+                                                <span className={styles.detailValue}>{p.collection}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Color:</span>
+                                                <span className={styles.detailValue}>{p.color}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Material:</span>
+                                                <span className={styles.detailValue}>{p.material}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.detailSection}>
+                                            <h3 className={styles.sectionTitle}>Stock por Talle</h3>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Talle 1:</span>
+                                                <span className={styles.detailValue}>{p.stock1 ?? 0}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Talle 2:</span>
+                                                <span className={styles.detailValue}>{p.stock2 ?? 0}</span>
+                                            </div>
+                                            <div className={styles.detailRow}>
+                                                <span className={styles.detailLabel}>Talle 3:</span>
+                                                <span className={styles.detailValue}>{p.stock3 ?? 0}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {(p.images && p.images.length > 0) || p.video ? (
+                                        <div className={styles.mediaContainer}>
+                                            {p.images && p.images.length > 0 && (
+                                                <div className={styles.imagesSection}>
+                                                    <h3 className={styles.sectionTitle}>Imágenes</h3>
+                                                    <div className={styles.imagesGrid}>
+                                                        {p.images.map((url, i) => (
+                                                            <img
+                                                                key={i}
+                                                                src={url}
+                                                                alt={`Producto ${p.name} #${i + 1}`}
+                                                                className={styles.productImage}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {p.video && (
+                                                <div className={styles.videoSection}>
+                                                    <h3 className={styles.sectionTitle}>Video</h3>
+                                                    <video
+                                                        src={p.video}
+                                                        controls
+                                                        className={styles.productVideo}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : null}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
 
             {products.length === 0 && (
                 <div className={styles.emptyMessage}>No hay productos para mostrar</div>
