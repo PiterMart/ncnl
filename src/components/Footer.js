@@ -2,8 +2,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from '../../styles/footer.module.css';
-import Form from '../../components/Form';
+import styles from '../styles/footer.module.css';
+import Form from './Form';
 
 export default function Footer() {
     const currentPath = usePathname();
@@ -49,4 +49,5 @@ export default function Footer() {
             </div>
         </footer>
     );
-} 
+}
+

@@ -29,6 +29,22 @@ class ImageService {
     });
     return Promise.all(uploadPromises);
   }
+
+  /**
+   * Upload a video file and return its download URL
+   * @param {string} productId
+   * @param {File} videoFile
+   * @returns {Promise<string>}
+   */
+  async uploadVideo(productId, videoFile) {
+    // Create a storage ref under products/{productId}/videos/filename_timestamp
+    const path = `products/${productId}/videos/${Date.now()}_${videoFile.name}`;
+    const storageRef = ref(this.storage, path);
+    // Upload file
+    const snapshot = await uploadBytes(storageRef, videoFile);
+    // Get download URL
+    return getDownloadURL(snapshot.ref);
+  }
 }
 
 export const imageService = new ImageService();

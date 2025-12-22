@@ -38,4 +38,5 @@ export default function SendEmailsModal({ leads, onClose, onConfirm }) {
       </div>
     </div>
   );
-} 
+}
+

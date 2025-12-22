@@ -1,5 +1,5 @@
 'use client';
-import styles from '../../styles/Display.module.css';
+import styles from '../styles/Display.module.css';
 
 export default function Display() {
 
@@ -60,3 +60,4 @@ export default function Display() {
         </div>
     );
 }
+

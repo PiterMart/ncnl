@@ -3,53 +3,189 @@
 /* Container for responsive table with horizontal scrolling */
 .tableContainer {
     width: 100%;
-    overflow-x: auto;
+    padding: 1rem;
 }
 
-/* Base table styles */
-.table {
+/* Products list container */
+.productsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
-    border-collapse: collapse;
+}
+
+/* Individual product item */
+.productItem {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.productItem:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Product header - clickable area */
+.productHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+    user-select: none;
+}
+
+.productHeader:hover {
+    background-color: #f0f0f0;
+}
+
+.productHeaderContent {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.productName {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
     font-family: 'Nacional-Extended', sans-serif;
 }
 
-/* Header and cell padding, alignment and border */
-.table th,
-.table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-}
-
-/* Header text styles */
-.table th {
-    font-weight: normal;
-    color: #666;
-    text-transform: uppercase;
+.productId {
     font-size: 0.9rem;
-    letter-spacing: 1px;
+    color: #666;
+    font-family: 'Nacional-Extended', sans-serif;
 }
 
-/* Cell text color */
-.table td {
+.expandIcon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #666;
+    width: 2rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+/* Expanded product details */
+.productDetails {
+    padding: 2rem;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+}
+
+/* Details grid layout */
+.detailsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.detailSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 600;
     color: #333;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eee;
+    font-family: 'Nacional-Extended', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.table tr {
-    min-height: 4rem;
+.detailRow {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 0;
 }
 
-/* Hover effect for rows */
-.row:hover {
-    background-color: #f9f9f9;
+.detailLabel {
+    font-weight: 600;
+    color: #666;
+    min-width: 140px;
+    font-family: 'Nacional-Extended', sans-serif;
+    font-size: 0.9rem;
 }
 
-/* Checkbox styling */
-.checkbox {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+.detailValue {
+    color: #333;
+    flex: 1;
+    font-family: 'Nacional-Extended', sans-serif;
+    word-break: break-word;
+}
+
+/* Media container - holds images and video side by side */
+.mediaContainer {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+/* Images section */
+.imagesSection {
+    flex: 1;
+    min-width: 250px;
+}
+
+.imagesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.productImage {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease;
+}
+
+.productImage:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Video section */
+.videoSection {
+    flex: 0 0 auto;
+    min-width: 250px;
+}
+
+.productVideo {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 1px solid #eee;
+}
+
+/* Actions section */
+.actionsSection {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1.5rem;
+    justify-content: flex-end;
 }
 
 /* Message when no products */
@@ -60,12 +196,17 @@
     font-family: 'Nacional-Extended', sans-serif;
 }
 
-
 .openModalButton {
     margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
     font-family: inherit;
+}
+
+.topBar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
 }
 
 /* Modal overlay covers the whole screen */
@@ -82,90 +223,29 @@
     z-index: 1000;
 }
 
-/* Modal content box */
+/* Modal content matching products table styling */
 .modalContent {
     background-color: #fff;
+    color: #333;
     padding: 2rem;
-    border-radius: 4px;
+    border-radius: 8px;
     position: relative;
-    max-width: 500px;
+    max-width: 1200px;
     width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Close button in top-right corner */
-.closeButton {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+.modalContent h2 {
+    font-family: 'Nacional-Extended', sans-serif;
     font-size: 1.5rem;
-    line-height: 1;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* Form layout inside modal */
-.form {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-}
-
-/* Individual form field group */
-.formGroup {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Action buttons container */
-.formActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-}
-
-/* Reuse existing input styles for modal form */
-.formGroup input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-
-.openModalButton {
-    margin-bottom: 1rem;
-    padding: 0.75rem 1.5rem;
-    /* added padding */
-    cursor: pointer;
-    font-family: inherit;
-}
-
-/* Modal overlay */
-.modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-/* Modal content with black background */
-.modalContent {
-    background-color: #000;
-    /* fondo negro */
-    color: #fff;
-    /* texto blanco */
-    padding: 2rem;
-    border-radius: 4px;
-    position: relative;
-    max-width: 500px;
-    width: 100%;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #eee;
 }
 
 /* Close button */
@@ -179,7 +259,12 @@
     border: none;
     cursor: pointer;
     padding: 0.5rem;
-    /* added padding */
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+    color: #333;
 }
 
 /* Form layout */
@@ -195,54 +280,117 @@
     flex-direction: column;
 }
 
+.formGroup label {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-family: 'Nacional-Extended', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 /* Form inputs */
-.formGroup input {
+.formGroup input,
+.formGroup select {
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-family: 'Nacional-Extended', sans-serif;
+    transition: border-color 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.formGroup input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #4caf50;
+}
+
+.input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-family: 'Nacional-Extended', sans-serif;
 }
 
 /* Action buttons with padding */
 .formActions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
 }
 
 .formActions button {
     padding: 0.75rem 1.5rem;
-    /* added padding */
     cursor: pointer;
+    font-family: 'Nacional-Extended', sans-serif;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
 }
 
-.thumbnail {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 0.5rem;
-    border-radius: 4px;
+.formActions button[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
 }
 
-.topBar {
-    display: flex;
-    justify-content: center;
+.formActions button[type="submit"]:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.formActions button[type="button"] {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.formActions button[type="button"]:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+.formActions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.errorText {
+    color: #f44336;
     margin-bottom: 1rem;
-}
-
-.actionCell {
-    gap: 0.5rem;
-    justify-content: center;
+    font-family: 'Nacional-Extended', sans-serif;
+    padding: 0.75rem;
+    background-color: #ffebee;
+    border-radius: 4px;
+    border: 1px solid #f44336;
 }
 
 .editButton,
 .deleteButton {
-    padding: 0.5rem 1rem;
-    line-height: 1.5;
-    height: auto;
-    border-radius: 10px;
-    font-size: 0.8rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Nacional-Extended', sans-serif;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-right: 0.5rem;
+    transition: opacity 0.2s ease;
+}
+
+.editButton:hover,
+.deleteButton:hover {
+    opacity: 0.9;
 }
 
 .editButton {
@@ -253,4 +401,44 @@
 .deleteButton {
     background-color: #f44336;
     color: #fff;
+}
+
+/* Legacy styles kept for compatibility */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Nacional-Extended', sans-serif;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.table th {
+    font-weight: normal;
+    color: #666;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.table td {
+    color: #333;
+}
+
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.actionCell {
+    gap: 0.5rem;
+    justify-content: center;
 }
