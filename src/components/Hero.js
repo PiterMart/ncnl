@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Image from 'next/image';
 import TypeIt from 'typeit';
 import Link from 'next/link';
 import styles from '../styles/Hero.module.css';
@@ -12,7 +11,7 @@ export default function Hero() {
   const isTyping = useRef(false);
   const [showShop, setShowShop] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const fullText = 'LA PIEDAD ';
+  const fullText = 'LA NOTICIA ';
 
   const handleMouseEnter = () => {
     if (isTyping.current || hasAnimated) return;
@@ -53,12 +52,13 @@ export default function Hero() {
                    <p className={styles.shopText}> Comprar {"^"} </p>
                 </Link>
             </div>
-          <Image
+          <video
             onMouseEnter={handleMouseEnter}
-            src="/main transparente.png"
-            alt="placeholder"
-            width={1000}
-            height={1000}
+            src="/lanoticia/0.SHORT.360.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
             style={{ objectFit: 'contain', width: 'auto', height: '100%' }}
           />
         </div>

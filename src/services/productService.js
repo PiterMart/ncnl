@@ -12,6 +12,8 @@ import {
     query,
     orderBy,
     onSnapshot,
+    getDoc,
+    increment,
 } from "firebase/firestore";
 // Import db directly from your Firebase configuration
 import { db } from "../firebase/firebaseConfig"; // Changed import
@@ -51,6 +53,47 @@ class ProductService {
     async deleteProduct(productId) {
         const docRef = doc(this.db, "products", productId);
         await deleteDoc(docRef);
+    }
+
+    /** Get a single product by ID */
+    async getProduct(productId) {
+        try {
+            const productRef = doc(this.db, "products", productId);
+            const productSnap = await getDoc(productRef);
+            if (productSnap.exists()) {
+                return { id: productSnap.id, ...productSnap.data() };
+            }
+            return null;
+        } catch (error) {
+            console.error("Error getting product:", error);
+            throw new Error("No se pudo obtener el producto.");
+        }
+    }
+
+    /**
+     * Update product stock for a specific size index.
+     * Uses Firestore increment() for atomic updates without transactions.
+     * @param {string} productId - The product ID
+     * @param {number} sizeIndex - The index of the size (0 -> stock1, 1 -> stock2, 2 -> stock3)
+     * @param {number} quantity - The quantity to subtract (should be positive)
+     * @returns {Promise<void>}
+     */
+    async updateProductStock(productId, sizeIndex, quantity) {
+        try {
+            const productRef = doc(this.db, "products", productId);
+            const stockField = `stock${sizeIndex + 1}`; // stock1, stock2, or stock3
+            
+            // Use increment() for atomic update - simpler and works with concurrent admin updates
+            // Note: This can go negative, but that's acceptable since stock is checked before payment
+            await updateDoc(productRef, {
+                [stockField]: increment(-quantity)
+            });
+
+            console.debug(`Stock updated for product ${productId}, size index ${sizeIndex}, quantity ${quantity}`);
+        } catch (error) {
+            console.error("Error updating product stock:", error);
+            throw new Error(`No se pudo actualizar el stock del producto ${productId}.`);
+        }
     }
 
     /**

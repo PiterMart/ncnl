@@ -36,9 +36,9 @@ export default function Checkout({ onBack }) {
     // Ref to ensure preparePayment runs only once
     const hasPreparedRef = useRef(false);
 
-    // Check if all required fields (except observations) are filled
+    // Check if all required fields (except observations and province) are filled
     const isFormValid = Object.keys(formData)
-        .filter((key) => key !== "observations")
+        .filter((key) => key !== "observations" && key !== "province")
         .every((key) => formData[key].trim() !== "");
 
     // Trigger payment preparation exactly once when form becomes valid
@@ -67,7 +67,7 @@ export default function Checkout({ onBack }) {
             // Validate required fields
             const validationErrors = {};
             Object.entries(formData).forEach(([key, value]) => {
-                if (key !== "observations" && !value.trim()) {
+                if (key !== "observations" && key !== "province" && !value.trim()) {
                     validationErrors[key] = "Este campo es obligatorio";
                 }
             });
@@ -205,22 +205,22 @@ export default function Checkout({ onBack }) {
                     {errors.dni && <span className={styles.error}>{errors.dni}</span>}
                 </label>
 
-                {/* Dirección */}
+                {/* País */}
                 <label className={styles.label}>
-                    Dirección:
+                    País:
                     <input
                         className={styles.input}
                         type="text"
-                        name="address"
-                        value={formData.address}
+                        name="country"
+                        value={formData.country}
                         onChange={handleChange}
                     />
-                    {errors.address && <span className={styles.error}>{errors.address}</span>}
+                    {errors.country && <span className={styles.error}>{errors.country}</span>}
                 </label>
 
                 {/* Provincia */}
                 <label className={styles.label}>
-                    Provincia:
+                    Provincia (opcional):
                     <input
                         className={styles.input}
                         type="text"
@@ -244,17 +244,17 @@ export default function Checkout({ onBack }) {
                     {errors.city && <span className={styles.error}>{errors.city}</span>}
                 </label>
 
-                {/* País */}
+                {/* Dirección */}
                 <label className={styles.label}>
-                    País:
+                    Dirección:
                     <input
                         className={styles.input}
                         type="text"
-                        name="country"
-                        value={formData.country}
+                        name="address"
+                        value={formData.address}
                         onChange={handleChange}
                     />
-                    {errors.country && <span className={styles.error}>{errors.country}</span>}
+                    {errors.address && <span className={styles.error}>{errors.address}</span>}
                 </label>
 
                 {/* Código Postal */}

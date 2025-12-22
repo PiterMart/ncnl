@@ -28,7 +28,8 @@ export default function Home() {
       {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} isLoading={!contentLoaded} />}
 
       <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }}>
-        <Video/>
+        {/* <Video/> */}
+        <Hero/>
       </div>
     </main>
   );

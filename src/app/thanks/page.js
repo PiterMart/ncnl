@@ -21,6 +21,15 @@ export default function ThanksPage() {
                     await orderService.updateOrderStatus(orderId, "paid");
                     console.debug("Order status updated to paid:", orderId);
 
+                    // Update stock for all items in the order
+                    try {
+                        await orderService.updateStockForOrder(items);
+                        console.debug("Stock updated successfully for order:", orderId);
+                    } catch (stockError) {
+                        console.error("Error updating stock (non-fatal):", stockError);
+                        // Continue with email sending even if stock update fails
+                    }
+
                     // Send order emails
                     const resp = await fetch("/api/send-order-mail", {
                         method: "POST",

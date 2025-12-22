@@ -32,7 +32,7 @@ export default function ProductsTable() {
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
-    // Initial form values, now including "category", stock for sizes, and video
+    // Initial form values, now including "category", stock for sizes, video, and new flag
     const initialForm = {
         name: "",
         description: "",
@@ -45,6 +45,7 @@ export default function ProductsTable() {
         stock1: 0, // Stock for size 1
         stock2: 0, // Stock for size 2
         stock3: 0, // Stock for size 3
+        new: false, // New product flag
     };
     const [formValues, setFormValues] = useState(initialForm);
     const [selectedImages, setSelectedImages] = useState([]); // File[]
@@ -87,6 +88,7 @@ export default function ProductsTable() {
             stock1: product.stock1 || 0, // Load existing stock for size 1
             stock2: product.stock2 || 0, // Load existing stock for size 2
             stock3: product.stock3 || 0, // Load existing stock for size 3
+            new: product.new || false, // Load existing new flag
         });
         setSelectedImages([]); // do not change images unless new ones uploaded
         setSelectedVideo(null); // do not change video unless new one uploaded
@@ -103,9 +105,16 @@ export default function ProductsTable() {
 
     // Handle input/select change
     const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        // Convert number inputs to numbers
-        const processedValue = type === "number" ? (value === "" ? 0 : Number(value)) : value;
+        const { name, value, type, checked } = e.target;
+        // Convert number inputs to numbers, checkbox to boolean
+        let processedValue;
+        if (type === "number") {
+            processedValue = value === "" ? 0 : Number(value);
+        } else if (type === "checkbox") {
+            processedValue = checked;
+        } else {
+            processedValue = value;
+        }
         setFormValues((prev) => ({ ...prev, [name]: processedValue }));
     };
 
@@ -241,6 +250,20 @@ export default function ProductsTable() {
                         </select>
                     </div>
 
+                    {/* New product checkbox */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="new" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <input
+                                id="new"
+                                name="new"
+                                type="checkbox"
+                                checked={formValues.new}
+                                onChange={handleChange}
+                            />
+                            <span>Producto nuevo</span>
+                        </label>
+                    </div>
+
                     {/* Stock fields for sizes 1, 2, 3 */}
                     <div className={styles.formGroup}>
                         <label>Stock por Talle</label>
@@ -351,6 +374,7 @@ export default function ProductsTable() {
                         <th>Color</th>
                         <th>Material</th>
                         <th>Categoría</th>
+                        <th>Nuevo</th>
                         <th>Imágenes</th>
                         <th>Video</th>
                         <th>Acciones</th>
@@ -370,6 +394,7 @@ export default function ProductsTable() {
                             <td>{p.color}</td>
                             <td>{p.material}</td>
                             <td>{p.category}</td>
+                            <td>{p.new ? "✓ Sí" : "✗ No"}</td>
                             <td>
                                 {p.images?.map((url, i) => (
                                     <img

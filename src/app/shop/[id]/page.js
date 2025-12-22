@@ -11,6 +11,7 @@ import LoadingScreen from '../../../components/LoadingScreen';
 import { useCart } from '../../../contexts/CartContext';
 import ProductImage from '../../../components/ProductImage';
 import { formatPrice } from '../../../utils/priceUtils';
+import { isProductSoldOut } from '../../../utils/productUtils';
 
 // Import Lightbox components and styles
 import 'yet-another-react-lightbox/styles.css';
@@ -32,10 +33,9 @@ export default function ProductPage() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Check if product is sold out based on price
-    const isSoldOut = (price) => {
-        const numPrice = Number(price);
-        return isNaN(numPrice) || price === "SOLD OUT";
+    // Check if product is sold out (uses stock-based check or price fallback)
+    const checkSoldOut = (product) => {
+        return isProductSoldOut(product);
     };
 
     const handleLoadingComplete = () => {
@@ -55,6 +55,29 @@ export default function ProductPage() {
                         setGalleryImages(productData.images);
                     }
 
+                    // Build sizes array dynamically from stock fields or use existing sizes array
+                    let sizes = [];
+                    if (productData.sizes && Array.isArray(productData.sizes) && productData.sizes.length > 0) {
+                        // If sizes array exists in database, use it
+                        sizes = productData.sizes;
+                    } else {
+                        // Build sizes from stock fields - check if size names exist, otherwise use defaults
+                        // Build all sizes in order to maintain index mapping with stock fields
+                        const defaultSizeNames = ['S', 'M', 'L'];
+                        const sizeNames = [
+                            productData.size1 || defaultSizeNames[0],
+                            productData.size2 || defaultSizeNames[1],
+                            productData.size3 || defaultSizeNames[2],
+                        ];
+                        
+                        // Build sizes array in order (index 0 = stock1, index 1 = stock2, index 2 = stock3)
+                        // Include all sizes that have stock fields defined, even if stock is 0
+                        // The getAvailableSizes function will filter out sizes with 0 stock
+                        if (productData.stock1 !== undefined) sizes.push(sizeNames[0]);
+                        if (productData.stock2 !== undefined) sizes.push(sizeNames[1]);
+                        if (productData.stock3 !== undefined) sizes.push(sizeNames[2]);
+                    }
+
                     setProduct({
                         title: productData.name,
                         price: productData.price,
@@ -62,13 +85,15 @@ export default function ProductPage() {
                         fullDescription: productData.technicalDescription,
                         color: productData.color,
                         material: productData.material,
-                        sizes: productData.sizes && Array.isArray(productData.sizes) && productData.sizes.length > 0
-                            ? productData.sizes
-                            : ['S', 'M', 'L', 'XL'],
+                        sizes: sizes,
                         sizeGuideImage: productData.sizeGuideImage || '/placeholders/size-guide.webp',
                         mainImage: productData.images?.[0],
                         collection: productData.collection,
-                        category: productData.category || "", // NEW: load category
+                        category: productData.category || "", // load category
+                        stock1: productData.stock1, // load stock for size 1
+                        stock2: productData.stock2, // load stock for size 2
+                        stock3: productData.stock3, // load stock for size 3
+                        video: productData.video || null, // load video
                     });
                     setContentLoaded(true);
                 } else {
@@ -113,6 +138,36 @@ export default function ProductPage() {
             console.error("Error adding product to cart:", err);
         }
     };
+
+    // Filter sizes based on available stock
+    // Note: If sizes were built dynamically from stock fields, they already only include sizes with stock > 0
+    const getAvailableSizes = () => {
+        if (!product || !product.sizes || product.sizes.length === 0) return [];
+        
+        const stock1 = Number(product.stock1) || 0;
+        const stock2 = Number(product.stock2) || 0;
+        const stock3 = Number(product.stock3) || 0;
+        
+        // Check if we have stock fields defined
+        const hasStockFields = product.stock1 !== undefined || product.stock2 !== undefined || product.stock3 !== undefined;
+        
+        if (hasStockFields) {
+            // Filter sizes based on stock - map each size to its corresponding stock field
+            return product.sizes.filter((size, index) => {
+                // Map index to stock field (0 -> stock1, 1 -> stock2, 2 -> stock3)
+                if (index === 0) return stock1 > 0;
+                if (index === 1) return stock2 > 0;
+                if (index === 2) return stock3 > 0;
+                // For sizes beyond index 2, show them (assuming they don't have stock tracking)
+                return true;
+            });
+        }
+        
+        // If no stock fields, return all sizes (legacy products without stock tracking)
+        return product.sizes;
+    };
+
+    const availableSizes = product ? getAvailableSizes() : [];
 
     const slides = galleryImages.map(image => ({ src: image }));
 
@@ -165,13 +220,28 @@ export default function ProductPage() {
                                 />
                             </div>
                         ))}
+                        {product.video && (
+                            <div className={styles.productVideo}>
+                                <video
+                                    src={product.video}
+                                    controls
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'contain'
+                                    }}
+                                >
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        )}
                     </div>
                     <div className={styles.productInfo}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.5rem' }}>
                             <p className={styles.productName} style={{ marginBottom: '7px', transform: 'NONE' }}>{product.category}</p>
                             <p className={styles.productName}>{product.title}</p>
                             <p className={styles.productPrice}>
-                                {isSoldOut(product.price) ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
+                                {checkSoldOut(product) ? "SOLD OUT" : `$ ${formatPrice(product.price)}`}
                             </p>
                         </div>
                         <div className={styles.productShortDescription}>
@@ -197,13 +267,13 @@ export default function ProductPage() {
                             </div>
                         </ExpandableSection>
 
-                        {product.sizes && product.sizes.length > 0 && !isSoldOut(product.price) && (
+                        {availableSizes && availableSizes.length > 0 && !checkSoldOut(product) && (
                             <div className={styles.sizeSelector}>
                                 <div className={styles.productShortDescription}>
                                     ELEGÍ EL TALLE:
                                 </div>
                                 <div className={styles.sizeOptions}>
-                                    {product.sizes.map(size => (
+                                    {availableSizes.map(size => (
                                         <button
                                             key={size}
                                             className={
@@ -247,7 +317,7 @@ export default function ProductPage() {
                         )}
 
                         <div className={styles.actionButtons}>
-                            {!isSoldOut(product.price) && (
+                            {!checkSoldOut(product) && (
                                 <button
                                     onClick={() => handleAddToCart(product)}
                                     className={styles.buyButton}

@@ -7,6 +7,7 @@ import styles from "../styles/ProductsGrid.module.css";
 import { productService } from "@/services/productService";
 import ProductImage from "./ProductImage";
 import { formatPrice } from "../utils/priceUtils";
+import { isProductSoldOut } from "../utils/productUtils";
 import React from "react"; // Added missing import for React.Fragment
 
 export default function ProductsGrid({ onProductsLoaded }) {
@@ -111,16 +112,20 @@ export default function ProductsGrid({ onProductsLoaded }) {
         });
     };
 
+    // Separate new products from regular products
+    const newProducts = products.filter(p => p.new === true);
+    const regularProducts = products.filter(p => !p.new);
+
     const filteredProducts = selectedCategory
-        ? products.filter(p => {
+        ? regularProducts.filter(p => {
             if (selectedCategory === "Accesorios") {
                 return p.category === "Morral" || p.category === "Gorra";
             }
             return p.category === selectedCategory;
         })
-        : sortProducts(products);
+        : sortProducts(regularProducts);
 
-    // Group products by category for section display
+    // Group products by category for section display (exclude new products)
     const groupedProducts = {};
     filteredProducts.forEach(product => {
         // Map categories for display (group Morral and Gorra under Accesorios)
@@ -160,6 +165,62 @@ export default function ProductsGrid({ onProductsLoaded }) {
 
     return (
         <div className={styles.container}>
+            {/* Display new products section above category filters */}
+            {newProducts.length > 0 && (
+                <div className={styles.categorySection}>
+                    <h2 className={styles.categoryTitle}>Nuevos</h2>
+                    <div className={styles.grid}>
+                        {sortProducts(newProducts).map((p) => (
+                            <Link
+                                href={`/shop/${p.id}`}
+                                key={p.id}
+                                className={styles.card}
+                                onMouseEnter={() => setHoveredProduct(p.id)}
+                                onMouseLeave={() => setHoveredProduct(null)}
+                            >
+                                <div className={styles.imageContainer}>
+                                    {p.images?.[0] && (
+                                        <ProductImage
+                                            src={p.images[0]}
+                                            alt={p.name}
+                                            className={styles.image}
+                                            style={{
+                                                opacity: hoveredProduct === p.id ? 0 : 1,
+                                                transition: 'opacity 0.3s ease-in-out'
+                                            }}
+                                        />
+                                    )}
+                                    {p.images?.[1] && (
+                                        <ProductImage
+                                            src={p.images[1]}
+                                            alt={p.name}
+                                            className={styles.image}
+                                            useContainer={false}
+                                            style={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                opacity: hoveredProduct === p.id ? 1 : 0,
+                                                transition: 'opacity 0.3s ease-in-out',
+                                                zIndex: 1
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                                <div className={styles.textContainer}>
+                                    <p className={styles.name} style={{ top: '-1.5rem', position: 'absolute', transform: 'none' }}>{p.category}</p>
+                                    <h2 className={styles.name} style={{ top: '-0.25rem', position: 'absolute' }}>{p.name}</h2>
+                                    {/* Apply localized formatting */}
+                                    <p className={styles.price} style={{ top: '1.25rem', position: 'absolute' }}>
+                                        {isProductSoldOut(p) ? "SOLD OUT" : `$${formatPrice(p.price)}`}
+                                    </p>
+                                </div>
+                            </Link> 
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <div className={styles.filterContainer}>
                 <div className={styles.categoryFilters}>
                     <span 
@@ -228,7 +289,7 @@ export default function ProductsGrid({ onProductsLoaded }) {
                                     <h2 className={styles.name} style={{ top: '-0.25rem', position: 'absolute' }}>{p.name}</h2>
                                     {/* Apply localized formatting */}
                                     <p className={styles.price} style={{ top: '1.25rem', position: 'absolute' }}>
-                                        {p.price === "SOLD OUT" ? "SOLD OUT" : `$${formatPrice(p.price)}`}
+                                        {isProductSoldOut(p) ? "SOLD OUT" : `$${formatPrice(p.price)}`}
                                     </p>
                                 </div>
                             </Link> 
