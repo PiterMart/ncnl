@@ -6,7 +6,7 @@ import { db } from '../../../firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { useParams } from 'next/navigation';
 import ExpandableSection from '../../../components/ExpandableSection';
-import Display from '@/app/components/Display'; // Assuming this is used elsewhere or needed
+import Display from '@/components/Display'; // Assuming this is used elsewhere or needed
 import LoadingScreen from '../../../components/LoadingScreen';
 import { useCart } from '../../../contexts/CartContext';
 import ProductImage from '../../../components/ProductImage';

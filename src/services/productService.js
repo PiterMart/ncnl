@@ -22,9 +22,9 @@ class ProductService {
         this.productsRef = collection(this.db, "products");
     }
 
-    /** Add a new product document (without images) */
+    /** Add a new product document (without images or video) */
     async addProduct(product) {
-        const data = { ...product, createdAt: serverTimestamp(), images: [] };
+        const data = { ...product, createdAt: serverTimestamp(), images: [], video: null };
         const docRef = await addDoc(this.productsRef, data);
         return docRef.id;
     }
@@ -39,6 +39,12 @@ class ProductService {
     async updateProductImages(productId, imageUrls) {
         const docRef = doc(this.db, "products", productId);
         await updateDoc(docRef, { images: imageUrls });
+    }
+
+    /** Update the video field of a product */
+    async updateProductVideo(productId, videoUrl) {
+        const docRef = doc(this.db, "products", productId);
+        await updateDoc(docRef, { video: videoUrl });
     }
 
     /** Delete a product document */

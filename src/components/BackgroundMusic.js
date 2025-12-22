@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import styles from '../../styles/BackgroundMusic.module.css';
+import styles from '../styles/BackgroundMusic.module.css';
 
 export default function BackgroundMusic() {
   const [isMuted, setIsMuted] = useState(true);
@@ -71,3 +71,4 @@ export default function BackgroundMusic() {
     </div>
   );
 }
+

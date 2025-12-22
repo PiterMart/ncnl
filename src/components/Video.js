@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import styles from '../../styles/Video.module.css';
+import styles from '../styles/Video.module.css';
 import Link from 'next/link';
 import Image from 'next/image'; // Import the Image component from Next.js
 
@@ -89,3 +89,4 @@ export default function Video() {
     </div>
   );
 }
+

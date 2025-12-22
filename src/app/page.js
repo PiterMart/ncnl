@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import LoadingScreen from '../components/LoadingScreen';
 import styles from '../styles/Home.module.css';
-import Video from './components/Video';
+import Video from '../components/Video';
 import Hero from '../components/Hero';
 
 export default function Home() {
@@ -28,11 +28,7 @@ export default function Home() {
       {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} isLoading={!contentLoaded} />}
 
       <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }}>
-        <Video />
-        {/* <div className={styles.ticket}>
-          <img src="/ticket-web.png" alt="Ticket" className={styles.ticketImage}/>
-        </div> */}
-        {/* <Hero /> */}
+        <Video/>
       </div>
     </main>
   );

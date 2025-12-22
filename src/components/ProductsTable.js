@@ -32,7 +32,7 @@ export default function ProductsTable() {
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
-    // Initial form values, now including "category"
+    // Initial form values, now including "category", stock for sizes, and video
     const initialForm = {
         name: "",
         description: "",
@@ -41,10 +41,14 @@ export default function ProductsTable() {
         collection: "",
         color: "",
         material: "",
-        category: "", // NEW: category field
+        category: "", // category field
+        stock1: 0, // Stock for size 1
+        stock2: 0, // Stock for size 2
+        stock3: 0, // Stock for size 3
     };
     const [formValues, setFormValues] = useState(initialForm);
     const [selectedImages, setSelectedImages] = useState([]); // File[]
+    const [selectedVideo, setSelectedVideo] = useState(null); // File | null
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
 
@@ -63,6 +67,7 @@ export default function ProductsTable() {
         setEditingId(null);
         setFormValues(initialForm);
         setSelectedImages([]);
+        setSelectedVideo(null);
         setIsModalOpen(true);
     };
 
@@ -79,8 +84,12 @@ export default function ProductsTable() {
             color: product.color,
             material: product.material,
             category: product.category || "", // Load existing category
+            stock1: product.stock1 || 0, // Load existing stock for size 1
+            stock2: product.stock2 || 0, // Load existing stock for size 2
+            stock3: product.stock3 || 0, // Load existing stock for size 3
         });
         setSelectedImages([]); // do not change images unless new ones uploaded
+        setSelectedVideo(null); // do not change video unless new one uploaded
         setIsModalOpen(true);
     };
 
@@ -89,17 +98,26 @@ export default function ProductsTable() {
         setError("");
         setIsModalOpen(false);
         setSelectedImages([]);
+        setSelectedVideo(null);
     };
 
     // Handle input/select change
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormValues((prev) => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target;
+        // Convert number inputs to numbers
+        const processedValue = type === "number" ? (value === "" ? 0 : Number(value)) : value;
+        setFormValues((prev) => ({ ...prev, [name]: processedValue }));
     };
 
     // Handle file input change
     const handleImageChange = (e) => {
         setSelectedImages(e.target.files);
+    };
+
+    // Handle video file input change
+    const handleVideoChange = (e) => {
+        const file = e.target.files[0] || null;
+        setSelectedVideo(file);
     };
 
     // Delete product
@@ -121,20 +139,30 @@ export default function ProductsTable() {
 
         try {
             if (isEditing && editingId) {
-                // 1) Update fields (including category)
+                // 1) Update fields (including category and stock)
                 await productService.updateProduct(editingId, formValues);
                 // 2) If new images uploaded: upload and update
                 if (selectedImages.length > 0) {
                     const urls = await imageService.uploadImages(editingId, selectedImages);
                     await productService.updateProductImages(editingId, urls);
                 }
+                // 3) If new video uploaded: upload and update
+                if (selectedVideo) {
+                    const videoUrl = await imageService.uploadVideo(editingId, selectedVideo);
+                    await productService.updateProductVideo(editingId, videoUrl);
+                }
             } else {
-                // 1) Add new product (with category)
+                // 1) Add new product (with category and stock)
                 const newId = await productService.addProduct(formValues);
                 // 2) If images exist: upload and update
                 if (selectedImages.length > 0) {
                     const urls = await imageService.uploadImages(newId, selectedImages);
                     await productService.updateProductImages(newId, urls);
+                }
+                // 3) If video exists: upload and update
+                if (selectedVideo) {
+                    const videoUrl = await imageService.uploadVideo(newId, selectedVideo);
+                    await productService.updateProductVideo(newId, videoUrl);
                 }
             }
             handleCloseModal();
@@ -189,7 +217,7 @@ export default function ProductsTable() {
                         </div>
                     ))}
 
-                    {/* NEW: Category select field */}
+                    {/* Category select field */}
                     <div className={styles.formGroup}>
                         <label htmlFor="category">Categoría</label>
                         <select
@@ -213,6 +241,58 @@ export default function ProductsTable() {
                         </select>
                     </div>
 
+                    {/* Stock fields for sizes 1, 2, 3 */}
+                    <div className={styles.formGroup}>
+                        <label>Stock por Talle</label>
+                        <div style={{ display: "flex", gap: "1rem" }}>
+                            <div style={{ flex: 1 }}>
+                                <label htmlFor="stock1" style={{ fontSize: "0.9rem", marginBottom: "0.25rem", display: "block" }}>
+                                    Talle 1
+                                </label>
+                                <input
+                                    id="stock1"
+                                    name="stock1"
+                                    type="number"
+                                    min="0"
+                                    value={formValues.stock1}
+                                    onChange={handleChange}
+                                    className={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <label htmlFor="stock2" style={{ fontSize: "0.9rem", marginBottom: "0.25rem", display: "block" }}>
+                                    Talle 2
+                                </label>
+                                <input
+                                    id="stock2"
+                                    name="stock2"
+                                    type="number"
+                                    min="0"
+                                    value={formValues.stock2}
+                                    onChange={handleChange}
+                                    className={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <label htmlFor="stock3" style={{ fontSize: "0.9rem", marginBottom: "0.25rem", display: "block" }}>
+                                    Talle 3
+                                </label>
+                                <input
+                                    id="stock3"
+                                    name="stock3"
+                                    type="number"
+                                    min="0"
+                                    value={formValues.stock3}
+                                    onChange={handleChange}
+                                    className={styles.input}
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className={styles.formGroup}>
                         <label htmlFor="images">
                             {isEditing ? "Nuevas imágenes (opcional)" : "Imágenes"}
@@ -223,6 +303,19 @@ export default function ProductsTable() {
                             multiple
                             accept="image/*"
                             onChange={handleImageChange}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor="video">
+                            {isEditing ? "Nuevo video (opcional)" : "Video"}
+                        </label>
+                        <input
+                            id="video"
+                            type="file"
+                            accept="video/*"
+                            onChange={handleVideoChange}
                             className={styles.input}
                         />
                     </div>
@@ -251,13 +344,15 @@ export default function ProductsTable() {
                         <th>Descripción</th>
                         {/* <th>Descripción Técnica</th> */}
                         <th>Precio</th>
-                        <th>Stock</th>
+                        <th>Stock T1</th>
+                        <th>Stock T2</th>
+                        <th>Stock T3</th>
                         <th>Colección</th>
-                        <th>Talle</th>
                         <th>Color</th>
                         <th>Material</th>
-                        <th>Categoría</th> {/* NEW: Mostrar categoría */}
+                        <th>Categoría</th>
                         <th>Imágenes</th>
+                        <th>Video</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -268,12 +363,13 @@ export default function ProductsTable() {
                             <td>{p.description}</td>
                             {/* <td>{p.technicalDescription}</td> */}
                             <td>{p.price}</td>
-                            <td>{p.stock}</td>
+                            <td>{p.stock1 ?? 0}</td>
+                            <td>{p.stock2 ?? 0}</td>
+                            <td>{p.stock3 ?? 0}</td>
                             <td>{p.collection}</td>
-                            <td>{p.size}</td>
                             <td>{p.color}</td>
                             <td>{p.material}</td>
-                            <td>{p.category}</td> {/* NEW: Mostrar categoría */}
+                            <td>{p.category}</td>
                             <td>
                                 {p.images?.map((url, i) => (
                                     <img
@@ -283,6 +379,17 @@ export default function ProductsTable() {
                                         className={styles.thumbnail}
                                     />
                                 ))}
+                            </td>
+                            <td>
+                                {p.video ? (
+                                    <video
+                                        src={p.video}
+                                        controls
+                                        style={{ width: "100px", height: "60px", objectFit: "cover" }}
+                                    />
+                                ) : (
+                                    <span style={{ color: "#999" }}>Sin video</span>
+                                )}
                             </td>
                             <td className={styles.actionCell}>
                                 <button
