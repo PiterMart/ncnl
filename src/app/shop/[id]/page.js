@@ -21,6 +21,7 @@ import NextJsImage from "../../../components/NextJsImage";
 
 export default function ProductPage() {
     const [selectedSize, setSelectedSize] = useState(null);
+    const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [contentLoaded, setContentLoaded] = useState(false);
@@ -122,16 +123,17 @@ export default function ProductPage() {
                 return;
             }
 
+            // Add item with specified quantity (CartContext will handle incrementing if item already exists)
             addItem({
                 id: params.id,
                 name: product.title,
                 price: product.price,
-                quantity: 1,
+                quantity: quantity,
                 size: selectedSize,
                 mainImage: product.mainImage,
                 collection: product.collection,
                 color: product.color,
-                category: product.category, // NEW: pass category if needed
+                category: product.category,
             });
             router.push("/cart");
         } catch (err) {
@@ -168,6 +170,31 @@ export default function ProductPage() {
     };
 
     const availableSizes = product ? getAvailableSizes() : [];
+
+    // Get available stock for the selected size
+    const getAvailableStockForSize = (size) => {
+        if (!product || !size) return null;
+        
+        const sizeIndex = product.sizes.indexOf(size);
+        if (sizeIndex === -1) return null;
+
+        // Map index to stock field (0 -> stock1, 1 -> stock2, 2 -> stock3)
+        if (sizeIndex === 0) return product.stock1 !== undefined ? Number(product.stock1) || 0 : null;
+        if (sizeIndex === 1) return product.stock2 !== undefined ? Number(product.stock2) || 0 : null;
+        if (sizeIndex === 2) return product.stock3 !== undefined ? Number(product.stock3) || 0 : null;
+        
+        return null;
+    };
+
+    const availableStock = selectedSize ? getAvailableStockForSize(selectedSize) : null;
+    const maxQuantity = availableStock !== null ? availableStock : Infinity;
+
+    // Reset quantity when size changes
+    useEffect(() => {
+        if (selectedSize) {
+            setQuantity(1);
+        }
+    }, [selectedSize]);
 
     const slides = galleryImages.map(image => ({ src: image }));
 
@@ -288,6 +315,35 @@ export default function ProductPage() {
                                         </button>
                                     ))}
                                 </div>
+                            </div>
+                        )}
+
+                        {selectedSize && !checkSoldOut(product) && (
+                            <div className={styles.quantitySelector}>
+                                <div className={styles.productShortDescription}>
+                                    CANTIDAD:
+                                </div>
+                                <div className={styles.quantityControl}>
+                                    <button 
+                                        className={styles.quantityButton}
+                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    >
+                                        −
+                                    </button>
+                                    <span className={styles.quantityValue}>{quantity}</span>
+                                    <button 
+                                        className={styles.quantityButton}
+                                        onClick={() => setQuantity(Math.min(quantity + 1, maxQuantity))}
+                                        disabled={quantity >= maxQuantity}
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                                {availableStock !== null && (
+                                    <div className={styles.stockInfo}>
+                                        Stock disponible: {availableStock}
+                                    </div>
+                                )}
                             </div>
                         )}
 

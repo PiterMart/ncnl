@@ -247,6 +247,7 @@ export default function ProductsTable() {
                             <option value="Gorra">Gorra</option>
                             <option value="Botas">Botas</option>
                             <option value="Morral">Morral</option>
+                            <option value="Short">Short</option>
                         </select>
                     </div>
 

@@ -52,14 +52,15 @@
 
 .cartItem {
     display: flex;
-        border: 1px solid black;
+        border: 1px solid white;
         justify-content: space-between;
         align-items: center;
-        background-color: #fff;
+        background-color: #000;
         padding-bottom: 1rem;
         border-radius: 0;
         flex-wrap: wrap;
         padding: 0.5rem;
+        color: white;
 }
 
 .itemDetails {
@@ -68,6 +69,19 @@
     flex-direction: column; /* Stack details vertically */
     gap: 0.5rem; /* Space between detail lines */
     margin-right: 1rem; /* Space between details and actions */
+    color: white;
+}
+
+.itemNameLink {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    display: inline-block;
+}
+
+.itemNameLink:hover {
+    opacity: 0.7;
 }
 
 .itemName {
@@ -82,12 +96,53 @@
 .itemSubtotal {
     font-size: 0.9rem;
     text-align: right;
-    color: #333; /* Slightly muted color for details */
+    color: white; /* White text for details */
 }
 
 .itemSubtotal {
     font-weight: 600; /* Make subtotal stand out slightly */
-    color: #110708; /* Use primary text color */
+    color: white; /* White text for subtotal */
+}
+
+.quantityControl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0.5rem 0;
+    justify-content: flex-end;
+}
+
+.quantityButton {
+    background: none;
+    border: 1px solid white;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.2s;
+}
+
+.quantityButton:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    color: white;
+}
+
+.quantityButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quantityValue {
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 30px;
+    text-align: center;
+    color: white;
 }
 
 .itemActions {
@@ -96,6 +151,17 @@
     top: 0px;
     align-items: center;
     justify-content: right;
+}
+
+/* Style for item image link */
+.itemImageLink {
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.itemImageLink:hover {
+    opacity: 0.8;
 }
 
 /* Style for item image container */
@@ -129,11 +195,12 @@
     cursor: pointer;
     font-size: 0.8rem;
     transition: background-color 0.3s ease, font-size 0.3s ease;
-     color: #110708; /* Default text color */
+    color: white; /* White text color */
 }
 
 .removeButton:hover {
     font-size: 1.5rem;
+    color: #ff0000; /* Red on hover */
 }
 
 .removeButton:focus {
